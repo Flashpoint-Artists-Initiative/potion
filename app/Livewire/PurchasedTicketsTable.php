@@ -7,6 +7,7 @@ namespace App\Livewire;
 use App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
+use Carbon\Carbon;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Colors\Color;
@@ -40,11 +41,17 @@ class PurchasedTicketsTable extends Component implements HasForms, HasTable
     {
         $currentEvent = Event::getCurrentEvent();
         $url = route('filament.app.pages.purchase');
+        $buyButton = false;
 
         if (! $currentEvent) {
             $emptyDescription = 'No event is currently active.';
+        } elseif ($currentEvent->endDateCarbon->isPast()) {
+            $emptyDescription = "{$currentEvent->name} has ended.";
+        } elseif ($currentEvent->finalTicketEndDate?->isPast() ?? true) {
+            $emptyDescription = "There are no more tickets for {$currentEvent->name} available";
         } else {
             $emptyDescription = "You have not purchased any tickets for {$currentEvent->name}.";
+            $buyButton = true;
         }
 
         return $table
@@ -65,7 +72,7 @@ class PurchasedTicketsTable extends Component implements HasForms, HasTable
                     ->label('Transfer')
                     ->color(Color::Blue)
                     ->url(fn (PurchasedTicket $ticket) => TicketTransfers::getUrl(['purchased' => $ticket->id, 'action' => 'newTransfer']))
-                    ->visible(fn (PurchasedTicket $ticket) => $ticket->ticketType->transferable),
+                    ->visible(fn (PurchasedTicket $ticket) => $ticket->ticketType->transferable && $ticket->event->endDateCarbon->isFuture()),
             ])
             ->paginated(false)
             ->emptyStateHeading('No tickets purchased')
@@ -74,7 +81,7 @@ class PurchasedTicketsTable extends Component implements HasForms, HasTable
                 TableAction::make('purchase')
                     ->label('Purchase Tickets')
                     ->url($url)
-                    ->hidden(! $currentEvent),
+                    ->visible($buyButton),
             ]);
     }
 }

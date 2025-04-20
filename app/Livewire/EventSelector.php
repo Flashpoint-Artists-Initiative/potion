@@ -38,10 +38,15 @@ class EventSelector extends Component
             $this->eventId = (int) $this->getEvents()->keys()->first();
         }
 
-        return view('livewire.event-selector', [
+        return view('livewire.event-selector-select', [
             'events' => $this->getEvents(),
             'currentEvent' => $this->getCurrentEvent(),
         ]);
+    }
+
+    public function updated(string $name, int $value): void
+    {
+        $this->updateEventId($value);
     }
 
     #[On('update-active-event')]

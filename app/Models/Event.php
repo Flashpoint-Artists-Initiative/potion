@@ -30,7 +30,10 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  * @property int $votesPerUser
  * @property bool $votingEnabled
  * @property int $ticketsPerSale
- * @property-read Carbon $nextTicketSaleDate
+ * @property-read Carbon $startDateCarbon
+ * @property-read Carbon $endDateCarbon
+ * @property-read ?Carbon $nextTicketSaleDate
+ * @property-read ?Carbon $finalTicketEndDate
  * @property ArrayObject $settings
  */
 class Event extends Model implements ContractsAuditable
@@ -178,6 +181,26 @@ class Event extends Model implements ContractsAuditable
         );
     }
 
+    /**
+     * @return Attribute<string, Carbon>
+     */
+    public function startDateCarbon(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => Carbon::parse($attributes['start_date']),
+        );
+    }
+
+    /**
+     * @return Attribute<string, Carbon>
+     */
+    public function endDateCarbon(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => Carbon::parse($attributes['end_date']),
+        );
+    }
+
     public function dollarsPerVote(): Attribute
     {
         return Attribute::make(
@@ -236,6 +259,18 @@ class Event extends Model implements ContractsAuditable
                 ->orderBy('sale_start_date')
                 ->first()
                 ?->sale_start_date,
+        );
+    }
+
+    public function finalTicketEndDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => $this->ticketTypes()
+                ->active()
+                ->hasQuantity()
+                ->orderBy('sale_end_date', 'desc')
+                ->first()
+                ?->sale_end_date,
         );
     }
 

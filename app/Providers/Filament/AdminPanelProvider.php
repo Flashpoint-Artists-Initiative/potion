@@ -13,6 +13,7 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Blade;
 
 class AdminPanelProvider extends CommonPanelProvider
@@ -49,6 +50,12 @@ class AdminPanelProvider extends CommonPanelProvider
     public function register(): void
     {
         parent::register();
-        FilamentView::registerRenderHook(PanelsRenderHook::TOPBAR_START, fn (): string => Blade::render('@livewire(\'event-selector\')'));
+        
+        FilamentView::registerRenderHook(PanelsRenderHook::SIDEBAR_NAV_START, fn (): string => Blade::render('@livewire(\'event-selector\')'));
+        FilamentView::registerRenderHook(PanelsRenderHook::BODY_END, fn (): string => Blade::render("@vite('resources/js/app.js')"));
+        FilamentView::registerRenderHook(PanelsRenderHook::FOOTER,
+            fn (): View => view('panel-footer'),
+            // [Login::class, Register::class, RequestPasswordReset::class] // For now, show on every page
+        );
     }
 }

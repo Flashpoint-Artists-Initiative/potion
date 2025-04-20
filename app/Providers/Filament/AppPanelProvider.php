@@ -70,11 +70,6 @@ class AppPanelProvider extends CommonPanelProvider
     public function register(): void
     {
         parent::register();
-
-        FilamentView::registerRenderHook(PanelsRenderHook::FOOTER,
-            fn (): View => view('panel-footer'),
-            // [Login::class, Register::class, RequestPasswordReset::class] // For now, show on every page
-        );
-
+        // Register everything in admin, it shows up in both panels anyway
     }
 }

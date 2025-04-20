@@ -7,8 +7,15 @@
             placement="bottom-start"
         >
             <x-slot name="trigger">
-                <x-filament::button icon="heroicon-o-calendar" color="primary" outlined="false">
-                    Change Event
+                <x-filament::button
+                    {{-- icon="heroicon-s-calendar"
+                    icon-position="after" --}}
+                    color="primary"
+                    outlined="false"
+                    tooltip="Select a different event"
+                    size="xs"
+                >
+                    Select
                 </x-filament::button>
             </x-slot>
 

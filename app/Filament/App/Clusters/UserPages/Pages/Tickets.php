@@ -16,6 +16,7 @@ use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 
 class Tickets extends Page
 {
@@ -40,7 +41,8 @@ class Tickets extends Page
             ->schema([
                 Livewire::make(PurchasedTicketsTable::class)->key('purchased-tickets-table'),
                 Livewire::make(ReservedTicketsTable::class)->key('reserved-tickets-table')
-                    ->visible(fn () => $user->availableReservedTickets()->currentEvent()->exists()),
+                    ->visible(fn () => $user->availableReservedTickets()->currentEvent()->exists() &&
+                        Event::getCurrentEvent()?->endDateCarbon->isFuture()),
             ])
             ->state([
                 'name' => 'John Doe',
@@ -59,7 +61,13 @@ class Tickets extends Page
                 ]))
                 ->modalCancelAction(false)
                 ->modalSubmitActionLabel('Close')
-                ->visible(fn () => Auth::user()?->purchasedTickets()->exists() ?? false),
+                ->visible(function () {
+                    if (Event::getCurrentEvent()?->endDateCarbon->isPast()) {
+                        return false;
+                    }
+
+                    return Auth::user()?->purchasedTickets()->currentEvent()->exists() ?? false;
+                }),
         ];
     }
 
@@ -88,6 +96,7 @@ class Tickets extends Page
             ->modalCancelActionLabel('Close');
     }
 
+    #[On('active-event-updated')]
     public function mount(): void
     {
         $this->hasMultipleTickets = Auth::authenticate()->purchasedTickets()->currentEvent()->count() > 1;

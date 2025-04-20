@@ -81,7 +81,7 @@ class CommonPanelProvider extends PanelProvider
     public function register(): void
     {
         parent::register();
-        FilamentView::registerRenderHook(PanelsRenderHook::BODY_END, fn (): string => Blade::render("@vite('resources/js/app.js')"));
+        // Don't register hooks here or they will show up twice
     }
 
     public function addDevPlugins(Panel $panel): Panel

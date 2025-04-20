@@ -54,11 +54,14 @@ class ReservedTicketsTable extends Component implements HasForms, HasTable
             ->actions([
                 TableAction::make('purchase')
                     ->label('Purchase')
-                    ->url(fn (ReservedTicket $ticket) => PurchaseTickets::getUrl(['reserved' => $ticket->id])),
+                    ->url(fn (ReservedTicket $ticket) => PurchaseTickets::getUrl(['reserved' => $ticket->id]))
+                    ->visible(fn (ReservedTicket $ticket) => $ticket->ticketType->available && $ticket->ticketType->event->endDateCarbon->isFuture()),
                 TableAction::make('transfer')
                     ->label('Transfer')
                     ->color(Color::Blue)
-                    ->url(fn (ReservedTicket $ticket) => TicketTransfers::getUrl(['reserved' => $ticket->id, 'action' => 'newTransfer'])),
+                    ->url(fn (ReservedTicket $ticket) => TicketTransfers::getUrl(['reserved' => $ticket->id, 'action' => 'newTransfer']))
+                    ->visible(fn (ReservedTicket $ticket) => $ticket->ticketType->transferable && $ticket->ticketType->event->endDateCarbon->isFuture()),
+
             ])
             ->paginated(false);
     }
