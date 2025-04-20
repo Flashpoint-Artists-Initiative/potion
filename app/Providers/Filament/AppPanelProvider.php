@@ -10,14 +10,9 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages;
-use Filament\Pages\Auth\Login;
-use Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
 use Filament\Panel;
 use Filament\Support\Colors\Color;
-use Filament\Support\Facades\FilamentView;
-use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
-use Illuminate\Contracts\View\View;
 
 class AppPanelProvider extends CommonPanelProvider
 {

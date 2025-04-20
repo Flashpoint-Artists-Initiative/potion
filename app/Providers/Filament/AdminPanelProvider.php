@@ -50,7 +50,7 @@ class AdminPanelProvider extends CommonPanelProvider
     public function register(): void
     {
         parent::register();
-        
+
         FilamentView::registerRenderHook(PanelsRenderHook::SIDEBAR_NAV_START, fn (): string => Blade::render('@livewire(\'event-selector\')'));
         FilamentView::registerRenderHook(PanelsRenderHook::BODY_END, fn (): string => Blade::render("@vite('resources/js/app.js')"));
         FilamentView::registerRenderHook(PanelsRenderHook::FOOTER,

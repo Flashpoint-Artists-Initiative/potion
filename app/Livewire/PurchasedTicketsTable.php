@@ -7,7 +7,6 @@ namespace App\Livewire;
 use App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
-use Carbon\Carbon;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Colors\Color;
