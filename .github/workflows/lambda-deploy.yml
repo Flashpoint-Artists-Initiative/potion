@@ -69,31 +69,34 @@ jobs:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          
+          APP_KEY: ${{ secrets.APP_KEY }}
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_URL: ${{ vars.APP_URL }}
+          AWS_CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}
+          BASE_DOMAIN: ${{ env.BASE_DOMAIN }}
+          DB_DATABASE: ${{ vars.DB_DATABASE }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DEFAULT_EVENT_ID: ${{ vars.DEFAULT_EVENT_ID }}
           JWT_PRIVATE_KEY: ${{ vars.JWT_PRIVATE_KEY }}
           JWT_PUBLIC_KEY: ${{ vars.JWT_PUBLIC_KEY }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_DATABASE: ${{ vars.DB_DATABASE }}
-          APP_KEY: ${{ secrets.APP_KEY }}
-          APP_URL: ${{ vars.APP_URL }}
-          MAIL_MAILER: ${{ vars.MAIL_MAILER }}
-          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
-          STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
-          STRIPE_PAYMENT_METHOD_CONFIG: ${{ vars.STRIPE_PAYMENT_METHOD_CONFIG }}
-          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-          BASE_DOMAIN: ${{ env.BASE_DOMAIN }}
-          AWS_CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}
-          SALES_TAX_RATE: ${{ vars.SALES_TAX_RATE }}
-          STRIPE_FEE_FLAT: ${{ vars.STRIPE_FEE_FLAT }}
-          STRIPE_FEE_PERCENTAGE: ${{ vars.STRIPE_FEE_PERCENTAGE }}
           MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS }}
           MAIL_FROM_NAME: ${{ vars.MAIL_FROM_NAME }}
           MAIL_HELP_ADDRESS: ${{ vars.MAIL_HELP_ADDRESS }}
-          APP_NAME: ${{ vars.APP_NAME }}
+          MAIL_MAILER: ${{ vars.MAIL_MAILER }}
+          MAIL_REPLYTO_ADDRESS: ${{ vars.MAIL_REPLYTO_ADDRESS }}
+          MAIL_REPLYTO_NAME: ${{ vars.MAIL_REPLYTO_NAME }}
           ORG_NAME: ${{ vars.ORG_NAME }}
-          DEFAULT_EVENT_ID: ${{ vars.DEFAULT_EVENT_ID }}
+          SALES_TAX_RATE: ${{ vars.SALES_TAX_RATE }}
+          STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+          STRIPE_FEE_FLAT: ${{ vars.STRIPE_FEE_FLAT }}
+          STRIPE_FEE_PERCENTAGE: ${{ vars.STRIPE_FEE_PERCENTAGE }}
+          STRIPE_PAYMENT_METHOD_CONFIG: ${{ vars.STRIPE_PAYMENT_METHOD_CONFIG }}
+          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
 
       - name: Run Database Migrations
         uses: serverless/github-action@v4
