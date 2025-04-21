@@ -32,19 +32,10 @@
                     </p>
                 </div>
                 <div>
-                    {{-- <p class="text-xl bold text-center pb-4">${{ $getRecord()->price }}</p>
+                    <p class="text-xl bold text-center pb-4">${{ $getRecord()->price }}</p>
                     <div class="flex flex-row justify-end">
-                        <x-filament::button x-on:click="decrement()" grouped>
-                            -
-                        </x-filament::button>
-                        <x-filament::badge class="no-radius">
-                            <span class="text-lg" x-text="state"></span>
-                        </x-filament::badge>
-                        <x-filament::button x-on:click="increment()" grouped>
-                            +
-                        </x-filament::button>
-                    </div> --}}
-                    <x-counter-input />
+                        <x-counter-input />
+                    </div>
                 </div>
             </div>
         </x-filament::section>
