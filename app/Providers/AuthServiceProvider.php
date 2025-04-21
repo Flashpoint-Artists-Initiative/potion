@@ -6,16 +6,9 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 
-use App\Enums\RolesEnum;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\URL;
 
 class AuthServiceProvider extends ServiceProvider
 {
