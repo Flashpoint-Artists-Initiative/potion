@@ -44,13 +44,13 @@
                     "postal_code": "00000",
                     "state": null
                 },
-                "email": "superadmin@example.com",
+                "email": "admin@example.com",
                 "name": "Mah Man",
                 "phone": null,
                 "tax_exempt": "none",
                 "tax_ids": []
             },
-            "customer_email": "superadmin@example.com",
+            "customer_email": "admin@example.com",
             "expires_at": 1705648398,
             "invoice": null,
             "invoice_creation": {

@@ -30,13 +30,6 @@ class UserSeeder extends Seeder
                 ]);
 
                 User::factory()->create([
-                    'legal_name' => 'Super Admin User',
-                    'preferred_name' => 'Super Admin Name',
-                    'email' => 'superadmin@example.com',
-                    'password' => 'superadmin',
-                ])->assignRole(RolesEnum::SuperAdmin);
-
-                User::factory()->create([
                     'legal_name' => 'Regular Admin User',
                     'email' => 'admin@example.com',
                     'password' => 'admin',

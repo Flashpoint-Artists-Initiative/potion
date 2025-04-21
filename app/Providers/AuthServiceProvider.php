@@ -34,8 +34,5 @@ class AuthServiceProvider extends ServiceProvider
     {
         // Allow public access to the API docs in non-local environments
         Gate::define('viewApiDocs', fn (?User $user) => true);
-
-        // Allow super user to do anything
-        Gate::after(fn (User $user, $ability) => $user->hasRole(RolesEnum::SuperAdmin));
     }
 }

@@ -257,8 +257,6 @@ return [
                 'artProjects.delete',
                 'artProjects.restore',
             ],
-            // Super Admin automatically has all permissions, see AuthServiceProvider
-            RolesEnum::SuperAdmin->value => [],
         ],
         // List of permissions every user can do, to pass to the front end
         'defaultPermissions' => [
