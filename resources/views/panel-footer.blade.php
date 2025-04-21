@@ -8,7 +8,7 @@
 <div class="text-center">
     <div>
         <x-filament::link
-            href="mailto:{{ config('mail.helpAddress') }}"
+            href="mailto:{{ config('mail.from.address') }}"
             size="large">
             Contact Us
         </x-filament::link>

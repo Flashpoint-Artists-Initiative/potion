@@ -110,7 +110,7 @@
         use personal data from children under 18 years of age. If we learn that we have
         collected personal data from a child under 18 years of age, the personal data will be
         deleted as soon as possible. If a child under 18 years of age has provided us with
-        personal data their parent or guardian may contact us at {{ config('mail.helpAddress') }}
+        personal data their parent or guardian may contact us at {{ config('mail.from.address') }}
     </p>
     <h2>
         How to Access, Modify, Delete, or Challenge the Data Collected
@@ -119,7 +119,7 @@
         If you would like to know if we have collected your personal data, how we have used
         your personal data, if we have disclosed your personal data and to who we disclosed
         your personal data, or if you would like your data to be deleted or modified in any
-        way, please email {{ config('mail.helpAddress') }}
+        way, please email {{ config('mail.from.address') }}
     </p>
     <p>
         User accounts can be deleted by the user. Upon account deletion we may retain certain

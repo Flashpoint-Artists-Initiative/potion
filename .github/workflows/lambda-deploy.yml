@@ -69,12 +69,12 @@ jobs:
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}
+          BASE_DOMAIN: ${{ env.BASE_DOMAIN }}
           
           APP_KEY: ${{ secrets.APP_KEY }}
           APP_NAME: ${{ vars.APP_NAME }}
           APP_URL: ${{ vars.APP_URL }}
-          AWS_CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}
-          BASE_DOMAIN: ${{ env.BASE_DOMAIN }}
           DB_DATABASE: ${{ vars.DB_DATABASE }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -85,10 +85,9 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS }}
           MAIL_FROM_NAME: ${{ vars.MAIL_FROM_NAME }}
-          MAIL_HELP_ADDRESS: ${{ vars.MAIL_HELP_ADDRESS }}
           MAIL_MAILER: ${{ vars.MAIL_MAILER }}
-          MAIL_REPLYTO_ADDRESS: ${{ vars.MAIL_REPLYTO_ADDRESS }}
-          MAIL_REPLYTO_NAME: ${{ vars.MAIL_REPLYTO_NAME }}
+          MAIL_TICKET_ADDRESS: ${{ vars.MAIL_TICKET_ADDRESS }}
+          MAIL_TICKET_NAME: ${{ vars.MAIL_TICKET_NAME }}
           ORG_NAME: ${{ vars.ORG_NAME }}
           SALES_TAX_RATE: ${{ vars.SALES_TAX_RATE }}
           STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}

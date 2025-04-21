@@ -104,9 +104,9 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
-    'reply_to' => [
-        'address' => env('MAIL_REPLYTO_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_REPLYTO_NAME', 'Example'),
+    'tickets' => [
+        'address' => env('MAIL_TICKETS_ADDRESS', 'tickets@example.com'),
+        'name' => env('MAIL_TICKETS_NAME', 'Tickets'),
     ],
 
     /*
@@ -128,6 +128,5 @@ return [
         ],
     ],
 
-    'helpAddress' => env('MAIL_HELP_ADDRESS', 'help@example.com'),
     'verifyEmailPath' => env('VERIFY_EMAIL_PATH', '/email-verification/verify/{id}/{hash}'),
 ];

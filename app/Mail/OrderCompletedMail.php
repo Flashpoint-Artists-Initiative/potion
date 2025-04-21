@@ -27,8 +27,7 @@ class OrderCompletedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(config('mail.from.address'), config('mail.from.name')),
-            replyTo: [new Address(config('mail.reply_to.address'), config('mail.reply_to.name'))],
+            from: new Address(config('mail.tickets.address'), config('mail.tickets.name')),
             subject: 'Order Confirmation for ' . $this->order->event->name,
         );
     }

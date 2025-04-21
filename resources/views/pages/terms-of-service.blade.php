@@ -82,6 +82,6 @@
     </p>
     <h2>Contact Details</h2>
     <p>
-    Please email us if you have any questions or concerns at {{ config('mail.helpAddress') }}
+    Please email us if you have any questions or concerns at {{ config('mail.from.address') }}
     </p>
 </div>

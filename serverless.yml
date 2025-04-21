@@ -14,7 +14,7 @@ provider:
         APP_KEY: ${env:APP_KEY, ''}
         APP_NAME: ${env:APP_NAME, ''}
         APP_URL: ${env:APP_URL, 'localhost'}
-        ASSETS_BUCKET: ${construct:uploaded-assets.bucketName}
+        AWS_BUCKET: ${construct:uploaded-assets.bucketName}
         DB_DATABASE: ${env:DB_DATABASE, ''}
         DB_HOST: ${env:DB_HOST, ''}
         DB_PASSWORD: ${env:DB_PASSWORD, ''}
@@ -26,10 +26,9 @@ provider:
         LOG_CHANNEL: ${env:LOG_CHANNEL, 'stderr'}
         MAIL_FROM_ADDRESS: ${env:MAIL_FROM_ADDRESS, ''}
         MAIL_FROM_NAME: ${env:MAIL_FROM_NAME, ''}
-        MAIL_HELP_ADDRESS: ${env:MAIL_HELP_ADDRESS, ''}
         MAIL_MAILER: ${env:MAIL_MAILER, 'log'}
-        MAIL_REPLYTO_ADDRESS: ${env:MAIL_REPLYTO_ADDRESS, ''}
-        MAIL_REPLYTO_NAME: ${env:MAIL_REPLYTO_NAME, ''}
+        MAIL_TICKET_ADDRESS: ${env:MAIL_TICKET_ADDRESS, ''}
+        MAIL_TICKET_NAME: ${env:MAIL_TICKET_NAME, ''}
         ORG_NAME: ${env:ORG_NAME, ''}
         SALES_TAX_RATE: ${env:SALES_TAX_RATE, '0'}
         STRIPE_API_KEY: ${env:STRIPE_API_KEY, ''}
