@@ -27,8 +27,8 @@ provider:
         MAIL_FROM_ADDRESS: ${env:MAIL_FROM_ADDRESS, ''}
         MAIL_FROM_NAME: ${env:MAIL_FROM_NAME, ''}
         MAIL_MAILER: ${env:MAIL_MAILER, 'log'}
-        MAIL_TICKET_ADDRESS: ${env:MAIL_TICKET_ADDRESS, ''}
-        MAIL_TICKET_NAME: ${env:MAIL_TICKET_NAME, ''}
+        MAIL_TICKETS_ADDRESS: ${env:MAIL_TICKETS_ADDRESS, ''}
+        MAIL_TICKETS_NAME: ${env:MAIL_TICKETS_NAME, ''}
         ORG_NAME: ${env:ORG_NAME, ''}
         SALES_TAX_RATE: ${env:SALES_TAX_RATE, '0'}
         STRIPE_API_KEY: ${env:STRIPE_API_KEY, ''}

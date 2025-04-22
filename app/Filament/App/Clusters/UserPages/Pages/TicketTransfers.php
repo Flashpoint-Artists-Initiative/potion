@@ -9,7 +9,6 @@ use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
 use App\Models\Ticketing\ReservedTicket;
 use App\Models\Ticketing\TicketTransfer;
-use App\Models\Ticketing\Waiver;
 use App\Models\User;
 use Closure;
 use Filament\Actions\Action;
@@ -30,7 +29,6 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
@@ -201,7 +199,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
                             );
                         }),
                 ])
-                    ->from('md')
+                    ->from('md'),
             ])
             ->emptyStateHeading('You have no ticket transfers')
             ->defaultSort('completed')
@@ -232,7 +230,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
             ->label('sign a waiver')
             ->link()
             ->size('')
-            ->action(fn(array $data) => $this->createCompletedWaiver($data))
+            ->action(fn (array $data) => $this->createCompletedWaiver($data))
             ->modalHeading('Sign Waiver')
             ->modalWidth(MaxWidth::FiveExtraLarge)
             ->form([
@@ -257,7 +255,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
     }
 
     /**
-     * @param array<string, string>  $data
+     * @param  array<string, string>  $data
      */
     public function createCompletedWaiver(array $data): void
     {

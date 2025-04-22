@@ -20,7 +20,7 @@ class TicketsController extends Controller
         $user = auth()->user();
         $ticket = $user->getValidTicketForEvent($eventId);
 
-        if (!$ticket) {
+        if (! $ticket) {
             return response('Ticket not found', 404);
         }
 

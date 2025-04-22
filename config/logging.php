@@ -134,7 +134,7 @@ return [
         ],
         'bugsnag' => [
             'driver' => 'bugsnag',
-        ]
+        ],
     ],
 
 ];
