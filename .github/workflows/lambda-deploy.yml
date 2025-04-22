@@ -86,8 +86,8 @@ jobs:
           MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS }}
           MAIL_FROM_NAME: ${{ vars.MAIL_FROM_NAME }}
           MAIL_MAILER: ${{ vars.MAIL_MAILER }}
-          MAIL_TICKET_ADDRESS: ${{ vars.MAIL_TICKET_ADDRESS }}
-          MAIL_TICKET_NAME: ${{ vars.MAIL_TICKET_NAME }}
+          MAIL_TICKETS_ADDRESS: ${{ vars.MAIL_TICKETS_ADDRESS }}
+          MAIL_TICKETS_NAME: ${{ vars.MAIL_TICKETS_NAME }}
           ORG_NAME: ${{ vars.ORG_NAME }}
           SALES_TAX_RATE: ${{ vars.SALES_TAX_RATE }}
           STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
