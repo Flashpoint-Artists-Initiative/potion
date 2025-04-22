@@ -10,6 +10,7 @@ use App\Livewire\ReservedTicketsTable;
 use App\Models\Event;
 use App\Models\User;
 use App\Services\QRCodeService;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\Livewire;
 use Filament\Infolists\Infolist;

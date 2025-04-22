@@ -23,7 +23,7 @@ provider:
         JWT_PRIVATE_KEY: ${env:JWT_PRIVATE_KEY, ''}
         JWT_PUBLIC_KEY: ${env:JWT_PUBLIC_KEY, ''}
         JWT_SECRET: ${env:JWT_SECRET, ''}
-        LOG_CHANNEL: ${env:LOG_CHANNEL, 'stderr'}
+        LOG_CHANNEL: ${env:LOG_CHANNEL, 'lambda-stack'}
         MAIL_FROM_ADDRESS: ${env:MAIL_FROM_ADDRESS, ''}
         MAIL_FROM_NAME: ${env:MAIL_FROM_NAME, ''}
         MAIL_MAILER: ${env:MAIL_MAILER, 'log'}
@@ -37,6 +37,7 @@ provider:
         STRIPE_PAYMENT_METHOD_CONFIG: ${env:STRIPE_PAYMENT_METHOD_CONFIG, ''}
         STRIPE_SECRET: ${env:STRIPE_SECRET, ''}
         STRIPE_WEBHOOK_SECRET: ${env:STRIPE_WEBHOOK_SECRET, ''}
+        BUGSNAG_API_KEY: ${env:BUGSNAG_API_KEY, ''}
 
 package:
     # Files and directories to exclude from deployment

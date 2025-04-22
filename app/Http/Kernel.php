@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http;
 
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -70,4 +71,17 @@ class Kernel extends HttpKernel
         'token.refresh' => \App\Http\Middleware\ConditionalJwtRefresh::class,
         'lockdown' => \App\Http\Middleware\LockdownMiddleware::class,
     ];
+
+    /**
+     * @return array<int, class-string>
+     */
+    protected function bootstrappers(): array
+    {
+        return array_merge(
+            [
+                \Bugsnag\BugsnagLaravel\OomBootstrapper::class,
+            ],
+            parent::bootstrappers(),
+        );
+    }
 }

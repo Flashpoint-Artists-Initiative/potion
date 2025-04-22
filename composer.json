@@ -8,6 +8,7 @@
         "php": "^8.4",
         "bref/bref": "^2.4",
         "bref/laravel-bridge": "^2.5",
+        "bugsnag/bugsnag-laravel": "^2.0",
         "chillerlan/php-qrcode": "^5.0",
         "dedoc/scramble": "0.12.5",
         "eightcedars/filament-inactivity-guard": "^0.3.1",
