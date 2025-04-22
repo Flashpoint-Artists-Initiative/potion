@@ -130,7 +130,7 @@ class PurchaseTickets extends Page
             })
             ->map(function (TicketType $ticket, int $index) {
                 // Hide anything without remaining tickets.
-                // We do this here because it requires checking an attribute that's inaccessible in the query
+                // We do this here because remainingTicketCount is inaccessible in the query
                 if ($ticket->remainingTicketCount <= 0) {
                     return null;
                 }

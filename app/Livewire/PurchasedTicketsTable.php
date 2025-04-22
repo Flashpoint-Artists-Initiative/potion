@@ -15,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Blade;
 use Livewire\Component;
 
 class PurchasedTicketsTable extends Component implements HasForms, HasTable
@@ -58,6 +59,15 @@ class PurchasedTicketsTable extends Component implements HasForms, HasTable
             ->columns([
                 TextColumn::make('ticketType.name')
                     ->label('Ticket Type')
+                    ->formatStateUsing(function (PurchasedTicket $ticket) {
+                        $output = $ticket->ticketType->name;
+                        if ($ticket->ticketType->addon) {
+                            $output .= ' ' . Blade::render('<x-filament::badge style="display: inline-flex;">Addon</x-filament::badge>');
+                        }
+
+                        return $output;
+                    })
+                    ->html()
                     ->description(fn (PurchasedTicket $ticket) => $ticket->reservedTicket?->note),
                 TextColumn::make('created_at')
                     ->label('Purchase Date')

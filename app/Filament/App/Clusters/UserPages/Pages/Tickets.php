@@ -66,7 +66,7 @@ class Tickets extends Page
                         return false;
                     }
 
-                    return Auth::user()?->purchasedTickets()->currentEvent()->exists() ?? false;
+                    return Auth::user()?->getValidTicketForEvent(Event::getCurrentEventId()) ?? false;
                 }),
         ];
     }

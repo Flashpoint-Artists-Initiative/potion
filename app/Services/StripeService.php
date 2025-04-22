@@ -121,10 +121,12 @@ class StripeService
             'metadata' => $metadata,
         ]);
 
-        // @phpstan-ignore argument.type
-        $this->stripeClient->paymentIntents->update((string) $session->payment_intent, [
-            'metadata' => $metadata,
-        ]);
+        if ($session->payment_intent) {
+            // @phpstan-ignore argument.type
+            $this->stripeClient->paymentIntents->update((string) $session->payment_intent, [
+                'metadata' => $metadata,
+            ]);
+        }
 
         return $session;
     }
@@ -168,37 +170,39 @@ class StripeService
             ];
         })->toArray();
 
-        $taxAndFees = $this->calculateTaxesAndFees($subtotal);
+        if ($subtotal > 0) {
+            $taxAndFees = $this->calculateTaxesAndFees($subtotal);
 
-        // Add Tax
-        $output[] = [
-            'price_data' => [
-                'currency' => 'usd',
-                'product_data' => [
-                    'name' => 'GA Sales Tax',
-                    'metadata' => [
-                        'type' => 'tax',
+            // Add Tax
+            $output[] = [
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product_data' => [
+                        'name' => 'GA Sales Tax',
+                        'metadata' => [
+                            'type' => 'tax',
+                        ],
                     ],
+                    'unit_amount' => $taxAndFees['tax'],
                 ],
-                'unit_amount' => $taxAndFees['tax'],
-            ],
-            'quantity' => 1,
-        ];
+                'quantity' => 1,
+            ];
 
-        // Add stripe fee
-        $output[] = [
-            'price_data' => [
-                'currency' => 'usd',
-                'product_data' => [
-                    'name' => 'Stripe Fee',
-                    'metadata' => [
-                        'type' => 'fee',
+            // Add stripe fee
+            $output[] = [
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product_data' => [
+                        'name' => 'Stripe Fee',
+                        'metadata' => [
+                            'type' => 'fee',
+                        ],
                     ],
+                    'unit_amount' => $taxAndFees['fees'],
                 ],
-                'unit_amount' => $taxAndFees['fees'],
-            ],
-            'quantity' => 1,
-        ];
+                'quantity' => 1,
+            ];
+        }
 
         return $output;
     }

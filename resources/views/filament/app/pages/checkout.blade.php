@@ -12,6 +12,11 @@
     const stripe = Stripe('{{ $stripeKey }}');
     const checkoutId = '{{ $this->checkoutId }}';
 
+    // Don't init if there's no checkout id
+    if (!checkoutId) {
+        return;
+    }
+
     initialize();
 
     // Create a Checkout Session

@@ -18,7 +18,11 @@ class TicketsController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-        $ticket = $user->getValidTicketForEventOrFail($eventId);
+        $ticket = $user->getValidTicketForEvent($eventId);
+
+        if (!$ticket) {
+            return response('Ticket not found', 404);
+        }
 
         $content = $this->qrCodeService->buildTicketContent($user->id, $ticket->ticketType->event_id);
 
