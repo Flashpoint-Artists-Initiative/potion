@@ -1,6 +1,12 @@
 services:
   app:
-    image: 'bref/${APP_IMAGE_PREFIX}php-84-fpm-dev:2'
+    build:
+      context: .
+      dockerfile: dockerfiles/bref.dockerfile
+      args:
+        - PHP_VERSION=84
+        - BREF_VERSION=2
+        - PREFIX=${APP_IMAGE_PREFIX}
     ports: [ '8000:8000' ]
     user: nobody
     volumes:

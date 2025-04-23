@@ -72,15 +72,16 @@ constructs:
                 Properties:
                     AccessControl: PublicRead
                     PublicAccessBlockConfiguration: 
-                        BlockPublicAcls: false
-                        IgnorePublicAcls: false
-                        BlockPublicPolicy: true
-                        RestrictPublicBuckets: true
+                        BlockPublicAcls: true
+                        IgnorePublicAcls: true
+                        BlockPublicPolicy: false
+                        RestrictPublicBuckets: false
                     CorsConfiguration:
                         CorsRules:
                             - AllowedMethods:
-                                - GET
                                 - HEAD
+                                - GET
+                                - PUT
                               AllowedOrigins:
                                 - "*"
 
@@ -89,6 +90,8 @@ functions:
     web:
         handler: public/index.php
         runtime: php-84-fpm
+        layers:
+            - ${bref-extra:gd-php-84}
         timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
         events:
             - httpApi: '*'
@@ -97,6 +100,8 @@ functions:
     artisan:
         handler: artisan
         runtime: php-84-console
+        layers:
+            - ${bref-extra:gd-php-84}
         timeout: 720 # in seconds
         # Uncomment to also run the scheduler every minute
         #events:
@@ -106,4 +111,5 @@ functions:
 
 plugins:
   - ./vendor/bref/bref
+  - ./vendor/bref/extra-php-extensions
   - serverless-lift
