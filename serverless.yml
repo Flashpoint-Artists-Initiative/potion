@@ -71,6 +71,11 @@ constructs:
             bucket:
                 Properties:
                     AccessControl: PublicRead
+                    PublicAccessBlockConfiguration: 
+                        BlockPublicAcls: false
+                        IgnorePublicAcls: false
+                        BlockPublicPolicy: true
+                        RestrictPublicBuckets: true
                     CorsConfiguration:
                         CorsRules:
                             - AllowedMethods:
