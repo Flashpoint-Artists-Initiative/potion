@@ -67,6 +67,16 @@ constructs:
             '/js/*': public/js
     uploaded-assets:
         type: storage
+        extensions:
+            bucket:
+                Properties:
+                    CorsConfiguration:
+                        CorsRules:
+                            - AllowedMethods:
+                                - GET
+                                - HEAD
+                              AllowedOrigins:
+                                - "*"
 
 functions:
     # This function runs the Laravel website/API
