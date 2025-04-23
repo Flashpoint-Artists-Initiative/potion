@@ -8,6 +8,8 @@ use App\Enums\ArtProjectStatusEnum;
 use App\Filament\Admin\Resources\ArtProjectResource\Pages;
 use App\Models\Grants\ArtProject;
 use Filament\Forms;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -29,6 +31,10 @@ class ArtProjectResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('project_status')
+                    ->options(ArtProjectStatusEnum::toArray())
+                    ->default(ArtProjectStatusEnum::PendingReview)
+                    ->required(),
                 Forms\Components\Fieldset::make('Basic Info')
                     ->schema([
                         Forms\Components\TextInput::make('name')
@@ -49,20 +55,28 @@ class ArtProjectResource extends Resource
                             ->label('Minimum Funding')
                             ->required()
                             ->numeric()
+                            ->prefix('$')
                             ->lte('max_funding'),
                         Forms\Components\TextInput::make('max_funding')
                             ->label('Maximum Funding')
                             ->required()
                             ->numeric()
+                            ->prefix('$')
                             ->gte('min_funding'),
                         Forms\Components\TextInput::make('budget_link')
                             ->maxLength(255),
                     ])
                     ->columns(3),
-                Forms\Components\Select::make('project_status')
-                    ->options(ArtProjectStatusEnum::toArray())
-                    ->default(ArtProjectStatusEnum::PendingReview)
-                    ->required(),
+                SpatieMediaLibraryFileUpload::make('images')
+                    ->hint('The first image will be what is shown in the list view.')
+                    ->image()
+                    ->imageEditor()
+                    ->multiple()
+                    ->reorderable()
+                    ->panelLayout('grid')
+                    ->appendFiles()
+                    ->responsiveImages()
+                    ->columnSpan(2),
             ]);
     }
 

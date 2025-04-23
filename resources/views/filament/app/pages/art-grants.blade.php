@@ -1,3 +1,7 @@
+@assets
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.12.0/baguetteBox.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.12.0/baguetteBox.js" async></script>
+@endassets
 <x-filament-panels::page>
     <div x-data="{
         totalCount: 0,
@@ -26,7 +30,7 @@
         @endif
         <x-filament-panels::form wire:submit="submitVotes">
             @if (!$hasVoted)
-            <span class="dark:bg-gray-950 sticky grid" style="top: 4rem" >
+            <span class="dark:bg-gray-950 sticky grid z-10" style="top: 4rem" >
                 <x-filament::badge class="my-2" x-show="remaining > 0">
                     <p class="text-2xl"> VOTES REMAINING: <span x-text="remaining"></span></p>
                 </x-filament::badge>

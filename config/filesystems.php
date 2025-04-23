@@ -55,6 +55,11 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+        's3-art-images' => [
+            'driver' => 'scoped',
+            'disk' => 's3',
+            'prefix' => env('APP_ENV') . '/art-projects'
+        ]
 
     ],
 

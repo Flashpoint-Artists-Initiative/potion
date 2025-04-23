@@ -34,14 +34,6 @@ return new class extends Migration
             $table->unsignedInteger('votes');
             $table->timestamps();
         });
-
-        Schema::create('project_images', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedInteger('art_project_id');
-            $table->string('name');
-            $table->string('path');
-            $table->timestamps();
-        });
     }
 
     /**

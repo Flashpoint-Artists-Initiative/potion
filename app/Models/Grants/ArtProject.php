@@ -18,6 +18,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property-read Event $event
@@ -25,9 +29,9 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  * @property-read GrantFundingStatusEnum $fundingStatus
  * @property-read float $fundedTotal
  */
-class ArtProject extends Model implements ContractsAuditable
+class ArtProject extends Model implements ContractsAuditable, HasMedia
 {
-    use Auditable, Auditable, HasFactory, SoftDeletes;
+    use Auditable, Auditable, HasFactory, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
         'name',
@@ -63,11 +67,6 @@ class ArtProject extends Model implements ContractsAuditable
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function images(): HasMany
-    {
-        return $this->hasMany(ProjectImage::class);
     }
 
     public function votes(): BelongsToMany
@@ -151,5 +150,19 @@ class ArtProject extends Model implements ContractsAuditable
     {
         $this->checkVotingStatus($user);
         $this->votes()->attach($user->id, ['votes' => $numVotes]);
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('preview')
+            ->nonQueued()
+            ->fit(Fit::Max, 200, 200);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('default')
+            ->useDisk('s3-art-images')
+            ->useFallbackUrl(asset('images/default-art-image.svg'), 'preview');
     }
 }
