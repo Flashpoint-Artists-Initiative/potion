@@ -70,6 +70,7 @@ constructs:
         extensions:
             bucket:
                 Properties:
+                    AccessControl: PublicRead
                     CorsConfiguration:
                         CorsRules:
                             - AllowedMethods:
