@@ -6,6 +6,7 @@ namespace App\Models\Grants;
 
 use App\Enums\ArtProjectStatusEnum;
 use App\Enums\GrantFundingStatusEnum;
+use App\Events\ArtProjectFundingStatusChange;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -157,8 +158,18 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
 
     public function vote(User $user, int $numVotes): void
     {
+        $originalFundingStatus = $this->fundingStatus;
         $this->checkVotingStatus($user);
         $this->votes()->attach($user->id, ['votes' => $numVotes]);
+        $this->processStatusChange($originalFundingStatus);
+    }
+
+    protected function processStatusChange(GrantFundingStatusEnum $originalFundingStatus): void
+    {
+        $this->refresh();
+        if ($this->fundingStatus !== $originalFundingStatus) {
+            event(new ArtProjectFundingStatusChange($this));
+        }
     }
 
     public function registerMediaConversions(?Media $media = null): void

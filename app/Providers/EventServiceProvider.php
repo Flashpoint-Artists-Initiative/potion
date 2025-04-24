@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Events\ArtProjectFundingStatusChange;
 use App\Events\EmailUpdated;
+use App\Listeners\ArtProjectFundingStatusListener;
 use App\Listeners\EmailVerifiedListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
@@ -28,6 +30,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Verified::class => [
             EmailVerifiedListener::class,
+        ],
+        ArtProjectFundingStatusChange::class => [
+            ArtProjectFundingStatusListener::class,
         ],
     ];
 

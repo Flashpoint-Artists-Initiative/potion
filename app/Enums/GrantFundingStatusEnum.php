@@ -32,4 +32,13 @@ enum GrantFundingStatusEnum implements HasColor, HasLabel
             self::MaxReached => 'success',
         };
     }
+
+    public function getAmountField(): string
+    {
+        return match ($this) {
+            self::Unfunded => 'min_funding',
+            self::MinReached => 'min_funding',
+            self::MaxReached => 'max_funding',
+        };
+    }
 }

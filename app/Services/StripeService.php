@@ -224,7 +224,7 @@ class StripeService
                 'fees' => 0,
             ];
         }
-        
+
         // These functions live inside so they don't accidentally get called from outside
         $calculateSalesTax = function (int $amount): int {
             $taxRate = config('services.stripe.sales_tax_rate'); // Config value is a percentage (0-100)
