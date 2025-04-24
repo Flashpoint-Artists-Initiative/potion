@@ -1,6 +1,6 @@
 <div class="prose dark:prose-invert max-w-none">
     <h1 class="text-3xl">POTION Privacy Policy</h1>
-    <div class="body2">Last Modified: March 5th, 2025</div>
+    <div class="body2">Last Modified: April 24th, 2025</div>
     <h2>
         Purpose
     </h2>
@@ -72,16 +72,18 @@
     <h2>How We Use Personal Data</h2>
     <p>
         Your personal account information is used to verify your identity when entering the
-        event for the first time. Your email address and display name are used for
-        communication purposes.
+        event. Your email address and display name are used for communication purposes.
     </p>
     <h2>Who We Share Personal Data With</h2>
-    <p>
-        Your legal name and birthday are shared with event volunteers and div office vendors
-        working the gate during the event. Your display name and email address are shared with
-        necessary event leadership and volunteers. No other user information is shared with
-        any other third parties.
-    </p>
+    <ul>
+        <li>Your legal name and birthday are shared with event volunteers and box office vendors
+        working the gate during the event.</li>
+        <li>Your display name and email address are shared with necessary event leadership and
+        volunteers.</li>
+        <li>We may share your information with third parties for the purpose of providing
+        services to you, such as payment processing, email communication, and event
+        management.</li>
+    </ul>
     <p>
         We will never sell your information or use it in any way that is unrelated to Alchemy
         or other events managed by {{ config('app.copyrightOrg') }}, except in the following

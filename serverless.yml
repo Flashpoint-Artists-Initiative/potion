@@ -83,6 +83,8 @@ constructs:
                                 - PUT
                               AllowedOrigins:
                                 - "*"
+                              AllowedHeaders:
+                                - "*"
 
 functions:
     # This function runs the Laravel website/API
