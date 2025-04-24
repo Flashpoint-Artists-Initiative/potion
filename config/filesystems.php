@@ -58,8 +58,8 @@ return [
         's3-art-images' => [
             'driver' => 'scoped',
             'disk' => 's3',
-            'prefix' => env('APP_ENV') . '/art-projects'
-        ]
+            'prefix' => env('APP_ENV') . '/art-projects',
+        ],
 
     ],
 

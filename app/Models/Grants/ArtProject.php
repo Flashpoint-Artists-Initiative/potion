@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
@@ -31,7 +30,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  */
 class ArtProject extends Model implements ContractsAuditable, HasMedia
 {
-    use Auditable, Auditable, HasFactory, SoftDeletes, InteractsWithMedia;
+    use Auditable, Auditable, HasFactory, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'name',

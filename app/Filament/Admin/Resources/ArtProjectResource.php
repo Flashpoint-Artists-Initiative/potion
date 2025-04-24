@@ -8,7 +8,6 @@ use App\Enums\ArtProjectStatusEnum;
 use App\Filament\Admin\Resources\ArtProjectResource\Pages;
 use App\Models\Grants\ArtProject;
 use Filament\Forms;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
