@@ -54,7 +54,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         ];
     }
 
-    protected $withCount = [
+    protected $with = [
         'votes',
     ];
 
@@ -92,11 +92,20 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         );
     }
 
-    public function fundedTotal(): Attribute
+    public function totalFunding(): Attribute
     {
         return Attribute::make(
             get: function () {
-                return $this->votes()->sum('votes') * $this->event->dollarsPerVote;
+                return $this->votes->sum('pivot.votes') * $this->event->dollarsPerVote;
+            },
+        );
+    }
+
+    public function totalVotes(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->votes->sum('pivot.votes');
             },
         );
     }

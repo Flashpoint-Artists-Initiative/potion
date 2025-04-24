@@ -285,6 +285,6 @@ class Event extends Model implements ContractsAuditable
 
     public static function getCurrentEvent(): ?Event
     {
-        return Event::find(Event::getCurrentEventId());
+        return once(fn () => Event::find(Event::getCurrentEventId()));
     }
 }

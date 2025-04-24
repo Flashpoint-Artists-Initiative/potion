@@ -83,7 +83,9 @@ class ArtProjectResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(30)
+                    ->tooltip(fn ($record) => $record->name),
                 Tables\Columns\TextColumn::make('user.display_name')
                     ->searchable()
                     ->sortable()
@@ -101,7 +103,10 @@ class ArtProjectResource extends Resource
                     ->numeric()
                     ->prefix('$')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('fundedTotal')
+                Tables\Columns\TextColumn::make('totalVotes')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('totalFunding')
                     ->label('Current Funding')
                     ->numeric()
                     ->prefix('$')

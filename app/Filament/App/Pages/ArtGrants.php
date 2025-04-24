@@ -53,7 +53,7 @@ class ArtGrants extends Page
 
     public function form(Form $form): Form
     {
-        $projects = ArtProject::query()->currentEvent()->approved()->orderBy('name', 'desc')->get();
+        $projects = once(fn () => ArtProject::query()->currentEvent()->approved()->orderBy('name', 'desc')->get());
 
         $projectsSchema = $projects->map(function (ArtProject $project) {
             return ArtProjectItemField::make('votes.' . $project->id)
@@ -114,19 +114,18 @@ class ArtGrants extends Page
     {
         return Action::make('projectDetailsModal')
             ->label('Project Details')
-            ->modalHeading(fn (array $arguments) => ArtProject::findOrFail((int) $arguments['id'])->name)
-            ->modalContent(fn (array $arguments) => $this->generateModalContent($arguments))
+            ->record(fn (array $arguments) => ArtProject::with('media')->findOrFail((int) $arguments['id']))
+            ->modalHeading(fn (ArtProject $record) => $record->name ?? 'Project Details')
+            ->modalContent(fn (ArtProject $record) => $this->generateModalContent($record))
             ->modalSubmitAction(false)
             ->modalAutofocus(false)
             ->modalCancelActionLabel('Close');
     }
 
-    /**
-     * @param  array<mixed>  $arguments
-     */
-    protected function generateModalContent(array $arguments): HtmlString
+    protected function generateModalContent(ArtProject $project): HtmlString
     {
-        $project = ArtProject::find($arguments['id']);
+        // $project = ArtProject::find($arguments['id']);
+        // $project = $project ?? ArtProject::first();
 
         return new HtmlString(
             Blade::render(

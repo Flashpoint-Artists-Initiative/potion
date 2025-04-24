@@ -29,7 +29,7 @@ class EventSelector extends Component
 
     protected function getCurrentEvent(): string
     {
-        return Event::find($this->eventId)->name ?? 'Select an Event';
+        return Event::getCurrentEvent()->name ?? 'Select an Event';
     }
 
     public function render(): View
