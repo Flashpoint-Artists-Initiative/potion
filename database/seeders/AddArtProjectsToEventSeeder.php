@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Enums\ArtProjectStatusEnum;
 use App\Models\Event;
 use App\Models\Grants\ArtProject;
-use App\Models\Grants\ProjectImage;
 use Illuminate\Database\Seeder;
 
 class AddArtProjectsToEventSeeder extends Seeder
@@ -23,7 +22,5 @@ class AddArtProjectsToEventSeeder extends Seeder
         ArtProject::factory()->for($event)->count(2)->state(['project_status' => ArtProjectStatusEnum::Denied])->create();
 
         $project = ArtProject::first();
-
-        ProjectImage::factory()->for($project)->count(3)->create();
     }
 }

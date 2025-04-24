@@ -26,7 +26,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read Event $event
  * @property-read User $user
  * @property-read GrantFundingStatusEnum $fundingStatus
- * @property-read float $fundedTotal
+ * @property-read float $totalFunding
+ * @property-read int $totalVotes
  */
 class ArtProject extends Model implements ContractsAuditable, HasMedia
 {
@@ -114,7 +115,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
     {
         return Attribute::make(
             get: function () {
-                $funding = $this->fundedTotal;
+                $funding = $this->totalFunding;
 
                 return match (true) {
                     $funding >= $this->max_funding => GrantFundingStatusEnum::MaxReached,

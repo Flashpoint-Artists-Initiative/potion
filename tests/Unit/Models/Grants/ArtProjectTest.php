@@ -89,7 +89,7 @@ class ArtProjectTest extends TestCase
     }
 
     /**
-     * Test the fundedTotal attribute.
+     * Test the totalFunding attribute.
      */
     #[Test]
     public function funded_total_attribute(): void
@@ -107,7 +107,7 @@ class ArtProjectTest extends TestCase
         $user = User::factory()->create();
         $artProject->votes()->attach($user->id, ['votes' => 2]);
 
-        $this->assertEquals(20, $artProject->fundedTotal);
+        $this->assertEquals(20, $artProject->totalFunding);
     }
 
     /**
@@ -153,9 +153,10 @@ class ArtProjectTest extends TestCase
         $user = User::factory()->create();
 
         $artProject->vote($user, 10);
+        $artProject->refresh();
 
         $this->assertTrue($artProject->votes->contains($user));
-        $this->assertEquals(100, $artProject->fundedTotal);
+        $this->assertEquals(100, $artProject->totalFunding);
     }
 
     /**
