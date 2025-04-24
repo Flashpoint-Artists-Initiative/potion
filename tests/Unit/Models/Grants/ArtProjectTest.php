@@ -8,7 +8,6 @@ use App\Enums\ArtProjectStatusEnum;
 use App\Enums\GrantFundingStatusEnum;
 use App\Models\Event;
 use App\Models\Grants\ArtProject;
-use App\Models\Grants\ProjectImage;
 use App\Models\User;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -73,19 +72,6 @@ class ArtProjectTest extends TestCase
 
         $this->assertInstanceOf(User::class, $artProject->user);
         $this->assertEquals($user->id, $artProject->user->id);
-    }
-
-    /**
-     * Test the relationship between ArtProject and ProjectImage.
-     */
-    #[Test]
-    public function art_project_has_many_images(): void
-    {
-        /** @var ArtProject $artProject */
-        $artProject = ArtProject::factory()->create();
-        $projectImage = ProjectImage::factory()->create(['art_project_id' => $artProject->id]);
-
-        $this->assertTrue($artProject->images->contains($projectImage));
     }
 
     /**

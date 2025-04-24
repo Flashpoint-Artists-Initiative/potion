@@ -69,7 +69,6 @@ class AppServiceProvider extends ServiceProvider
             'team' => \App\Models\Volunteering\Team::class,
 
             'artProject' => \App\Models\Grants\ArtProject::class,
-            'projectImage' => \App\Models\Grants\ProjectImage::class,
 
             'event' => \App\Models\Event::class,
             'user' => \App\Models\User::class,
