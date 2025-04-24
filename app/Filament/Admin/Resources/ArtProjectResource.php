@@ -101,6 +101,11 @@ class ArtProjectResource extends Resource
                     ->numeric()
                     ->prefix('$')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('fundedTotal')
+                    ->label('Current Funding')
+                    ->numeric()
+                    ->prefix('$')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('budget_link')
                     ->formatStateUsing(fn () => 'View Budget')
                     ->url(fn ($record) => $record->budget_link, true)
