@@ -117,6 +117,7 @@ class ArtGrants extends Page
             ->modalHeading(fn (array $arguments) => ArtProject::findOrFail((int) $arguments['id'])->name)
             ->modalContent(fn (array $arguments) => $this->generateModalContent($arguments))
             ->modalSubmitAction(false)
+            ->modalAutofocus(false)
             ->modalCancelActionLabel('Close');
     }
 

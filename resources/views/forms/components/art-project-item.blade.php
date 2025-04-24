@@ -22,7 +22,7 @@
             class="art-project md:flex items-center cursor-pointer" 
         >
             <div class="cursor-pointer flex justify-center" style="width: 200px; height: 200px;">
-                {{ $getRecord()->getFirstMedia() }}
+                <img class="rounded-md" src="{{ $getRecord()->getFirstMediaUrl(conversionName: 'preview') }}">
             </div>
             <div class="flex-1 mx-3">
                 <p><span class="font-bold">Artist:</span> {{ $getRecord()->artist_name }}</p>

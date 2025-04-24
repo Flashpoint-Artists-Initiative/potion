@@ -75,7 +75,6 @@ class ArtProjectResource extends Resource
                     ->reorderable()
                     ->panelLayout('grid')
                     ->appendFiles()
-                    ->responsiveImages()
                     ->columnSpan(2),
             ]);
     }
