@@ -72,8 +72,8 @@ constructs:
                 Properties:
                     AccessControl: PublicRead
                     PublicAccessBlockConfiguration: 
-                        BlockPublicAcls: true
-                        IgnorePublicAcls: true
+                        BlockPublicAcls: false
+                        IgnorePublicAcls: false
                         BlockPublicPolicy: false
                         RestrictPublicBuckets: false
                     CorsConfiguration:
