@@ -70,10 +70,9 @@ constructs:
         extensions:
             bucket:
                 Properties:
-                    AccessControl: PublicRead
                     PublicAccessBlockConfiguration: 
-                        BlockPublicAcls: false
-                        IgnorePublicAcls: false
+                        BlockPublicAcls: true
+                        IgnorePublicAcls: true
                         BlockPublicPolicy: false
                         RestrictPublicBuckets: false
                     CorsConfiguration:
