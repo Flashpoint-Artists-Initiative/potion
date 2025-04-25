@@ -53,6 +53,9 @@ jobs:
         with:
           composer-options: "--prefer-dist --optimize-autoloader --no-dev"
 
+      - name: Run Optimizations
+        run: php artisan optimize
+
       - name: Install NPM dependencies
         run: npm install
 

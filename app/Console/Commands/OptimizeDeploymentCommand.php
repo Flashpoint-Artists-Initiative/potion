@@ -21,7 +21,7 @@ class OptimizeDeploymentCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Shortcut for common deployment tasks. Runs migrations, updates permissions, and builds caches.';
+    protected $description = 'Shortcut for common deployment tasks. Runs migrations and updates permissions';
 
     /**
      * Execute the console command.
@@ -32,12 +32,10 @@ class OptimizeDeploymentCommand extends Command
 
         $tasks = collect([
             'Migrating Database' => fn (): bool => $this->callSilent('migrate') === Command::SUCCESS,
-            'Updating Permissions' => fn (): bool => $this->callSilent('permission:cache') === Command::SUCCESS,
+            'Updating Permissions' => fn (): bool => $this->callSilent('permission:populate') === Command::SUCCESS,
         ]);
 
         $tasks->each(fn (Closure $task, string $description) => $this->components->task($description, $task));
-
-        $this->call('optimize');
 
         $this->newLine();
     }
