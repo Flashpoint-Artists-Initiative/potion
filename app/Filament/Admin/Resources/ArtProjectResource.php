@@ -6,13 +6,17 @@ namespace App\Filament\Admin\Resources;
 
 use App\Enums\ArtProjectStatusEnum;
 use App\Filament\Admin\Resources\ArtProjectResource\Pages;
+use App\Models\Event;
 use App\Models\Grants\ArtProject;
 use Filament\Forms;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ArtProjectResource extends Resource
 {
@@ -89,35 +93,41 @@ class ArtProjectResource extends Resource
                 Tables\Columns\TextColumn::make('user.display_name')
                     ->searchable()
                     ->sortable()
-                    ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
+                    ->url(fn ($record) => $record->user_id ? UserResource::getUrl('view', ['record' => $record->user_id]) : null)
                     ->color('primary')
                     ->icon('heroicon-m-user')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('artist_name')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('min_funding')
                     ->numeric()
                     ->prefix('$')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('max_funding')
                     ->numeric()
                     ->prefix('$')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('totalVotes')
+                    ->label('Votes')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('totalFunding')
-                    ->label('Current Funding')
+                    ->label('Funding')
                     ->numeric()
                     ->prefix('$')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('budget_link')
-                    ->formatStateUsing(fn () => 'View Budget')
-                    ->url(fn ($record) => $record->budget_link, true)
-                    ->color('primary')
-                    ->icon('heroicon-m-link'),
+                    ->sortable()
+                    ->toggleable(),
+                // Tables\Columns\SelectColumn::make('project_status')
+                //     ->label('Status')
+                //     ->options(ArtProjectStatusEnum::class)
+                //     ->selectablePlaceholder(false),
                 Tables\Columns\TextColumn::make('project_status')
-                    ->badge(),
+                    ->badge()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -135,6 +145,11 @@ class ArtProjectResource extends Resource
                 //
             ])
             ->actions([
+                Action::make('budget')
+                    ->url(fn ($record) => $record->budget_link, true)
+                    ->icon('heroicon-m-link')
+                    ->color('primary')
+                    ->label(' Budget'),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
@@ -156,9 +171,19 @@ class ArtProjectResource extends Resource
     {
         return [
             'index' => Pages\ListArtProjects::route('/'),
+            'adjustments' => Pages\BulkAdjustArtProjects::route('/adjust'),
             'create' => Pages\CreateArtProject::route('/create'),
             'view' => Pages\ViewArtProject::route('/{record}'),
             'edit' => Pages\EditArtProject::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ])
+            ->where('event_id', Event::getCurrentEventId());
     }
 }

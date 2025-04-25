@@ -68,6 +68,10 @@ class EventResource extends Resource
                                 Forms\Components\Toggle::make('voting_enabled')
                                     ->inline(false)
                                     ->label('Voting Enabled'),
+                                Forms\Components\DateTimePicker::make('voting_ends')
+                                    ->label('Voting Ends')
+                                    ->afterOrEqual('start_date')
+                                    ->helperText('The date and time voting ends. Leave blank to disable voting automatically ending.'),
                                 Forms\Components\TextInput::make('dollars_per_vote')
                                     ->label('Dollars per Vote')
                                     ->required()
@@ -86,7 +90,7 @@ class EventResource extends Resource
                                     })
                                     ->helperText('The maximum number of votes each user can cast.'),
                             ])
-                            ->columns(3)
+                            ->columns(2)
                             ->statePath('settings'),
                     ])
                         ->columns(2),

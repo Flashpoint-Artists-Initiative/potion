@@ -8,6 +8,7 @@
         max: {{ $maxVotes }},
         remaining: {{ $maxVotes }},
         hasVoted: {{ $hasVoted ? 'true' : 'false' }},
+        votingIsOpen: {{ $votingIsOpen ? 'true' : 'false' }},
 
         init() {
             this.remaining = this.max;
@@ -19,17 +20,19 @@
     x-init="init()"
     class="art-grants-page"
     >
-        @if (!$hasVoted)
+        @if (!$hasVoted && $votingIsOpen)
             
         <p>[Insert Fluff Here].  Click a project to view more details.  
             Use the buttons to the right of each project to allocate your votes, 
             then hit the submit button at the bottom of the page.
         </p>
-        @else
+        @elseif ($hasVoted && $votingIsOpen)
         <p class="pb-4">You've already voted, but you can still check out all the projects!</p>
+        @else
+        <p class="pb-4">Voting has ended, the projects below have all been funded!</p>
         @endif
         <x-filament-panels::form wire:submit="submitVotes">
-            @if (!$hasVoted)
+            @if (!$hasVoted && $votingIsOpen)
             <span class="dark:bg-gray-950 sticky grid z-10" style="top: 4rem" >
                 <x-filament::badge class="my-2" x-show="remaining > 0">
                     <p class="text-2xl"> VOTES REMAINING: <span x-text="remaining"></span></p>
@@ -40,7 +43,7 @@
             </span>
             @endif
             {{ $this->form }}
-            @if (!$hasVoted)
+            @if (!$hasVoted && $votingIsOpen)
                 <x-filament::button type="submit">
                     Submit Votes
                 </x-filament::button>

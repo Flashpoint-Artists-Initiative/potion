@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\PageContentEnum;
+use App\Models\Concerns\HasSettingsAttributes;
 use App\Models\Ticketing\CompletedWaiver;
 use App\Models\Ticketing\PurchasedTicket;
 use App\Models\Ticketing\ReservedTicket;
@@ -29,7 +30,9 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  * @property float $dollarsPerVote
  * @property int $votesPerUser
  * @property bool $votingEnabled
+ * @property bool $votingIsOpen
  * @property int $ticketsPerSale
+ * @property string $votingEnds
  * @property-read Carbon $startDateCarbon
  * @property-read Carbon $endDateCarbon
  * @property-read ?Carbon $nextTicketSaleDate
@@ -38,7 +41,7 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  */
 class Event extends Model implements ContractsAuditable
 {
-    use Auditable, HasFactory, SoftDeletes;
+    use Auditable, HasFactory, HasSettingsAttributes, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -203,49 +206,35 @@ class Event extends Model implements ContractsAuditable
 
     public function dollarsPerVote(): Attribute
     {
-        return Attribute::make(
-            get: fn (mixed $value, array $attributes) => $this->settings['dollars_per_vote'] ?? 1.0,
-            set: function (float $value) {
-                $this->settings['dollars_per_vote'] = $value;
-
-                return [];
-            },
-        );
+        return Attribute::make(...$this->createSettingsAttributeFunctions('dollars_per_vote', 1.0));
     }
 
     public function votingEnabled(): Attribute
     {
-        return Attribute::make(
-            get: fn (mixed $value, array $attributes) => $this->settings['voting_enabled'] ?? false,
-            set: function (bool $value) {
-                $this->settings['voting_enabled'] = $value;
-
-                return [];
-            },
-        );
+        return Attribute::make(...$this->createSettingsAttributeFunctions('voting_enabled', false));
     }
 
     public function votesPerUser(): Attribute
     {
-        return Attribute::make(
-            get: fn (mixed $value, array $attributes) => (int) ($this->settings['votes_per_user'] ?? 10),
-            set: function (int $value) {
-                $this->settings['votes_per_user'] = $value;
-
-                return [];
-            },
-        );
+        return Attribute::make(...$this->createSettingsAttributeFunctions('votes_per_user', 10));
     }
 
     public function ticketsPerSale(): Attribute
     {
-        return Attribute::make(
-            get: fn (mixed $value, array $attributes) => (int) ($this->settings['tickets_per_sale'] ?? config('app.cart_max_quantity')),
-            set: function (int $value) {
-                $this->settings['tickets_per_sale'] = $value;
+        return Attribute::make(...$this->createSettingsAttributeFunctions('tickets_per_sale', config('app.cart_max_quantity')));
+    }
 
-                return [];
-            },
+    public function votingEnds(): Attribute
+    {
+        return Attribute::make(...$this->createSettingsAttributeFunctions('voting_ends', now()->addMinute()));
+    }
+
+    public function votingIsOpen(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => $this->votingEnabled &&
+                now()->isBetween($this->startDateCarbon, $this->endDateCarbon) &&
+                now()->lessThan($this->votingEnds),
         );
     }
 

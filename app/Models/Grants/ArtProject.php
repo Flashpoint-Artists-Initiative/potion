@@ -43,6 +43,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         'budget_link',
         'min_funding',
         'max_funding',
+        'committee_funding',
         'project_status',
     ];
 
@@ -98,7 +99,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
     {
         return Attribute::make(
             get: function () {
-                return $this->votes->sum('pivot.votes') * $this->event->dollarsPerVote;
+                return $this->votes->sum('pivot.votes') * $this->event->dollarsPerVote + $this->committee_funding;
             },
         );
     }
@@ -130,7 +131,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
     public function checkVotingStatus(?User $user, bool $throwException = true): bool
     {
         try {
-            if (! $this->event->votingEnabled) {
+            if (! $this->event->votingIsOpen) {
                 throw new \Exception('Grant voting is closed for this event');
             }
 

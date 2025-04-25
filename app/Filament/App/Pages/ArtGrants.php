@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\App\Pages;
 
+use App\Enums\GrantFundingStatusEnum;
 use App\Forms\Components\ArtProjectItemField;
 use App\Models\Event;
 use App\Models\Grants\ArtProject;
@@ -39,6 +40,13 @@ class ArtGrants extends Page
 
     public bool $hasVoted;
 
+    public bool $votingIsOpen;
+
+    public function __construct()
+    {
+        $this->votingIsOpen = Event::getCurrentEvent()->votingIsOpen ?? false;
+    }
+
     public static function shouldRegisterNavigation(): bool
     {
         return Event::getCurrentEvent()->votingEnabled ?? false;
@@ -47,13 +55,21 @@ class ArtGrants extends Page
     public function getTitle(): string|Htmlable
     {
         $eventName = Event::getCurrentEvent()->name ?? '';
+        $openVoting = Event::getCurrentEvent()->votingIsOpen ?? false;
 
-        return $eventName . ' Art Grant Voting';
+        $suffix = $openVoting ? ' Art Grant Voting' : ' Funded Art Projects';
+
+        return $eventName . $suffix;
     }
 
     public function form(Form $form): Form
     {
         $projects = once(fn () => ArtProject::query()->currentEvent()->approved()->orderBy('name', 'desc')->get());
+
+        // When voting is closed hide the unfunded projects
+        if (! $this->votingIsOpen) {
+            $projects = $projects->filter(fn (ArtProject $project) => $project->fundingStatus !== GrantFundingStatusEnum::Unfunded);
+        }
 
         $projectsSchema = $projects->map(function (ArtProject $project) {
             return ArtProjectItemField::make('votes.' . $project->id)
@@ -63,7 +79,7 @@ class ArtGrants extends Page
                 ->default(0)
                 ->dehydrateStateUsing(fn ($state) => $state === 0 ? null : $state)
                 ->view('forms.components.art-project-item')
-                ->disableVoting(fn () => $this->hasVoted);
+                ->disableVoting(fn () => $this->hasVoted || ! $this->votingIsOpen);
         });
 
         return $form
@@ -78,6 +94,7 @@ class ArtGrants extends Page
         $this->form->fill();
         $this->maxVotes = Event::getCurrentEvent()->votesPerUser ?? 0;
         $this->hasVoted = Auth::user()?->hasVotedArtProjectsForEvent(Event::getCurrentEventId()) ?? true;
+        $this->votingIsOpen = Event::getCurrentEvent()->votingIsOpen ?? false;
     }
 
     public function submitVotes(): void

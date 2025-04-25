@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('budget_link')->nullable();
             $table->unsignedInteger('min_funding');
             $table->unsignedInteger('max_funding');
+            $table->integer('committee_funding')->default(0);
             $table->enum('project_status', array_column(ArtProjectStatusEnum::cases(), 'value'))->default(ArtProjectStatusEnum::PendingReview->value);
             $table->timestamps();
             $table->softDeletes();
