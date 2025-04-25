@@ -55,6 +55,32 @@ jobs:
 
       - name: Run Optimizations
         run: php artisan optimize
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_URL: ${{ vars.APP_URL }}
+          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
+          DB_DATABASE: ${{ vars.DB_DATABASE }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DEFAULT_EVENT_ID: ${{ vars.DEFAULT_EVENT_ID }}
+          JWT_PRIVATE_KEY: ${{ vars.JWT_PRIVATE_KEY }}
+          JWT_PUBLIC_KEY: ${{ vars.JWT_PUBLIC_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS }}
+          MAIL_FROM_NAME: ${{ vars.MAIL_FROM_NAME }}
+          MAIL_MAILER: ${{ vars.MAIL_MAILER }}
+          MAIL_TICKETS_ADDRESS: ${{ vars.MAIL_TICKETS_ADDRESS }}
+          MAIL_TICKETS_NAME: ${{ vars.MAIL_TICKETS_NAME }}
+          ORG_NAME: ${{ vars.ORG_NAME }}
+          SALES_TAX_RATE: ${{ vars.SALES_TAX_RATE }}
+          STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+          STRIPE_FEE_FLAT: ${{ vars.STRIPE_FEE_FLAT }}
+          STRIPE_FEE_PERCENTAGE: ${{ vars.STRIPE_FEE_PERCENTAGE }}
+          STRIPE_PAYMENT_METHOD_CONFIG: ${{ vars.STRIPE_PAYMENT_METHOD_CONFIG }}
+          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
 
       - name: Install NPM dependencies
         run: npm install
@@ -78,6 +104,7 @@ jobs:
           APP_KEY: ${{ secrets.APP_KEY }}
           APP_NAME: ${{ vars.APP_NAME }}
           APP_URL: ${{ vars.APP_URL }}
+          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
           DB_DATABASE: ${{ vars.DB_DATABASE }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -99,7 +126,6 @@ jobs:
           STRIPE_PAYMENT_METHOD_CONFIG: ${{ vars.STRIPE_PAYMENT_METHOD_CONFIG }}
           STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
           STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-          BUGSNAG_API_KEY: ${{ secrets.BUGSNAG_API_KEY }}
 
       - name: Run Deployment Tasks
         uses: serverless/github-action@v4
