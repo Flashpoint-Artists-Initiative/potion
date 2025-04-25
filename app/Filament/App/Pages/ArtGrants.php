@@ -31,7 +31,7 @@ class ArtGrants extends Page
 
     protected static string $view = 'filament.app.pages.art-grants';
 
-    protected static ?string $navigationLabel = 'Art Grant Voting';
+    // protected static ?string $navigationLabel = 'Art Grant Voting';s
 
     /** @var array<mixed> */
     public array $votes;
@@ -45,6 +45,11 @@ class ArtGrants extends Page
     public function __construct()
     {
         $this->votingIsOpen = Event::getCurrentEvent()->votingIsOpen ?? false;
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return Event::getCurrentEvent()?->votingIsOpen ? 'Art Grant Voting' : 'Funded Art Projects';
     }
 
     public static function shouldRegisterNavigation(): bool
