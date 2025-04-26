@@ -87,7 +87,7 @@ constructs:
                                 - "*"
                               AllowedHeaders:
                                 - "*"
-    jobs:
+    jobrunner:
         type: queue
         worker:
             handler: Bref\LaravelBridge\Queue\QueueHandler
