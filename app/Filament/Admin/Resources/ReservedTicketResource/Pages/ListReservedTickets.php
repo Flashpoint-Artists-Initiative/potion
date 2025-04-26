@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\ReservedTicketResource\Pages;
 
 use App\Filament\Admin\Resources\ReservedTicketResource;
+use App\Filament\Imports\ReservedTicketImporter;
+use App\Jobs\ImportExpandableCsv;
 use Filament\Actions;
+use Filament\Actions\ImportAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListReservedTickets extends ListRecords
@@ -21,6 +24,8 @@ class ListReservedTickets extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            ImportAction::make()
+                ->importer(ReservedTicketImporter::class)
         ];
     }
 }

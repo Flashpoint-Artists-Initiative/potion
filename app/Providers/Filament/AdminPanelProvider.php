@@ -44,7 +44,8 @@ class AdminPanelProvider extends CommonPanelProvider
                     ->url(fn () => route('filament.app.pages.dashboard'))
                     ->icon('heroicon-o-arrow-left-start-on-rectangle')
                     ->sort(999),
-            ]);
+            ])
+            ->databaseNotifications();
     }
 
     public function register(): void

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Observers;
 
-use App\Mail\SingleReservedTicketCreatedMail;
+use App\Mail\ReservedTicketCreatedMail;
 use App\Models\Ticketing\PurchasedTicket;
 use App\Models\Ticketing\ReservedTicket;
 use App\Models\User;
@@ -22,6 +22,13 @@ class ReservedTicketObserver
                 $reservedTicket->user_id = $user_id;
             }
         }
+
+        // When importing reserved tickets, count is optionally set
+        // Create duplicate reserved tickets based on $count
+        for ($i = 1; $i < $reservedTicket->count; $i++) {
+            $duplicate = $reservedTicket->replicate();
+            $duplicate->saveQuietly(); // We don't want to trigger the observer again. The original model will trigger the email
+        }
     }
 
     public function saved(ReservedTicket $reservedTicket): void
@@ -38,10 +45,10 @@ class ReservedTicketObserver
             $purchasedTicket->save();
         }
 
-        $email = $reservedTicket?->user->email ?? $reservedTicket->email;
+        $email = $reservedTicket->user->email ?? $reservedTicket->email;
 
         Mail::to($email)
-            ->send(new SingleReservedTicketCreatedMail($reservedTicket));
+            ->send(new ReservedTicketCreatedMail($reservedTicket));
     }
 
     /**

@@ -28,6 +28,8 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 #[ObservedBy(ReservedTicketObserver::class)]
 class ReservedTicket extends Model implements ContractsAuditable, TicketInterface
 {
+    public ?int $count = 1;
+
     use Auditable, HasFactory, HasTicketType;
 
     protected $fillable = [
