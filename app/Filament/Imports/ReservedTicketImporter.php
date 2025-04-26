@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Imports;
 
 use App\Jobs\Middleware\ExpandImportCsvMiddleware;
+use App\Jobs\Middleware\Temp;
 use App\Models\Ticketing\ReservedTicket;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
@@ -59,5 +60,13 @@ class ReservedTicketImporter extends Importer
         }
 
         return $body;
+    }
+
+    public function getJobMiddleware(): array
+    {
+        return [
+            ...parent::getJobMiddleware(),
+            new Temp(),
+        ];
     }
 }
