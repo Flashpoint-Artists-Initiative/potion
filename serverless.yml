@@ -95,8 +95,8 @@ constructs:
             # layers:
             #     - ${bref-extra:gd-php-84}
             timeout: 60 # seconds
-            environment:
-                AUDITING_CONSOLE: true # Enables audit logging for jobs
+            # environment:
+            #     AUDITING_CONSOLE: true # Enables audit logging for jobs
         extensions:
             queue:
                 Properties:
