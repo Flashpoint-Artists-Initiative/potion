@@ -65,8 +65,8 @@ class ReservedTicketImporter extends Importer
     public function getJobMiddleware(): array
     {
         return [
-            ...parent::getJobMiddleware(),
             new Temp(),
+            // ...parent::getJobMiddleware(),
         ];
     }
 }
