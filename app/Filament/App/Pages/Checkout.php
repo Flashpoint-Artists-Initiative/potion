@@ -10,6 +10,7 @@ use App\Services\CheckoutService;
 use App\Services\StripeService;
 use Filament\Actions\Action;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Log;
 
 class Checkout extends Page
 {
@@ -54,6 +55,8 @@ class Checkout extends Page
 
     public function completeCheckout(string $sessionId, StripeService $stripeService, CheckoutService $checkoutService): void
     {
+        Log::info(config('cache.stores.file'));
+
         $this->checkoutComplete = true;
         $session = $stripeService->getCheckoutSession($sessionId);
         $checkoutService->resolveCompletedCheckoutSession($session);
