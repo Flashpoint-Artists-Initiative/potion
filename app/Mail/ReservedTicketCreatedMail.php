@@ -35,9 +35,9 @@ class ReservedTicketCreatedMail extends Mailable
         $eventName = $this->reservedTicket->ticketType->event->name;
         $count = $this->reservedTicket->count ?? 1;
         $price = $this->reservedTicket->ticketType->price;
-        
-        $subject = sprintf('%s: You have been granted %s %s %s', 
-            $eventName, 
+
+        $subject = sprintf('%s: You have been granted %s %s %s',
+            $eventName,
             $count > 1 ? $count : 'a',
             $price === 0 ? 'free' : 'reserved',
             str('ticket')->plural($count)
@@ -102,7 +102,7 @@ class ReservedTicketCreatedMail extends Mailable
             ->greeting("Your reserved {$ticketWord} for {$eventName} {$isWord} waiting for you!")
             ->line(new HtmlString("You've been granted <b>{$count}</b> reserved {$ticketWord}."))
             ->line(new HtmlString("<b>{$count}x {$ticketName} - {$price}</b>"))
-            ->lineif(!empty($ticketNote), new HtmlString("With Note: <i>{$ticketNote}</i>"))
+            ->lineif(! empty($ticketNote), new HtmlString("With Note: <i>{$ticketNote}</i>"))
             ->action("View your reserved {$ticketWord}", $url)
             ->line(new HtmlString("Your reserved {$ticketWord} will <b>expire</b> on <b>{$expirationDate}</b>."))
             ->line('If you already have an account, click the link and login to view your reserved ticket.')

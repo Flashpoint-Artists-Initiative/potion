@@ -40,13 +40,13 @@ class ReservedTicketImporter extends Importer
                 ->label('Count')
                 ->numeric()
                 ->rules(['nullable', 'integer', 'min:1'])
-                ->helperText('Optional. The number of tickets to reserve.  Defaults to 1.')
+                ->helperText('Optional. The number of tickets to reserve.  Defaults to 1.'),
         ];
     }
 
     public function resolveRecord(): ?ReservedTicket
     {
-        return new ReservedTicket();
+        return new ReservedTicket;
     }
 
     public static function getCompletedNotificationBody(Import $import): string

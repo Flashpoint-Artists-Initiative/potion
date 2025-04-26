@@ -20,7 +20,7 @@
 
     <x-slot:helptext>
         <x-mail::helptext>
-            {{ $helptext }}
+            {{ $helptext ?? '' }}
         </x-mail::helptext>
     </x-slot:helptext>
 

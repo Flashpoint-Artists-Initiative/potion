@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Observers;
 
-use App\Mail\OrderCompletedMail;
 use App\Models\Ticketing\Order;
-use Illuminate\Support\Facades\Mail;
+use App\Notifications\OrderCompletedNotification;
 
 class OrderObserver
 {
@@ -15,6 +14,6 @@ class OrderObserver
      */
     public function created(Order $order): void
     {
-        Mail::to($order->user)->sendNow(new OrderCompletedMail($order));
+        $order->user->notify(new OrderCompletedNotification($order));
     }
 }
