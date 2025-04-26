@@ -92,9 +92,9 @@ constructs:
         worker:
             handler: Bref\LaravelBridge\Queue\QueueHandler
             runtime: php-84
-            layers:
-                - ${bref-extra:gd-php-84}
-            timeout: 60 # seconds
+            # layers:
+            #     - ${bref-extra:gd-php-84}
+            timeout: 50 # seconds
             environment:
                 AUDITING_CONSOLE: true # Enables audit logging for jobs
 
