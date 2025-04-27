@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\On;
 
 /**
  * @property Form $form
@@ -91,10 +92,11 @@ class ArtGrants extends Page
             ->schema($projectsSchema->toArray());
     }
 
+    #[On('active-event-updated')]
     public function mount(): void
     {
         if (Event::getCurrentEvent()?->votingEnabled == false) {
-            abort(404);
+            redirect(Dashboard::getUrl());
         }
         $this->form->fill();
         $this->maxVotes = Event::getCurrentEvent()->votesPerUser ?? 0;

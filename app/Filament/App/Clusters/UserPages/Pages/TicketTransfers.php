@@ -24,15 +24,14 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Actions\Action as TableAction;
-use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Grouping\Group;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 
 /**
@@ -62,6 +61,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
 
     public bool $showWaiverWarning;
 
+    #[On('active-event-updated')]
     public function mount(): void
     {
         $waiver = Event::getCurrentEvent()?->waiver;
@@ -160,46 +160,32 @@ class TicketTransfers extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(TicketTransfer::query()->involvesUser())
-            // ->defaultGroup(
-            //     Group::make('completed')
-            //         ->label('Status')
-            //         ->getTitleFromRecordUsing(fn (TicketTransfer $transfer): string => $transfer->completed ? 'Completed' : 'Pending')
-            // )
+            ->query(TicketTransfer::query()->specificEvent()->involvesUser())
             ->columns([
-                Split::make([
-                    TextColumn::make('completed')
-                        ->badge()
-                        ->label('Status')
-                        ->formatStateUsing(fn (bool $state) => $state ? 'Completed' : 'Pending')
-                        ->color(fn (bool $state) => $state ? 'success' : 'warning')
-                        ->grow(false),
-                    Stack::make([
-                        TextColumn::make('user.display_name')
-                            ->label('Sender')
-                            ->prefix('From: ')
-                            ->formatStateUsing(fn (string $state, TicketTransfer $record) => $record->user_id == Auth::id() ? 'You' : '-'),
-                        TextColumn::make('recipient_email')
-                            ->label('Sent To')
-                            ->prefix('To: '),
-                    ]),
-                    TextColumn::make('created_at')
-                        ->label('Date')
-                        ->dateTime('F jS, Y g:i A T', 'America/New_York'),
-                    TextColumn::make('ticketCount')
-                        ->formatStateUsing(function (TicketTransfer $record) {
-                            $purchased = $record->purchasedTickets->count();
-                            $reserved = $record->reservedTickets->count();
-                            $linebreak = ($purchased && $reserved) ? '<br>' : '';
+                TextColumn::make('completed')
+                    ->badge()
+                    ->label('Status')
+                    ->formatStateUsing(fn (bool $state) => $state ? 'Completed' : 'Pending')
+                    ->color(fn (bool $state) => $state ? 'success' : 'warning')
+                    ->grow(false),
+                TextColumn::make('ticketCount')
+                    ->formatStateUsing(function (TicketTransfer $record) {
+                        $purchased = $record->purchasedTickets->count();
+                        $reserved = $record->reservedTickets->count();
+                        $linebreak = ($purchased && $reserved) ? '<br>' : '';
 
-                            return new HtmlString(sprintf('%s%s%s',
-                                $purchased ? $purchased . ' Ticket' : '',
-                                $linebreak,
-                                $reserved ? $reserved . ' Reserved' : '')
-                            );
-                        }),
-                ])
-                    ->from('md'),
+                        return new HtmlString(sprintf('%s%s%s',
+                            $purchased ? $purchased . ' Ticket' : '',
+                            $linebreak,
+                            $reserved ? $reserved . ' Reserved' : '')
+                        );
+                    }),
+                TextColumn::make('recipient_email')
+                    ->label('Sent To')
+                    ->formatStateUsing(fn (string $state, TicketTransfer $record) => new HtmlString($record->user_id == Auth::id() ? $state : 'You')),
+                TextColumn::make('created_at')
+                    ->label('Date')
+                    ->dateTime('F jS, Y g:i A T', 'America/New_York'),
             ])
             ->emptyStateHeading('You have no ticket transfers')
             ->defaultSort('completed')
@@ -215,7 +201,8 @@ class TicketTransfers extends Page implements HasForms, HasTable
                     })
                     ->color(fn () => $this->showWaiverWarning ? 'gray' : null)
                     ->disabled(fn () => $this->showWaiverWarning),
-            ]);
+            ])
+            ->actionsPosition(ActionsPosition::BeforeCells);
     }
 
     public function signWaiverAction(): Action

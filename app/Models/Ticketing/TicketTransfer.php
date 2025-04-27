@@ -85,6 +85,21 @@ class TicketTransfer extends Model implements ContractsAuditable
         });
     }
 
+    public function scopeSpecificEvent(Builder $query, ?int $eventId = null): void
+    {
+        $eventId = $eventId ?? Event::getCurrentEventId();
+
+        if ($eventId) {
+            $query->where(function (Builder $query) use ($eventId) {
+                $query->whereHas('purchasedTickets.ticketType', function (Builder $query) use ($eventId) {
+                    $query->where('event_id', $eventId);
+                })->orWhereHas('reservedTickets.ticketType', function (Builder $query) use ($eventId) {
+                    $query->where('event_id', $eventId);
+                });
+            });
+        }
+    }
+
     public function scopePending(Builder $query): void
     {
         $query->where('completed', false);
