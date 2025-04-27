@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\LockdownEnum;
 use App\Models\Ticketing\PurchasedTicket;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 class PurchasedTicketPolicy extends AbstractModelPolicy
 {
     protected string $prefix = 'purchasedTickets';
+
+    protected ?LockdownEnum $lockdownKey = LockdownEnum::Tickets;
 
     /**
      * Allow unathenticated users to view all of their own purchased tickets

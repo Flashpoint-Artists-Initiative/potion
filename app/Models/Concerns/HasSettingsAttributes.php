@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Arr;
 
 trait HasSettingsAttributes
 {
@@ -14,14 +15,27 @@ trait HasSettingsAttributes
      *
      * @return callable[]
      */
-    protected function createSettingsAttributeFunctions(string $key, mixed $defaultValue, string $attribute = 'settings'): array
+    protected function createSettingsAttributeFunctions(string $key, mixed $defaultValue, ?string $type = null, string $attribute = 'settings'): array
     {
         return [
             // Get
-            fn (mixed $value, array $attributes) => $this->{$attribute}[$key] ?? $defaultValue,
+            function (mixed $value, array $attributes) use ($key, $defaultValue, $attribute): mixed {
+                return Arr::dot($this->{$attribute}->toArray())[$key] ?? $defaultValue;
+            },
             // Set
-            function (float $value) use ($key, $attribute) {
-                $this->{$attribute}[$key] = $value;
+            function (mixed $value) use ($key, $type, $attribute) {
+                match ($type) {
+                    'int' => $value = (int) $value,
+                    'float' => $value = (float) $value,
+                    'bool' => $value = (bool) $value,
+                    'string' => $value = (string) $value,
+                    'array' => $value = (array) $value,
+                    default => $value,
+                };
+
+                $dotArray = Arr::dot($this->{$attribute}->toArray());
+                $dotArray[$key] = $value;
+                $this->{$attribute} = Arr::undot($dotArray);
 
                 return [];
             },

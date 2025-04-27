@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\LockdownEnum;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class AbstractModelPolicy
 {
     protected string $prefix;
+
+    protected ?LockdownEnum $lockdownKey = null;
 
     /**
      * Determine whether the user can view any models.
@@ -32,7 +35,7 @@ abstract class AbstractModelPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can("{$this->prefix}.create");
+        return $this->isNotLocked() && $user->can("{$this->prefix}.create");
     }
 
     /**
@@ -40,7 +43,7 @@ abstract class AbstractModelPolicy
      */
     public function update(User $user, Model $model): bool
     {
-        return $user->can("{$this->prefix}.update");
+        return $this->isNotLocked() && $user->can("{$this->prefix}.update");
     }
 
     /**
@@ -48,7 +51,7 @@ abstract class AbstractModelPolicy
      */
     public function delete(User $user, Model $model): bool
     {
-        return $user->can("{$this->prefix}.delete");
+        return $this->isNotLocked() && $user->can("{$this->prefix}.delete");
     }
 
     /**
@@ -56,7 +59,7 @@ abstract class AbstractModelPolicy
      */
     public function restore(User $user, Model $model): bool
     {
-        return $user->can("{$this->prefix}.restore");
+        return $this->isNotLocked() && $user->can("{$this->prefix}.restore");
     }
 
     /**
@@ -64,7 +67,7 @@ abstract class AbstractModelPolicy
      */
     public function forceDelete(User $user, Model $model): bool
     {
-        return $user->can("{$this->prefix}.forceDelete");
+        return $this->isNotLocked() && $user->can("{$this->prefix}.forceDelete");
     }
 
     /**
@@ -74,7 +77,7 @@ abstract class AbstractModelPolicy
      */
     public function attach(User $user, Model $model, string $relation): bool
     {
-        return $user->can("{$relation}.attach");
+        return $this->isNotLocked() && $user->can("{$relation}.attach");
     }
 
     /**
@@ -84,11 +87,20 @@ abstract class AbstractModelPolicy
      */
     public function detach(User $user, Model $model, string $relation): bool
     {
-        return $user->can("{$relation}.detach");
+        return $this->isNotLocked() && $user->can("{$relation}.detach");
     }
 
     public function history(User $user, Model $model): bool
     {
         return $user->can("{$this->prefix}.history");
+    }
+
+    protected function isNotLocked(): bool
+    {
+        if ($this->lockdownKey) {
+            return ! $this->lockdownKey->isLocked();
+        }
+
+        return true;
     }
 }

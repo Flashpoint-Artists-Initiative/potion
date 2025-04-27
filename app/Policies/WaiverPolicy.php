@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\LockdownEnum;
 use App\Models\Ticketing\Waiver;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 class WaiverPolicy extends AbstractModelPolicy
 {
     protected string $prefix = 'waivers';
+
+    protected ?LockdownEnum $lockdownKey = LockdownEnum::Tickets;
 
     /**
      * @param  Waiver  $waiver

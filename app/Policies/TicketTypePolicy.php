@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\LockdownEnum;
 use App\Models\Ticketing\TicketType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 class TicketTypePolicy extends AbstractModelPolicy
 {
     protected string $prefix = 'ticketTypes';
+
+    protected ?LockdownEnum $lockdownKey = LockdownEnum::Tickets;
 
     /**
      * Allow unathenticated users to view all ticket types

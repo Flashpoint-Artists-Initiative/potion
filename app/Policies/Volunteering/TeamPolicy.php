@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies\Volunteering;
 
+use App\Enums\LockdownEnum;
 use App\Models\User;
 use App\Models\Volunteering\Team;
 use App\Policies\AbstractModelPolicy;
@@ -11,6 +12,8 @@ use App\Policies\AbstractModelPolicy;
 class TeamPolicy extends AbstractModelPolicy
 {
     protected string $prefix = 'teams';
+
+    protected ?LockdownEnum $lockdownKey = LockdownEnum::Volunteers;
 
     /**
      * Allow unathenticated users to view all events

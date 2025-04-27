@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\LockdownEnum;
 use App\Models\Grants\ArtProject;
 use App\Models\User;
 
 class ArtProjectPolicy extends AbstractModelPolicy
 {
     protected string $prefix = 'artProjects';
+
+    protected ?LockdownEnum $lockdownKey = LockdownEnum::Grants;
 
     /**
      * @param  ArtProject  $artProject

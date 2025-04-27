@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\LockdownEnum;
 use App\Models\Ticketing\ReservedTicket;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 class ReservedTicketPolicy extends AbstractModelPolicy
 {
     protected string $prefix = 'reservedTickets';
+
+    protected ?LockdownEnum $lockdownKey = LockdownEnum::Tickets;
 
     /**
      * @param  ReservedTicket  $model

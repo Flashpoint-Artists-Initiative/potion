@@ -33,6 +33,9 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  * @property bool $votingIsOpen
  * @property int $ticketsPerSale
  * @property string $votingEnds
+ * @property bool $ticketsLockdown
+ * @property bool $grantsLockdown
+ * @property bool $volunteersLockdown
  * @property-read Carbon $startDateCarbon
  * @property-read Carbon $endDateCarbon
  * @property-read ?Carbon $nextTicketSaleDate
@@ -206,27 +209,42 @@ class Event extends Model implements ContractsAuditable
 
     public function dollarsPerVote(): Attribute
     {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('dollars_per_vote', 1.0));
+        return Attribute::make(...$this->createSettingsAttributeFunctions('dollars_per_vote', 1.0, 'float'));
     }
 
     public function votingEnabled(): Attribute
     {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('voting_enabled', false));
+        return Attribute::make(...$this->createSettingsAttributeFunctions('voting_enabled', false, 'bool'));
     }
 
     public function votesPerUser(): Attribute
     {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('votes_per_user', 10));
-    }
-
-    public function ticketsPerSale(): Attribute
-    {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('tickets_per_sale', config('app.cart_max_quantity')));
+        return Attribute::make(...$this->createSettingsAttributeFunctions('votes_per_user', 10, 'int'));
     }
 
     public function votingEnds(): Attribute
     {
         return Attribute::make(...$this->createSettingsAttributeFunctions('voting_ends', now()->addMinute()));
+    }
+
+    public function ticketsPerSale(): Attribute
+    {
+        return Attribute::make(...$this->createSettingsAttributeFunctions('tickets_per_sale', config('app.cart_max_quantity'), 'int'));
+    }
+
+    public function ticketsLockdown(): Attribute
+    {
+        return Attribute::make(...$this->createSettingsAttributeFunctions('lockdown.tickets', false, 'bool'));
+    }
+
+    public function grantsLockdown(): Attribute
+    {
+        return Attribute::make(...$this->createSettingsAttributeFunctions('lockdown.grants', false, 'bool'));
+    }
+
+    public function volunteersLockdown(): Attribute
+    {
+        return Attribute::make(...$this->createSettingsAttributeFunctions('lockdown.volunteers', false, 'bool'));
     }
 
     public function votingIsOpen(): Attribute

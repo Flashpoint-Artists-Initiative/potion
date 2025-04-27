@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies\Volunteering;
 
+use App\Enums\LockdownEnum;
 use App\Models\User;
 use App\Models\Volunteering\Shift;
 use App\Policies\AbstractModelPolicy;
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 class ShiftPolicy extends AbstractModelPolicy
 {
     protected string $prefix = 'shifts';
+
+    protected ?LockdownEnum $lockdownKey = LockdownEnum::Volunteers;
 
     /**
      * Allow all users to view all shifts

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies\Volunteering;
 
+use App\Enums\LockdownEnum;
 use App\Models\User;
 use App\Policies\AbstractModelPolicy;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 class ShiftRequirementPolicy extends AbstractModelPolicy
 {
     protected string $prefix = 'requirements';
+
+    protected ?LockdownEnum $lockdownKey = LockdownEnum::Volunteers;
 
     public function viewAny(User $user): bool
     {
