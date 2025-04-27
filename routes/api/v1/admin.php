@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\Admin\MetricsController;
 use App\Http\Controllers\Api\Admin\OrdersController;
 use App\Http\Controllers\Api\Admin\TicketTransfersController;
 use App\Http\Controllers\Api\LockdownController;
-use App\Services\LockdownService;
+use App\Services\ApiLockdownService;
 use Illuminate\Support\Facades\Route;
 use Orion\Facades\Orion;
 
@@ -15,6 +15,7 @@ use Orion\Facades\Orion;
 | Admin Routes
 |--------------------------------------------------------------------------
 */
+
 Route::middleware(['auth', 'token.refresh'])->prefix('admin')->as('api.admin.')->group(function () {
     Orion::resource('completed-waivers', CompletedWaiversController::class)->except(['update', 'batchUpdate']);
     Orion::resource('orders', OrdersController::class)->only(['index', 'show', 'search']);
@@ -22,9 +23,9 @@ Route::middleware(['auth', 'token.refresh'])->prefix('admin')->as('api.admin.')-
     Orion::resource('ticket-transfers', TicketTransfersController::class)->only(['index', 'show', 'search', 'destroy']);
 
     // Lockdown Routes
-    Route::get('lockdown', [LockdownController::class, 'getLockdownStatus'])->whereIn('type', LockdownService::lockdownTypes())->name('lockdown.status');
-    Route::post('lockdown/{type}', [LockdownController::class, 'enableLockdown'])->whereIn('type', LockdownService::lockdownTypes())->name('lockdown.enable');
-    Route::delete('lockdown/{type}', [LockdownController::class, 'disableLockdown'])->whereIn('type', LockdownService::lockdownTypes())->name('lockdown.disable');
+    Route::get('lockdown', [LockdownController::class, 'getLockdownStatus'])->whereIn('type', ApiLockdownService::lockdownTypes())->name('lockdown.status');
+    Route::post('lockdown/{type}', [LockdownController::class, 'enableLockdown'])->whereIn('type', ApiLockdownService::lockdownTypes())->name('lockdown.enable');
+    Route::delete('lockdown/{type}', [LockdownController::class, 'disableLockdown'])->whereIn('type', ApiLockdownService::lockdownTypes())->name('lockdown.disable');
 
     // Metrics Routes
     Route::group(['prefix' => 'metrics', 'as' => 'metrics.', 'controller' => MetricsController::class], function () {

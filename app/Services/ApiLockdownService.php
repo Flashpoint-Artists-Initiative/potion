@@ -6,7 +6,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
 
-class LockdownService
+class ApiLockdownService
 {
     /**
      * @return string[]

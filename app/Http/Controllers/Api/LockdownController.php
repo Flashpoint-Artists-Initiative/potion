@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\LockdownService;
+use App\Services\ApiLockdownService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class LockdownController extends Controller
 {
-    public function __construct(protected LockdownService $lockdownService) {}
+    public function __construct(protected ApiLockdownService $lockdownService) {}
 
     public function enableLockdown(Request $request): JsonResponse
     {

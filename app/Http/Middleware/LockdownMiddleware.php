@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Services\LockdownService;
+use App\Services\ApiLockdownService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,11 +12,11 @@ use Symfony\Component\HttpKernel\Exception\LockedHttpException;
 
 class LockdownMiddleware
 {
-    protected LockdownService $lockdownService;
+    protected ApiLockdownService $lockdownService;
 
     public function __construct()
     {
-        $this->lockdownService = new LockdownService;
+        $this->lockdownService = new ApiLockdownService;
     }
 
     /**
@@ -26,7 +26,7 @@ class LockdownMiddleware
      */
     public function handle(Request $request, Closure $next, string $type = 'site'): Response
     {
-        throw_unless(in_array($type, LockdownService::lockdownTypes()));
+        throw_unless(in_array($type, ApiLockdownService::lockdownTypes()));
 
         $status = $this->lockdownService->getLockdownStatus();
 
