@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\ArtProjectResource\Pages;
 
+use App\Enums\LockdownEnum;
 use App\Filament\Admin\Resources\ArtProjectResource;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Auth;
 
 class ListArtProjects extends ListRecords
 {
@@ -25,9 +27,9 @@ class ListArtProjects extends ListRecords
             Action::make('bulk-adjustments')
                 ->label('Bulk Adjustments')
                 ->icon('heroicon-o-adjustments-vertical')
-                // ->url(route('filament.admin.art-projects.export'))
                 ->url(BulkAdjustArtProjects::getUrl())
-                ->color('info'),
+                ->color('info')
+                ->visible(fn () => Auth::user()?->can('artProjects.update') && ! LockdownEnum::Grants->isLocked()),
         ];
     }
 }

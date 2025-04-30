@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\LockdownEnum;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class UserPolicy extends AbstractModelPolicy
 {
     protected string $prefix = 'users';
+
+    protected ?LockdownEnum $lockdownKey = LockdownEnum::Tickets;
 
     /**
      * @param  User  $model

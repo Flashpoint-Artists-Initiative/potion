@@ -8,6 +8,7 @@ use App\Filament\Admin\Resources\EventResource\Pages;
 use App\Models\Event;
 use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Split;
 use Filament\Forms\Form;
@@ -94,11 +95,33 @@ class EventResource extends Resource
                             ->statePath('settings'),
                     ])
                         ->columns(2),
-                    Section::make([
-                        Forms\Components\Toggle::make('active')
-                            ->label('Visible to Users')
-                            ->required(),
-                    ])->grow(false),
+                    Grid::make(1)->schema([
+                        Section::make([
+                            Forms\Components\Toggle::make('active')
+                                ->label('Visible to Users'),
+                        ]),
+                        Section::make('Lockdown')
+                            ->schema([
+                                Forms\Components\Toggle::make('lockdown.tickets')
+                                    ->label('Tickets')
+                                    ->afterStateHydrated(function (Forms\Components\Toggle $component, ?Event $record) {
+                                        $component->state($record->ticketsLockdown ?? false);
+                                    }),
+                                Forms\Components\Toggle::make('lockdown.grants')
+                                    ->label('Grants')
+                                    ->afterStateHydrated(function (Forms\Components\Toggle $component, ?Event $record) {
+                                        $component->state($record->grantsLockdown ?? false);
+                                    }),
+                                Forms\Components\Toggle::make('lockdown.volunteers')
+                                    ->label('Volunteering')
+                                    ->afterStateHydrated(function (Forms\Components\Toggle $component, ?Event $record) {
+                                        $component->state($record->volunteersLockdown ?? false);
+                                    }),
+                            ])
+                            ->statePath('settings')
+                            ->hidden(config('app.use_single_lockdown')),
+                    ])
+                    ->grow(false),
                 ])
                     ->from('md'),
             ])

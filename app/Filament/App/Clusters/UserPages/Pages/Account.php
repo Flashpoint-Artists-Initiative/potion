@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\App\Clusters\UserPages\Pages;
 
+use App\Enums\LockdownEnum;
 use App\Filament\App\Clusters\UserPages;
 use App\Filament\Traits\HasAuthComponents;
 use App\Models\User;
@@ -15,6 +16,7 @@ use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 
 class Account extends Page
 {
@@ -57,38 +59,19 @@ class Account extends Page
 
     protected function getHeaderActions(): array
     {
-        return [
-            Action::make('edit')
-                ->fillForm(function () {
-                    /** @var User */
-                    $user = Auth::user();
+        $editButton = $this->editModalAction();
 
-                    return [
-                        'legal_name' => $user->legal_name,
-                        'preferred_name' => $user->preferred_name,
-                        'email' => $user->email,
-                        'birthday' => $user->birthday,
-                    ];
-                })
-                ->form([
-                    $this->getLegalNameFormComponent(),
-                    $this->getPreferredNameFormComponent(),
-                    TextInput::make('email')
-                        ->email()
-                        ->required()
-                        ->maxLength(255)
-                        ->unique(ignoreRecord: true)
-                        ->helperText('Changing your email address will require re-verification.'),
-                    $this->getBirthdayFormComponent(),
-                ])
-                ->action(function (array $data) {
-                    /** @var User */
-                    $user = filament()->auth()->user();
-                    $user->legal_name = $data['legal_name'];
-                    $user->preferred_name = $data['preferred_name'];
-                    $user->email = $data['email'];
-                    $user->save();
-                }),
+        if (LockdownEnum::Tickets->isLocked()) {
+            $editButton = Action::make('edit')
+                ->modalHeading('Edit Account Details')
+                ->modalContent(new HtmlString(
+                    'You cannot edit your account details at this time, the site data has been moved offline for the event.'
+                ))
+                ->modalSubmitAction(false);
+        }
+
+        return [
+            $editButton,
             Action::make('delete')
                 ->requiresConfirmation()
                 ->modalDescription('Are you sure you want to delete your account? This action cannot be undone.  Any tickets you have purchased will no longer be available.')
@@ -96,5 +79,41 @@ class Account extends Page
                 ->color(Color::Red),
             // ->action(fn () => $this->post->delete()),
         ];
+    }
+
+    protected function editModalAction(): Action
+    {
+        return Action::make('edit')
+            ->modalHeading('Edit Account Details')
+            ->fillForm(function () {
+                /** @var User */
+                $user = Auth::user();
+
+                return [
+                    'legal_name' => $user->legal_name,
+                    'preferred_name' => $user->preferred_name,
+                    'email' => $user->email,
+                    'birthday' => $user->birthday,
+                ];
+            })
+            ->form([
+                $this->getLegalNameFormComponent(),
+                $this->getPreferredNameFormComponent(),
+                TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->helperText('Changing your email address will require re-verification.'),
+                $this->getBirthdayFormComponent(),
+            ])
+            ->action(function (array $data) {
+                /** @var User */
+                $user = filament()->auth()->user();
+                $user->legal_name = $data['legal_name'];
+                $user->preferred_name = $data['preferred_name'];
+                $user->email = $data['email'];
+                $user->save();
+            });
     }
 }

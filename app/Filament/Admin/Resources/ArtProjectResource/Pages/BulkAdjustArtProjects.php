@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources\ArtProjectResource\Pages;
 
 use App\Enums\ArtProjectStatusEnum;
 use App\Enums\GrantFundingStatusEnum;
+use App\Enums\LockdownEnum;
 use App\Filament\Admin\Resources\ArtProjectResource;
 use App\Models\Event;
 use Filament\Resources\Pages\ListRecords;
@@ -16,6 +17,7 @@ use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Table;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 
 class BulkAdjustArtProjects extends ListRecords
@@ -28,6 +30,11 @@ class BulkAdjustArtProjects extends ListRecords
     ];
 
     protected static ?string $breadcrumb = 'Bulk Adjustments';
+
+    public static function canAccess(array $parameters = []): bool
+    {
+        return Auth::user()?->can('artProjects.update') && ! LockdownEnum::Grants->isLocked();
+    }
 
     public function table(Table $table): Table
     {

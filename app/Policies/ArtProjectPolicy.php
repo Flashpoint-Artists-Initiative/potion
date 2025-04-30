@@ -17,7 +17,7 @@ class ArtProjectPolicy extends AbstractModelPolicy
     /**
      * @param  ArtProject  $artProject
      */
-    public function view(?User $user, $artProject): bool
+    public function view(User $user, $artProject): bool
     {
         if ($user?->id === $artProject->user_id) {
             return true;
@@ -27,7 +27,7 @@ class ArtProjectPolicy extends AbstractModelPolicy
             return true;
         }
 
-        return false;
+        return parent::view($user, $artProject);
     }
 
     /**
@@ -35,7 +35,7 @@ class ArtProjectPolicy extends AbstractModelPolicy
      */
     public function update(User $user, $artProject): bool
     {
-        return $user->id === $artProject->user_id || $user->can('artProjects.update');
+        return $user->id === $artProject->user_id || parent::update($user, $artProject);
     }
 
     /**
@@ -43,6 +43,6 @@ class ArtProjectPolicy extends AbstractModelPolicy
      */
     public function delete(User $user, $artProject): bool
     {
-        return $user->id === $artProject->user_id || $user->can('artProjects.delete');
+        return $user->id === $artProject->user_id || parent::delete($user, $artProject);
     }
 }

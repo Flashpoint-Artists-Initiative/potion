@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
+use App\Enums\LockdownEnum;
 use App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
@@ -81,7 +82,10 @@ class PurchasedTicketsTable extends Component implements HasForms, HasTable
                     ->label('Transfer')
                     ->color(Color::Blue)
                     ->url(fn (PurchasedTicket $ticket) => TicketTransfers::getUrl(['purchased' => $ticket->id, 'action' => 'newTransfer']))
-                    ->visible(fn (PurchasedTicket $ticket) => $ticket->ticketType->transferable && $ticket->event->endDateCarbon->isFuture()),
+                    ->visible(fn (PurchasedTicket $ticket) => $ticket->ticketType->transferable &&
+                        $ticket->event->endDateCarbon->isFuture() &&
+                        ! LockdownEnum::Tickets->isLocked()
+                    ),
             ])
             ->paginated(false)
             ->emptyStateHeading('No tickets purchased')

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\App\Pages;
 
 use App\Enums\GrantFundingStatusEnum;
+use App\Enums\LockdownEnum;
 use App\Forms\Components\ArtProjectItemField;
 use App\Models\Event;
 use App\Models\Grants\ArtProject;
@@ -45,7 +46,11 @@ class ArtGrants extends Page
 
     public function __construct()
     {
-        $this->votingIsOpen = Event::getCurrentEvent()->votingIsOpen ?? false;
+        if (LockdownEnum::Grants->isLocked()) {
+            $this->votingIsOpen = false;
+        } else {
+            $this->votingIsOpen = Event::getCurrentEvent()->votingIsOpen ?? false;
+        }
     }
 
     public static function getNavigationLabel(): string
@@ -98,10 +103,16 @@ class ArtGrants extends Page
         if (Event::getCurrentEvent()?->votingEnabled == false) {
             redirect(Dashboard::getUrl());
         }
+        
         $this->form->fill();
         $this->maxVotes = Event::getCurrentEvent()->votesPerUser ?? 0;
         $this->hasVoted = Auth::user()?->hasVotedArtProjectsForEvent(Event::getCurrentEventId()) ?? true;
-        $this->votingIsOpen = Event::getCurrentEvent()->votingIsOpen ?? false;
+
+        if (LockdownEnum::Grants->isLocked()) {
+            $this->votingIsOpen = false;
+        } else {
+            $this->votingIsOpen = Event::getCurrentEvent()->votingIsOpen ?? false;
+        }
     }
 
     public function submitVotes(): void

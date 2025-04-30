@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\App\Clusters\UserPages\Pages;
 
+use App\Enums\LockdownEnum;
 use App\Filament\App\Clusters\UserPages;
 use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
@@ -61,6 +62,8 @@ class TicketTransfers extends Page implements HasForms, HasTable
 
     public bool $showWaiverWarning;
 
+    public bool $lockdownEnabled;
+
     #[On('active-event-updated')]
     public function mount(): void
     {
@@ -69,6 +72,8 @@ class TicketTransfers extends Page implements HasForms, HasTable
         $hasSignedWaiver = (Auth::user()?->hasSignedWaiverForEvent(Event::getCurrentEventId()) ?? false);
 
         $this->showWaiverWarning = $waiver && $hasTransfers && ! $hasSignedWaiver;
+
+        $this->lockdownEnabled = LockdownEnum::Tickets->isLocked();
     }
 
     protected function getHeaderActions(): array
@@ -142,7 +147,8 @@ class TicketTransfers extends Page implements HasForms, HasTable
                     ->view('filament.app.modals.ticket-transfer-confirmation'),
             ])
             ->modalAutofocus(false)
-            ->action(fn (array $data) => $this->createTransfer($data));
+            ->action(fn (array $data) => $this->createTransfer($data))
+            ->visible(fn() => ! $this->lockdownEnabled);
     }
 
     /**
@@ -197,7 +203,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
                         /** @var User $user */
                         $user = Auth::user();
 
-                        return $user->can('complete', $record);
+                        return ! $this->lockdownEnabled && $user->can('complete', $record);
                     })
                     ->color(fn () => $this->showWaiverWarning ? 'gray' : null)
                     ->disabled(fn () => $this->showWaiverWarning),

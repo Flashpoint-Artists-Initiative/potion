@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\App\Pages;
 
+use App\Enums\LockdownEnum;
 use App\Models\Event;
 use App\Models\Ticketing\Cart;
 use App\Models\Ticketing\ReservedTicket;
@@ -83,6 +84,15 @@ class PurchaseTickets extends Page
 
     public function form(Form $form): Form
     {
+        if (LockdownEnum::Tickets->isLocked()) {
+            return $form->schema([
+                Placeholder::make('locked')
+                    ->label('')
+                    ->content(new HtmlString('<h1 class="text-2xl text-center">Ticket sales are closed.</h1>'))
+                    ->dehydrated(false),
+            ]);
+        }
+
         $this->waiver = Event::getCurrentEvent()?->waiver;
         // Call here so we get an accurate ticket count
         $ticketStep = $this->buildTicketsStep();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
+use App\Enums\LockdownEnum;
 use App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 use App\Filament\App\Pages\PurchaseTickets;
 use App\Models\Ticketing\ReservedTicket;
@@ -55,12 +56,18 @@ class ReservedTicketsTable extends Component implements HasForms, HasTable
                 TableAction::make('purchase')
                     ->label('Purchase')
                     ->url(fn (ReservedTicket $ticket) => PurchaseTickets::getUrl(['reserved' => $ticket->id]))
-                    ->visible(fn (ReservedTicket $ticket) => $ticket->ticketType->available && $ticket->ticketType->event->endDateCarbon->isFuture()),
+                    ->visible(fn (ReservedTicket $ticket) => $ticket->ticketType->available &&
+                        $ticket->ticketType->event->endDateCarbon->isFuture() &&
+                        ! LockdownEnum::Tickets->isLocked()
+                    ),
                 TableAction::make('transfer')
                     ->label('Transfer')
                     ->color(Color::Blue)
                     ->url(fn (ReservedTicket $ticket) => TicketTransfers::getUrl(['reserved' => $ticket->id, 'action' => 'newTransfer']))
-                    ->visible(fn (ReservedTicket $ticket) => $ticket->ticketType->transferable && $ticket->ticketType->event->endDateCarbon->isFuture()),
+                    ->visible(fn (ReservedTicket $ticket) => $ticket->ticketType->transferable &&
+                        $ticket->ticketType->event->endDateCarbon->isFuture() &&
+                        ! LockdownEnum::Tickets->isLocked()
+                    ),
 
             ])
             ->paginated(false);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\App\Clusters\UserPages\Pages;
 
+use App\Enums\LockdownEnum;
 use App\Filament\App\Clusters\UserPages;
 use App\Livewire\PurchasedTicketsTable;
 use App\Livewire\ReservedTicketsTable;
@@ -31,6 +32,8 @@ class Tickets extends Page
     protected static ?string $cluster = UserPages::class;
 
     public bool $hasMultipleTickets;
+
+    public bool $ticketLockdown;
 
     public function ticketsInfolist(Infolist $infolist): Infolist
     {
@@ -100,5 +103,6 @@ class Tickets extends Page
     public function mount(): void
     {
         $this->hasMultipleTickets = Auth::authenticate()->purchasedTickets()->currentEvent()->count() > 1;
+        $this->ticketLockdown = LockdownEnum::Tickets->isLocked();
     }
 }

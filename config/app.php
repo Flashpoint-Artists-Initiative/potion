@@ -196,4 +196,5 @@ return [
     'cart_expiration_minutes' => 10,
 
     'default_event_id' => env('DEFAULT_EVENT_ID', 0),
+    'use_single_lockdown' => env('USE_SINGLE_LOCKDOWN', true),
 ];
