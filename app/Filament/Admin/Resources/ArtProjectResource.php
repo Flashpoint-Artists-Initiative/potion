@@ -30,6 +30,11 @@ class ArtProjectResource extends Resource
 
     protected static ?string $navigationLabel = 'Art Grants';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Event::where('id', Event::getCurrentEventId())->exists();;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -149,7 +154,8 @@ class ArtProjectResource extends Resource
                     ->url(fn ($record) => $record->budget_link, true)
                     ->icon('heroicon-m-link')
                     ->color('primary')
-                    ->label(' Budget'),
+                    ->label(' Budget')
+                    ->visible(fn ($record) => $record->budget_link),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])

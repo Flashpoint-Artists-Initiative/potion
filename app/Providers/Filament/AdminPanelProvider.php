@@ -35,8 +35,8 @@ class AdminPanelProvider extends CommonPanelProvider
                 Pages\Dashboard::class,
             ])
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Widgets\AccountWidget::class,
+                // Widgets\FilamentInfoWidget::class,
             ])
             ->authMiddleware([
                 RedirectIfNotFilamentAdmin::class,
@@ -55,12 +55,19 @@ class AdminPanelProvider extends CommonPanelProvider
     {
         parent::register();
 
+        // Event Selector
         FilamentView::registerRenderHook(PanelsRenderHook::SIDEBAR_NAV_START, fn (): string => Blade::render('@livewire(\'event-selector\')'));
+        
+        // Custom CSS and JS
         FilamentView::registerRenderHook(PanelsRenderHook::BODY_END, fn (): string => Blade::render("@vite('resources/js/app.js')"));
+
+        // Footer Links
         FilamentView::registerRenderHook(PanelsRenderHook::FOOTER,
             fn (): View => view('panel-footer'),
             // [Login::class, Register::class, RequestPasswordReset::class] // For now, show on every page
         );
+
+        // Lockdown Banner
         FilamentView::registerRenderHook(PanelsRenderHook::CONTENT_START,
             function (): ?string {
                 // Only using one global lockdown for now, change this if we need to use multiple lockdowns

@@ -49,10 +49,12 @@ class EventResource extends Resource
                             ->maxLength(255),
                         Forms\Components\DatePicker::make('start_date')
                             ->required()
-                            ->beforeOrEqual('end_date'),
+                            ->beforeOrEqual('end_date')
+                            ->helperText('The first day that has volunteer shifts.'),
                         Forms\Components\DatePicker::make('end_date')
                             ->required()
-                            ->afterOrEqual('start_date'),
+                            ->afterOrEqual('start_date')
+                            ->helperText('The last public day of the event.'),
                         Fieldset::make('Ticket Sales')
                             ->schema([
                                 Forms\Components\TextInput::make('tickets_per_sale')
@@ -68,7 +70,8 @@ class EventResource extends Resource
                             ->schema([
                                 Forms\Components\Toggle::make('voting_enabled')
                                     ->inline(false)
-                                    ->label('Voting Enabled'),
+                                    ->label('Voting Enabled')
+                                    ->helperText('Enables public voting for art grants.'),
                                 Forms\Components\DateTimePicker::make('voting_ends')
                                     ->label('Voting Ends')
                                     ->afterOrEqual('start_date')
@@ -165,8 +168,9 @@ class EventResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Action::make('Select')
                     ->color('success')
-                    ->icon('heroicon-m-academic-cap')
-                    ->dispatch('update-active-event', fn (Event $record) => ['eventId' => $record->id]),
+                    ->icon('heroicon-m-arrow-right-circle')
+                    ->dispatch('update-active-event', fn (Event $record) => ['eventId' => $record->id])
+                    ->tooltip('Use this event for the event-specific resources'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

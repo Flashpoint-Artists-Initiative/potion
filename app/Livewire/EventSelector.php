@@ -21,7 +21,14 @@ class EventSelector extends Component
     protected function getEvents(): Collection
     {
         if (empty($this->events)) {
-            $this->events = Event::where('active', true)->orderBy('start_date')->get()->mapWithKeys(fn (Event $item) => [$item['id'] => $item['name']]);
+            $query = Event::query();
+
+            if (filament()->getCurrentPanel()?->getId() === 'app')
+            {
+                $query->where('active', true);
+            }
+
+            $this->events = $query->orderBy('start_date')->get()->mapWithKeys(fn (Event $item) => [$item['id'] => $item['name']]);
         }
 
         return $this->events;
@@ -34,9 +41,9 @@ class EventSelector extends Component
 
     public function render(): View
     {
-        if ($this->eventId === 0) {
-            $this->eventId = (int) $this->getEvents()->keys()->first();
-        }
+        // if ($this->eventId === 0) {
+        //     $this->eventId = (int) $this->getEvents()->keys()->first();
+        // }
 
         return view('livewire.event-selector-select', [
             'events' => $this->getEvents(),

@@ -29,14 +29,21 @@ class TicketTypeResource extends Resource
 
     protected static ?string $navigationLabel = 'Ticketing';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Event::where('id', Event::getCurrentEventId())->exists();;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255)
-                    ->columnSpanFull(),
+                    ->maxLength(255),
+                Forms\Components\Placeholder::make('event.name')
+                    ->label('Event')
+                    ->content(fn (?TicketType $record) => $record->event->name ?? Event::getCurrentEvent()->name ?? 'No Event'),
                 Forms\Components\DateTimePicker::make('sale_start_date')
                     ->required()
                     ->before('sale_end_date'),
@@ -134,7 +141,8 @@ class TicketTypeResource extends Resource
                         ->deselectRecordsAfterCompletion()
                         ->action(fn (Collection $records) => $records->each->update(['active' => false])),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading(fn() => Event::getCurrentEvent() ? 'No Ticket Types' : 'No Event Selected');
     }
 
     public static function getRelations(): array

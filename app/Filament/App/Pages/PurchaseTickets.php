@@ -72,6 +72,11 @@ class PurchaseTickets extends Page
         $this->refreshProperties();
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Event::where('id', Event::getCurrentEventId())->where('active', true)->exists();;
+    }
+
     protected function refreshProperties(): void
     {
         /** @var User */
@@ -303,6 +308,10 @@ class PurchaseTickets extends Page
     #[On('active-event-updated')]
     public function mount(): void
     {
+        if (! Event::where('id', Event::getCurrentEventId())->where('active', true)->exists()) {
+            abort(404);
+        }
+
         $this->form->fill();
         $this->refreshProperties();
     }

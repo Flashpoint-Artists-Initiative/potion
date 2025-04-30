@@ -1,5 +1,5 @@
 {{-- The blank lines around the outermost block are important for some reason --}}
-@if (filled($events))
+@if (filled($events) && $events->count() > 1)
 
 <div class="flex items-center">
     <x-filament::input.wrapper>
@@ -11,6 +11,12 @@
             @endforeach
         </x-filament::input.select>
     </x-filament::input.wrapper>
+</div>
+
+@elseif (filled($events) && $events->count() == 1)
+
+<div class="flex items-center">
+    {{ $events->first() }}
 </div>
 
 @else
