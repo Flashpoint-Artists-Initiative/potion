@@ -14,6 +14,7 @@ enum PageContentEnum: string implements HasLabel
     case TicketPurchase = 'ticket-purchase';
     case Checkout = 'checkout';
     case CheckoutComplete = 'checkout-complete';
+    case ArtGrantVoting = 'art-grant-voting';
 
     public function getLabel(): string
     {
@@ -22,6 +23,7 @@ enum PageContentEnum: string implements HasLabel
             self::TicketPurchase => 'Ticket Purchase Page',
             self::Checkout => 'Checkout',
             self::CheckoutComplete => 'Checkout Complete',
+            self::ArtGrantVoting => 'Art Grant Voting',
         };
     }
 

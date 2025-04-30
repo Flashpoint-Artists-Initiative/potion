@@ -21,15 +21,15 @@
     class="art-grants-page"
     >
         @if (!$hasVoted && $votingIsOpen)
-            
-        <p>[Insert Fluff Here].  Click a project to view more details.  
-            Use the buttons to the right of each project to allocate your votes, 
-            then hit the submit button at the bottom of the page.
-        </p>
+            @if ($artGrantContent)
+                <div class="prose dark:prose-invert max-w-none">
+                    {!! str($artGrantContent)->sanitizeHtml() !!}
+                </div>
+            @endif
         @elseif ($hasVoted && $votingIsOpen)
-        <p class="pb-4">You've already voted, but you can still check out all the projects!</p>
+            <p class="pb-4">You've already voted, but you can still check out all the projects!</p>
         @else
-        <p class="pb-4">Voting has ended, the projects below have all been funded!</p>
+            <p class="pb-4">Voting has ended, the projects below have all been funded!</p>
         @endif
         <x-filament-panels::form wire:submit="submitVotes">
             @if (!$hasVoted && $votingIsOpen)

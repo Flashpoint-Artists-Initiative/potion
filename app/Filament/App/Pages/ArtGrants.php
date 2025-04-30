@@ -44,6 +44,8 @@ class ArtGrants extends Page
 
     public bool $votingIsOpen;
 
+    public string $artGrantContent;
+
     public function __construct()
     {
         if (LockdownEnum::Grants->isLocked()) {
@@ -113,6 +115,8 @@ class ArtGrants extends Page
         } else {
             $this->votingIsOpen = Event::getCurrentEvent()->votingIsOpen ?? false;
         }
+
+        $this->artGrantContent = Event::getCurrentEvent()?->artGrantVotingContent->formattedContent ?? '';
     }
 
     public function submitVotes(): void

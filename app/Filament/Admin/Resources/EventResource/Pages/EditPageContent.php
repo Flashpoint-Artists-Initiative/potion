@@ -16,9 +16,6 @@ use Filament\Forms\Get;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Str;
 
-/**
- * If more pages are added later, modify this class to be extendable for multiple pages
- */
 class EditPageContent extends EditRecord
 {
     protected static string $resource = EventResource::class;

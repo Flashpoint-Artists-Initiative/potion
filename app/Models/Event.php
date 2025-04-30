@@ -166,6 +166,14 @@ class Event extends Model implements ContractsAuditable
     }
 
     /**
+     * @return HasOne<PageContent, $this>
+     */
+    public function artGrantVotingContent(): HasOne
+    {
+        return $this->hasOne(PageContent::class)->where('page', PageContentEnum::ArtGrantVoting);
+    }
+
+    /**
      * @return Attribute<string, string>
      */
     public function startDate(): Attribute
