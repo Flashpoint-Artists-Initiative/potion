@@ -16,6 +16,7 @@ class WebLockdownService
     protected bool $singleLockdown;
 
     public const GLOBAL_KEY = 'globalLockdown';
+
     public const GLOBAL_TEXT_KEY = 'globalLockdownText';
 
     public function __construct()
@@ -37,6 +38,7 @@ class WebLockdownService
     {
         if ($this->singleLockdown) {
             Cache::forever(self::GLOBAL_KEY, $status);
+
             return;
         }
 

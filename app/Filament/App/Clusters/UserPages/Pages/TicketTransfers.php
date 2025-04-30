@@ -148,7 +148,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
             ])
             ->modalAutofocus(false)
             ->action(fn (array $data) => $this->createTransfer($data))
-            ->visible(fn() => ! $this->lockdownEnabled);
+            ->visible(fn () => ! $this->lockdownEnabled);
     }
 
     /**

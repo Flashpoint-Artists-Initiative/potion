@@ -70,6 +70,7 @@ class AdminPanelProvider extends CommonPanelProvider
                         Cache::get(WebLockdownService::GLOBAL_TEXT_KEY, 'POTION is in read-only mode in order to move the data offline for the event.') .
                     '</x-notification-banner>');
                 }
+
                 return null;
             });
     }

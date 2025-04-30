@@ -105,7 +105,7 @@ class ArtGrants extends Page
         if (Event::getCurrentEvent()?->votingEnabled == false) {
             redirect(Dashboard::getUrl());
         }
-        
+
         $this->form->fill();
         $this->maxVotes = Event::getCurrentEvent()->votesPerUser ?? 0;
         $this->hasVoted = Auth::user()?->hasVotedArtProjectsForEvent(Event::getCurrentEventId()) ?? true;

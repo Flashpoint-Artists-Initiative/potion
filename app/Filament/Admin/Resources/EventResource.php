@@ -121,7 +121,7 @@ class EventResource extends Resource
                             ->statePath('settings')
                             ->hidden(config('app.use_single_lockdown')),
                     ])
-                    ->grow(false),
+                        ->grow(false),
                 ])
                     ->from('md'),
             ])

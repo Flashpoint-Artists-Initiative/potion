@@ -19,11 +19,11 @@ class ArtProjectPolicy extends AbstractModelPolicy
      */
     public function view(User $user, $artProject): bool
     {
-        if ($user?->id === $artProject->user_id) {
+        if ($user->id === $artProject->user_id) {
             return true;
         }
 
-        if ($user?->can('artProjects.viewPending')) {
+        if ($user->can('artProjects.viewPending')) {
             return true;
         }
 

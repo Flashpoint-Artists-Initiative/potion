@@ -50,8 +50,8 @@ class Lockdown extends Page
     public function mount(): void
     {
         $this->form->fill([
-            'lockdown' =>Cache::get(WebLockdownService::GLOBAL_KEY, false),
-            'lockdownBannerText' =>Cache::get(WebLockdownService::GLOBAL_TEXT_KEY, ''),
+            'lockdown' => Cache::get(WebLockdownService::GLOBAL_KEY, false),
+            'lockdownBannerText' => Cache::get(WebLockdownService::GLOBAL_TEXT_KEY, ''),
         ]);
     }
 
