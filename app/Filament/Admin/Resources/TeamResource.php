@@ -19,13 +19,16 @@ class TeamResource extends Resource
 {
     protected static ?string $model = Team::class;
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     protected static ?string $navigationGroup = 'Event Specific';
 
-    protected static bool $shouldRegisterNavigation = false;
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Event::where('id', Event::getCurrentEventId())->exists();
+    }
 
     public static function form(Form $form): Form
     {
