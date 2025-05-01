@@ -95,6 +95,15 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         );
     }
 
+    public function communityFunding(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->votes->sum('pivot.votes') * $this->event->dollarsPerVote;
+            },
+        );
+    }
+
     public function totalFunding(): Attribute
     {
         return Attribute::make(

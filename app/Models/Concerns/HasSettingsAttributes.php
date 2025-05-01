@@ -20,7 +20,9 @@ trait HasSettingsAttributes
         return [
             // Get
             function (mixed $value, array $attributes) use ($key, $defaultValue, $attribute): mixed {
-                return Arr::dot($this->{$attribute}->toArray())[$key] ?? $defaultValue;
+                // $arr = is_array($this->{$attribute}) ? $this->{$attribute} : $this->{$attribute}->toArray();
+                // return Arr::dot($arr)[$key] ?? $defaultValue;
+                return $this->{$attribute}[$key] ?? $defaultValue;
             },
             // Set
             function (mixed $value) use ($key, $type, $attribute) {
@@ -33,9 +35,10 @@ trait HasSettingsAttributes
                     default => $value,
                 };
 
-                $dotArray = Arr::dot($this->{$attribute}->toArray());
-                $dotArray[$key] = $value;
-                $this->{$attribute} = Arr::undot($dotArray);
+                // $dotArray = Arr::dot($this->{$attribute}->toArray() ?? []);
+                // $dotArray[$key] = $value;
+                // $this->{$attribute} = Arr::undot($dotArray);
+                $this->{$attribute}[$key] = $value;
 
                 return [];
             },

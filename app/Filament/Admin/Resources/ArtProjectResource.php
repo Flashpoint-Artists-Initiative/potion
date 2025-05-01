@@ -89,6 +89,8 @@ class ArtProjectResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $dollarsPerVote = Event::getCurrentEvent()->dollarsPerVote ?? 1.0;
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
@@ -118,13 +120,17 @@ class ArtProjectResource extends Resource
                 Tables\Columns\TextColumn::make('totalVotes')
                     ->label('Votes')
                     ->numeric()
-                    ->sortable()
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->leftJoinRelationship('votes')->orderBy('project_user_votes.votes', $direction))
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('totalFunding')
                     ->label('Funding')
                     ->numeric()
                     ->prefix('$')
-                    ->sortable()
+                    ->sortable(query: function (Builder $query, string $direction) use ($dollarsPerVote) {
+                        // Copied to BulkAdjustArtProjects
+                        return $query->leftJoinRelationship('votes')
+                            ->orderByRaw(sprintf('(COALESCE(project_user_votes.votes,0) * %f) + committee_funding %s', $dollarsPerVote, $direction));
+                    })
                     ->toggleable(),
                 // Tables\Columns\SelectColumn::make('project_status')
                 //     ->label('Status')

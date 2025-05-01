@@ -57,7 +57,7 @@ class WebLockdownService
     public function getLockdownStatus(LockdownEnum $type, bool $global = false): bool
     {
         if ($this->singleLockdown) {
-            return Cache::get(self::GLOBAL_KEY, false);
+            return once(fn () => Cache::get(self::GLOBAL_KEY, false));
         }
 
         // We shouldn't need to check a specific event's status, just the current one
@@ -71,6 +71,6 @@ class WebLockdownService
             }
         }
 
-        return Cache::get($key, false);
+        return once(fn () => Cache::get($key, false));
     }
 }

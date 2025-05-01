@@ -9,6 +9,7 @@ use App\Enums\GrantFundingStatusEnum;
 use App\Enums\LockdownEnum;
 use App\Filament\Admin\Resources\ArtProjectResource;
 use App\Models\Event;
+use App\Models\Grants\ArtProject;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
@@ -16,6 +17,7 @@ use Filament\Tables\Columns;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
@@ -38,7 +40,7 @@ class BulkAdjustArtProjects extends ListRecords
 
     public function table(Table $table): Table
     {
-        $dollarsPerVote = Event::getCurrentEvent()->dollarsPerVote ?? 1;
+        $dollarsPerVote = Event::getCurrentEvent()->dollarsPerVote ?? 1.0;
 
         return $table
             ->columns([
@@ -77,17 +79,20 @@ class BulkAdjustArtProjects extends ListRecords
                 Columns\TextColumn::make('totalVotes')
                     ->label('Votes')
                     ->numeric()
-                    ->sortable()
+                    ->sortable(query: fn (EloquentBuilder $query, string $direction) => $query->leftJoinRelationship('votes')->orderBy('project_user_votes.votes', $direction))
                     ->toggleable()
                     ->summarize(Summarizer::make()
                         ->using(fn (Builder $query) => $query->join('project_user_votes', 'art_project_id', '=', 'art_projects.id')->sum('votes'))
                     ),
-                Columns\TextColumn::make('totalFunding')
+                Columns\TextColumn::make('communityFunding')
                     ->label(new HtmlString('Community<br>Funding'))
                     ->numeric()
                     ->prefix('$')
-                    ->sortable()
-                    ->toggleable()
+                    ->sortable(query: function (EloquentBuilder $query, string $direction) use ($dollarsPerVote) {
+                        // Copied from ArtProjectResource
+                        return $query->leftJoinRelationship('votes')
+                            ->orderByRaw(sprintf('(COALESCE(project_user_votes.votes,0) * %f) + committee_funding %s', $dollarsPerVote, $direction));
+                    })->toggleable()
                     ->summarize(Summarizer::make()
                         ->prefix('$')
                         ->using(fn (Builder $query) => $query
@@ -98,7 +103,8 @@ class BulkAdjustArtProjects extends ListRecords
                     ->type('number')
                     ->sortable()
                     ->toggleable()
-                    ->summarize(Sum::make()->prefix('$')),
+                    ->summarize(Sum::make()->prefix('$'))
+                    ->updateStateUsing(fn (ArtProject $record, $state) => $record->update(['committee_funding' => $state ?? 0])),
                 Columns\SelectColumn::make('project_status')
                     ->label('Status')
                     ->options(ArtProjectStatusEnum::class)
