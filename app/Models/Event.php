@@ -261,7 +261,7 @@ class Event extends Model implements ContractsAuditable
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $this->votingEnabled
             //  &&
-                // now()->lessThan($this->votingEnds),
+            // now()->lessThan($this->votingEnds),
         );
     }
 

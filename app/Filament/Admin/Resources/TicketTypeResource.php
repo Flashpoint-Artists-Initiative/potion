@@ -31,7 +31,7 @@ class TicketTypeResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Event::where('id', Event::getCurrentEventId())->exists();;
+        return Event::where('id', Event::getCurrentEventId())->exists();
     }
 
     public static function form(Form $form): Form
@@ -142,7 +142,7 @@ class TicketTypeResource extends Resource
                         ->action(fn (Collection $records) => $records->each->update(['active' => false])),
                 ]),
             ])
-            ->emptyStateHeading(fn() => Event::getCurrentEvent() ? 'No Ticket Types' : 'No Event Selected');
+            ->emptyStateHeading(fn () => Event::getCurrentEvent() ? 'No Ticket Types' : 'No Event Selected');
     }
 
     public static function getRelations(): array

@@ -184,7 +184,7 @@ class ReservedTicketResource extends Resource
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ])
-            ->emptyStateHeading(fn() => Event::getCurrentEvent() ? 'No Reserved Tickets' : 'No Event Selected');
+            ->emptyStateHeading(fn () => Event::getCurrentEvent() ? 'No Reserved Tickets' : 'No Event Selected');
     }
 
     public static function getRelations(): array

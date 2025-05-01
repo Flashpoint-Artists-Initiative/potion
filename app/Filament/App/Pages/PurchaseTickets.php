@@ -74,7 +74,7 @@ class PurchaseTickets extends Page
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Event::where('id', Event::getCurrentEventId())->where('active', true)->exists();;
+        return Event::where('id', Event::getCurrentEventId())->where('active', true)->exists();
     }
 
     protected function refreshProperties(): void

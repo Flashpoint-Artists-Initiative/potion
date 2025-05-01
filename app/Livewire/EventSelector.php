@@ -23,8 +23,7 @@ class EventSelector extends Component
         if (empty($this->events)) {
             $query = Event::query();
 
-            if (filament()->getCurrentPanel()?->getId() === 'app')
-            {
+            if (filament()->getCurrentPanel()?->getId() === 'app') {
                 $query->where('active', true);
             }
 
