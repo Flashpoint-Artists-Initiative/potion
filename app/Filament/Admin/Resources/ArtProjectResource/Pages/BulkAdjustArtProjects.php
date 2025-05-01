@@ -20,6 +20,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
 
 class BulkAdjustArtProjects extends ListRecords
@@ -79,7 +80,13 @@ class BulkAdjustArtProjects extends ListRecords
                 Columns\TextColumn::make('totalVotes')
                     ->label('Votes')
                     ->numeric()
-                    ->sortable(query: fn (EloquentBuilder $query, string $direction) => $query->leftJoinRelationship('votes')->orderBy('project_user_votes.votes', $direction))
+                    ->sortable(query: function (EloquentBuilder $query, string $direction) {
+                        // Copied to BulkAdjustArtProjects
+                        return $query->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
+                            ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
+                            ->orderBy('totalVotes', $direction)
+                            ->groupBy('art_projects.id');
+                    })
                     ->toggleable()
                     ->summarize(Summarizer::make()
                         ->using(fn (Builder $query) => $query->join('project_user_votes', 'art_project_id', '=', 'art_projects.id')->sum('votes'))
@@ -88,10 +95,13 @@ class BulkAdjustArtProjects extends ListRecords
                     ->label(new HtmlString('Community<br>Funding'))
                     ->numeric()
                     ->prefix('$')
-                    ->sortable(query: function (EloquentBuilder $query, string $direction) use ($dollarsPerVote) {
+                    ->sortable(query: function (EloquentBuilder $query, string $direction) {
                         // Copied from ArtProjectResource
-                        return $query->leftJoinRelationship('votes')
-                            ->orderByRaw(sprintf('(COALESCE(project_user_votes.votes,0) * %f) + committee_funding %s', $dollarsPerVote, $direction));
+                        return $query//->leftJoinRelationship('votes')
+                            ->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
+                            ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
+                            ->groupBy('art_projects.id')
+                            ->orderByRaw(sprintf('COALESCE(totalVotes,0) %s', $direction));
                     })->toggleable()
                     ->summarize(Summarizer::make()
                         ->prefix('$')

@@ -17,6 +17,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\DB;
 
 class ArtProjectResource extends Resource
 {
@@ -120,16 +121,25 @@ class ArtProjectResource extends Resource
                 Tables\Columns\TextColumn::make('totalVotes')
                     ->label('Votes')
                     ->numeric()
-                    ->sortable(query: fn (Builder $query, string $direction) => $query->leftJoinRelationship('votes')->orderBy('project_user_votes.votes', $direction))
+                    ->sortable(query: function (Builder $query, string $direction) {
+                        // Copied to BulkAdjustArtProjects
+                        return $query->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
+                            ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
+                            ->orderBy('totalVotes', $direction)
+                            ->groupBy('art_projects.id');
+                    })
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('totalFunding')
                     ->label('Funding')
                     ->numeric()
                     ->prefix('$')
                     ->sortable(query: function (Builder $query, string $direction) use ($dollarsPerVote) {
-                        // Copied to BulkAdjustArtProjects
-                        return $query->leftJoinRelationship('votes')
-                            ->orderByRaw(sprintf('(COALESCE(project_user_votes.votes,0) * %f) + committee_funding %s', $dollarsPerVote, $direction));
+                        // Copied to BulkAdjustArtProjects, without the committee funding
+                        return $query//->leftJoinRelationship('votes')
+                            ->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
+                            ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
+                            ->groupBy('art_projects.id')
+                            ->orderByRaw(sprintf('(COALESCE(totalVotes,0) * %f) + committee_funding %s', $dollarsPerVote, $direction));
                     })
                     ->toggleable(),
                 // Tables\Columns\SelectColumn::make('project_status')
