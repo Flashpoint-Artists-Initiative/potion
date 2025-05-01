@@ -71,6 +71,11 @@ class Team extends Model implements ContractsAuditable
         return $this->belongsToMany(User::class, 'volunteer_data');
     }
 
+    public function scopeCurrentEvent(Builder $query): Builder
+    {
+        return $query->where('event_id', Event::getCurrentEventId());
+    }
+
     /**
      * @return Attribute<int, void>
      */
