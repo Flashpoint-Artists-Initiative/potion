@@ -257,10 +257,11 @@ class Event extends Model implements ContractsAuditable
 
     public function votingIsOpen(): Attribute
     {
+        // I don't know wtf is going on with enabling votingEnds here, but everything breaks
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => $this->votingEnabled &&
-                now()->isBetween($this->startDateCarbon, $this->endDateCarbon) &&
-                now()->lessThan($this->votingEnds),
+            get: fn (mixed $value, array $attributes) => $this->votingEnabled
+            //  &&
+                // now()->lessThan($this->votingEnds),
         );
     }
 

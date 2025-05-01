@@ -71,11 +71,12 @@ class EventResource extends Resource
                                 Forms\Components\Toggle::make('voting_enabled')
                                     ->inline(false)
                                     ->label('Voting Enabled')
-                                    ->helperText('Enables public voting for art grants.'),
-                                Forms\Components\DateTimePicker::make('voting_ends')
-                                    ->label('Voting Ends')
-                                    ->afterOrEqual('start_date')
-                                    ->helperText('The date and time voting ends. Leave blank to disable voting automatically ending.'),
+                                    ->helperText('Enables public voting for art grants.')
+                                    ->columnSpanFull(),
+                                // Forms\Components\DateTimePicker::make('voting_ends')
+                                //     ->label('Voting Ends')
+                                //     ->afterOrEqual('start_date')
+                                //     ->helperText('The date and time voting ends. Leave blank to disable voting automatically ending.'),
                                 Forms\Components\TextInput::make('dollars_per_vote')
                                     ->label('Dollars per Vote')
                                     ->required()
