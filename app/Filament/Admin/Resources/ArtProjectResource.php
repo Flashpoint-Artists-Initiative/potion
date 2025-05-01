@@ -122,11 +122,13 @@ class ArtProjectResource extends Resource
                     ->label('Votes')
                     ->numeric()
                     ->sortable(query: function (Builder $query, string $direction) {
-                        // Copied to BulkAdjustArtProjects
-                        return $query->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
+                        // This query is necessary to sort based on a calculated column and not get duplicate models
+                        // Copy below and to BulkAdjustArtProjects
+                        return $query
+                            ->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
                             ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
-                            ->orderBy('totalVotes', $direction)
-                            ->groupBy('art_projects.id');
+                            ->groupBy('art_projects.id')
+                            ->orderBy('totalVotes', $direction);
                     })
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('totalFunding')
@@ -134,8 +136,7 @@ class ArtProjectResource extends Resource
                     ->numeric()
                     ->prefix('$')
                     ->sortable(query: function (Builder $query, string $direction) use ($dollarsPerVote) {
-                        // Copied to BulkAdjustArtProjects, without the committee funding
-                        return $query//->leftJoinRelationship('votes')
+                        return $query
                             ->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
                             ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
                             ->groupBy('art_projects.id')
