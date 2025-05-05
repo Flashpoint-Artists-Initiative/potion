@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models\Ticketing;
 
+use App\Mail\TicketTransferMail;
 use App\Models\Event;
 use App\Models\User;
-use App\Notifications\TicketTransferNotification;
 use App\Observers\TicketTransferObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
@@ -177,8 +178,8 @@ class TicketTransfer extends Model implements ContractsAuditable
 
         $transfer->load(['reservedTickets', 'purchasedTickets']);
 
-        $user = User::findOrFail($userId);
-        $user->notify(new TicketTransferNotification($transfer));
+        Mail::to($email)
+            ->send(new TicketTransferMail($transfer));
 
         return $transfer;
     }
