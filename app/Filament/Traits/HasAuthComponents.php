@@ -17,7 +17,7 @@ trait HasAuthComponents
     protected function getLegalNameFormComponent(): Component
     {
         return TextInput::make('legal_name')
-            ->label('Legal Name')
+            ->label('Full Legal Name')
             ->required()
             ->maxLength(255)
             ->helperText('As it shows up on your ID.  This will only be visible to gate staff as you enter the event.')

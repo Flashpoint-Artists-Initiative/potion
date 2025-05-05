@@ -9,6 +9,7 @@ use App\Filament\App\Clusters\UserPages;
 use App\Filament\Traits\HasAuthComponents;
 use App\Models\User;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
@@ -97,7 +98,9 @@ class Account extends Page
                 ];
             })
             ->form([
-                $this->getLegalNameFormComponent(),
+                Placeholder::make('legal_name')
+                    ->label('Full Legal Name')
+                    ->helperText(new HtmlString('Your legal name cannot be changed.  If you need to change it, please contact <a class="text-primary-400" href="mailto:' . config('mail.from.address') . '?subject=Legal Name Change">' . config('mail.from.address').'</a>.')),
                 $this->getPreferredNameFormComponent(),
                 TextInput::make('email')
                     ->email()
