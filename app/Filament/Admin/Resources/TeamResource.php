@@ -9,14 +9,19 @@ use App\Models\Event;
 use App\Models\Volunteering\Team;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Guava\FilamentNestedResources\Ancestor;
+use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TeamResource extends Resource
 {
+    use NestedResource;
+
     protected static ?string $model = Team::class;
 
     protected static ?int $navigationSort = 3;
@@ -34,9 +39,6 @@ class TeamResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('event_id')
-                    ->relationship('event', 'name')
-                    ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -67,9 +69,6 @@ class TeamResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('event.name')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
@@ -107,6 +106,9 @@ class TeamResource extends Resource
             'create' => Pages\CreateTeam::route('/create'),
             'view' => Pages\ViewTeam::route('/{record}'),
             'edit' => Pages\EditTeam::route('/{record}/edit'),
+
+            'shiftTypes' => Pages\ManageShiftTypes::route('/{record}/shift-types'),
+            'shiftTypes.create' => Pages\CreateShiftType::route('/{record}/shift-types/create'),
         ];
     }
 
@@ -117,5 +119,25 @@ class TeamResource extends Resource
                 SoftDeletingScope::class,
             ])
             ->where('event_id', Event::getCurrentEventId());
+    }
+
+    // This is the root resource
+    public static function getAncestor(): ?Ancestor
+    {
+        return null;
+    }
+
+    public static function getBreadcrumbRecordLabel(Team $record): string
+    {
+        return $record->name;
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewTeam::class,
+            Pages\EditTeam::class,
+            Pages\ManageShiftTypes::class,
+        ]);
     }
 }

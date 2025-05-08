@@ -135,7 +135,7 @@ class ArtProjectResource extends Resource
                     ->prefix('$')
                     ->sortable(query: function (Builder $query, string $direction) use ($dollarsPerVote) {
                         // Copied to BulkAdjustArtProjects, without the committee funding
-                        return $query//->leftJoinRelationship('votes')
+                        return $query// ->leftJoinRelationship('votes')
                             ->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
                             ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
                             ->groupBy('art_projects.id')
