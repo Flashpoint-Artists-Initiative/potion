@@ -46,7 +46,7 @@ class BulkAdjustArtProjects extends ListRecords
         return $table
             ->columns([
                 Columns\TextColumn::make('fundingStatus')
-                    ->formatStateUsing(fn (GrantFundingStatusEnum $state) => match ($state) {
+                    ->formatStateUsing(fn(GrantFundingStatusEnum $state) => match ($state) {
                         GrantFundingStatusEnum::Unfunded => 'Unfunded',
                         GrantFundingStatusEnum::MinReached => 'Min Reached',
                         GrantFundingStatusEnum::MaxReached => 'Max Reached',
@@ -59,7 +59,7 @@ class BulkAdjustArtProjects extends ListRecords
                 Columns\TextColumn::make('name')
                     ->searchable()
                     ->limit(30)
-                    ->tooltip(fn ($record) => $record->name),
+                    ->tooltip(fn($record) => $record->name),
                 Columns\TextColumn::make('artist_name')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -89,15 +89,17 @@ class BulkAdjustArtProjects extends ListRecords
                             ->orderBy('totalVotes', $direction);
                     })
                     ->toggleable()
-                    ->summarize(Summarizer::make()
-                        ->using(fn (Builder $query) => $query->join('project_user_votes', 'art_project_id', '=', 'art_projects.id')->sum('votes'))
+                    ->summarize(
+                        Summarizer::make()
+                            ->using(fn(Builder $query) => $query->join('project_user_votes', 'art_project_id', '=', 'art_projects.id')->sum('votes'))
                     ),
                 Columns\TextColumn::make('communityFunding')
                     ->label(new HtmlString('Community<br>Funding'))
                     ->numeric()
                     ->prefix('$')
                     ->sortable(query: function (EloquentBuilder $query, string $direction) {
-                        return $query
+                        // Copied from ArtProjectResource
+                        return $query // ->leftJoinRelationship('votes')
                             ->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
                             ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
                             ->groupBy('art_projects.id')
@@ -105,16 +107,16 @@ class BulkAdjustArtProjects extends ListRecords
                     })->toggleable()
                     ->summarize(Summarizer::make()
                         ->prefix('$')
-                        ->using(fn (Builder $query) => $query
+                        ->using(fn(Builder $query) => $query
                             ->join('project_user_votes', 'art_project_id', '=', 'art_projects.id')->sum('votes')
-                             * $dollarsPerVote)),
+                            * $dollarsPerVote)),
                 Columns\TextInputColumn::make('committee_funding')
                     ->label(new HtmlString('Committee<br>Funding'))
                     ->type('number')
                     ->sortable()
                     ->toggleable()
                     ->summarize(Sum::make()->prefix('$'))
-                    ->updateStateUsing(fn (ArtProject $record, $state) => $record->update(['committee_funding' => $state ?? 0])),
+                    ->updateStateUsing(fn(ArtProject $record, $state) => $record->update(['committee_funding' => $state ?? 0])),
                 Columns\SelectColumn::make('project_status')
                     ->label('Status')
                     ->options(ArtProjectStatusEnum::class)
@@ -137,7 +139,7 @@ class BulkAdjustArtProjects extends ListRecords
             ])
             ->actions([
                 Action::make('budget')
-                    ->url(fn ($record) => $record->budget_link, true)
+                    ->url(fn($record) => $record->budget_link, true)
                     ->icon('heroicon-m-link')
                     ->color('primary')
                     ->label(' Budget'),

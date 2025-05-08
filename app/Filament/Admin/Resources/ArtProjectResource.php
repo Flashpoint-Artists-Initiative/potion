@@ -104,7 +104,7 @@ class ArtProjectResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->limit(30)
-                    ->tooltip(fn ($record) => $record->name),
+                    ->tooltip(fn($record) => $record->name),
                 UserColumn::make('user')
                     ->searchable()
                     ->sortable()
@@ -172,11 +172,11 @@ class ArtProjectResource extends Resource
             ])
             ->actions([
                 Action::make('budget')
-                    ->url(fn ($record) => $record->budget_link, true)
+                    ->url(fn($record) => $record->budget_link, true)
                     ->icon('heroicon-m-link')
                     ->color('primary')
                     ->label(' Budget')
-                    ->visible(fn ($record) => $record->budget_link),
+                    ->visible(fn($record) => $record->budget_link),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
