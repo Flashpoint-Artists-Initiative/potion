@@ -7,6 +7,7 @@ namespace App\Mail;
 use App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 use App\Models\Ticketing\TicketTransfer;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
@@ -15,7 +16,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
 
-class TicketTransferMail extends Mailable
+class TicketTransferMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
