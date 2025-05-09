@@ -37,6 +37,8 @@ class Tickets extends Page
 
     public bool $hasMultipleTickets;
 
+    public bool $hasTickets;
+
     public bool $ticketLockdown;
 
     public bool $showWaiverWarning;
@@ -116,15 +118,15 @@ class Tickets extends Page
     #[On('active-event-updated')]
     public function mount(): void
     {
-        $count = Auth::authenticate()->purchasedTickets()->currentEvent()->count();
-        $hasTickets = $count > 0;
+        $count = Auth::authenticate()->purchasedTickets()->currentEvent()->noActiveTransfer()->count();
+        $this->hasTickets = $count > 0;
         $this->hasMultipleTickets = $count > 1;
         $this->ticketLockdown = LockdownEnum::Tickets->isLocked();
 
         $waiver = Event::getCurrentEvent()?->waiver;
         $hasSignedWaiver = (Auth::user()?->hasSignedWaiverForEvent(Event::getCurrentEventId()) ?? false);
 
-        $this->showWaiverWarning = $waiver && $hasTickets && ! $hasSignedWaiver;
+        $this->showWaiverWarning = $waiver && $this->hasTickets && ! $hasSignedWaiver;
     }
 
     public function signWaiverAction(): Action
