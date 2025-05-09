@@ -12,11 +12,15 @@ use App\Models\Event;
 use App\Models\User;
 use App\Services\QRCodeService;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Livewire;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
 
 class Tickets extends Page
@@ -34,6 +38,8 @@ class Tickets extends Page
     public bool $hasMultipleTickets;
 
     public bool $ticketLockdown;
+
+    public bool $showWaiverWarning;
 
     public function ticketsInfolist(Infolist $infolist): Infolist
     {
@@ -66,6 +72,10 @@ class Tickets extends Page
                 ->modalSubmitActionLabel('Close')
                 ->visible(function () {
                     if (Event::getCurrentEvent()?->endDateCarbon->isPast()) {
+                        return false;
+                    }
+
+                    if ($this->showWaiverWarning) {
                         return false;
                     }
 
@@ -102,7 +112,67 @@ class Tickets extends Page
     #[On('active-event-updated')]
     public function mount(): void
     {
-        $this->hasMultipleTickets = Auth::authenticate()->purchasedTickets()->currentEvent()->count() > 1;
+        $count = Auth::authenticate()->purchasedTickets()->currentEvent()->count();
+        $hasTickets = $count > 0;
+        $this->hasMultipleTickets = $count > 1;
         $this->ticketLockdown = LockdownEnum::Tickets->isLocked();
+
+        $waiver = Event::getCurrentEvent()?->waiver;
+        $hasSignedWaiver = (Auth::user()?->hasSignedWaiverForEvent(Event::getCurrentEventId()) ?? false);
+
+        $this->showWaiverWarning = $waiver && $hasTickets && ! $hasSignedWaiver;
+    }
+
+    public function signWaiverAction(): Action
+    {
+        /** @var User */
+        $user = Auth::user();
+        $username = $user->legal_name;
+
+        $waiver = Event::getCurrentEvent()?->waiver;
+
+        return Action::make('signWaiver')
+            ->label('sign a waiver')
+            ->link()
+            ->size('')
+            ->action(fn (array $data) => $this->createCompletedWaiver($data))
+            ->modalHeading('Sign Waiver')
+            ->modalWidth(MaxWidth::FiveExtraLarge)
+            ->form([
+                Placeholder::make('title')
+                    ->content(new HtmlString('<h1 class="text-2xl">' . ($waiver->title ?? '') . '</h1>'))
+                    ->label('')
+                    ->dehydrated(false),
+                Placeholder::make('waiver')
+                    ->content(new HtmlString($waiver->content ?? ''))
+                    ->label('')
+                    ->dehydrated(false),
+                TextInput::make('signature')
+                    ->label('I agree to the terms of the waiver and understand that I am signing this waiver electronically.')
+                    ->helperText('You must enter your full legal name as it is shown on your ID and listed in your profile.')
+                    ->required()
+                    ->in([$username])
+                    ->validationMessages([
+                        'required' => 'You must agree to the terms of the waiver and sign it.',
+                        'in' => 'The entered value must match your legal name, as listed in your profile.',
+                    ]),
+            ]);
+    }
+
+    /**
+     * @param  array<string, string>  $data
+     */
+    public function createCompletedWaiver(array $data): void
+    {
+        if ($waiver = Event::getCurrentEvent()?->waiver) {
+            $waiver->completedWaivers()->create([
+                'user_id' => Auth::id(),
+                'form_data' => [
+                    'signature' => $data['signature'],
+                ],
+            ]);
+
+            $this->showWaiverWarning = false;
+        }
     }
 }
