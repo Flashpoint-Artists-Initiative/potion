@@ -23,6 +23,8 @@ class QRSvgWithLogo extends QRMarkupSVG
 
         $svg = parent::paths();
         $svg .= $this->getLogo();
+        $svg .= $this->getText($this->options->topText, 8);
+        $svg .= $this->getText($this->options->bottomText, 94);
         // dd($svg);
 
         return $svg;
@@ -44,6 +46,21 @@ class QRSvgWithLogo extends QRMarkupSVG
             $this->options->svgLogoCssClass,
             file_get_contents($this->options->svgLogo),
             PHP_EOL
+        );
+    }
+
+    protected function getText(string $text, int $offset): string
+    {
+        return sprintf('<text
+            x="50%%"
+            y="%d%%"
+            font-size="0.1em" 
+            dominant-baseline="auto" 
+            text-anchor="middle" 
+            font-family="ui-sans-serif,system-ui,sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji"
+            >%s</text>',
+            $offset,
+            $text
         );
     }
 }

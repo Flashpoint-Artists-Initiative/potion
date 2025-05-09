@@ -88,12 +88,16 @@ class Tickets extends Page
     {
         /** @var QRCodeService */
         $qrCodeService = App::make(QRCodeService::class);
-        $userId = (int) Auth::id();
-        $eventId = Event::getCurrentEventId();
+        $user = Auth::user();
+        $event = Event::getCurrentEvent();
 
-        $content = $qrCodeService->buildTicketContent($userId, $eventId);
+        if (! $event || ! $user) {
+            throw new \RuntimeException('No current event found.');
+        }
 
-        $qr = $qrCodeService->buildQrCode($content);
+        $content = $qrCodeService->buildTicketContent($user->id, $event->id);
+
+        $qr = $qrCodeService->buildQrCode($content, $event->name, $user->email);
 
         return $qr ?? '';
     }
