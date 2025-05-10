@@ -100,7 +100,7 @@ class Account extends Page
             ->form([
                 Placeholder::make('legal_name')
                     ->label('Full Legal Name')
-                    ->helperText(new HtmlString('Your legal name cannot be changed.  If you need to change it, please contact <a class="text-primary-400" href="mailto:' . config('mail.from.address') . '?subject=Legal Name Change">' . config('mail.from.address').'</a>.')),
+                    ->helperText(new HtmlString('Your legal name cannot be changed.  If you need to change it, please contact <a class="text-primary-400" href="mailto:' . config('mail.from.address') . '?subject=Legal Name Change">' . config('mail.from.address') . '</a>.')),
                 $this->getPreferredNameFormComponent(),
                 TextInput::make('email')
                     ->email()

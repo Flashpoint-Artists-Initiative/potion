@@ -75,6 +75,7 @@ class TicketTypeResource extends Resource
                     ->default(true)
                     ->helperText('Transferable tickets can be transferred to another user.'),
                 Forms\Components\Toggle::make('addon')
+                    ->label('Add-on')
                     ->required()
                     ->helperText('Add-on tickets do not count as a ticket for attending the event. They are only for add-on items, such as child tickets, ice sales, etc.'),
             ]);

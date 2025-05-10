@@ -20,6 +20,7 @@ use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -243,11 +244,14 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
         return $this->votes()->where('event_id', $eventId)->exists();
     }
 
-    public function getValidTicketForEvent(?int $eventId = null): ?PurchasedTicket
+    /**
+     * @return Collection<int,PurchasedTicket>
+     */
+    public function getValidTicketsForEvent(?int $eventId = null): Collection
     {
-        $ticket = $this->purchasedTickets()->whereRelation('ticketType', fn ($query) => $query->admittance($eventId))->with('ticketType')->first();
+        $tickets = $this->purchasedTickets()->noActiveTransfer()->whereRelation('ticketType', fn ($query) => $query->admittance($eventId))->with('ticketType')->get();
 
-        return $ticket;
+        return $tickets;
     }
 
     /**

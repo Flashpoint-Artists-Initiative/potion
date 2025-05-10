@@ -81,7 +81,7 @@ class Tickets extends Page
                         return false;
                     }
 
-                    return Auth::user()?->getValidTicketForEvent(Event::getCurrentEventId()) ?? false;
+                    return Auth::user()?->getValidTicketsForEvent(Event::getCurrentEventId())->count() > 0;
                 }),
         ];
     }
@@ -118,7 +118,7 @@ class Tickets extends Page
     #[On('active-event-updated')]
     public function mount(): void
     {
-        $count = Auth::authenticate()->purchasedTickets()->currentEvent()->noActiveTransfer()->count();
+        $count = Auth::authenticate()->getValidTicketsForEvent()->count();
         $this->hasTickets = $count > 0;
         $this->hasMultipleTickets = $count > 1;
         $this->ticketLockdown = LockdownEnum::Tickets->isLocked();

@@ -18,7 +18,7 @@ class TicketsController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-        $ticket = $user->getValidTicketForEvent($eventId);
+        $ticket = $user->getValidTicketsForEvent($eventId)->first();
 
         if (! $ticket) {
             return response('Ticket not found', 404);
