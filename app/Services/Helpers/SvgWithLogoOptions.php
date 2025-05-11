@@ -25,7 +25,7 @@ class SvgWithLogoOptions extends QROptions
     public function __construct(public string $topText = '', public string $bottomText = '')
     {
         $this->svgLogo = public_path('images/alchemy_logo.svg');
-        $this->version = 4;
+        $this->version = 6;
         $this->outputInterface = QRSvgWithLogo::class;
         $this->outputType = 'custom';
         $this->outputBase64 = true;

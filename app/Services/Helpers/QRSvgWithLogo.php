@@ -23,9 +23,8 @@ class QRSvgWithLogo extends QRMarkupSVG
 
         $svg = parent::paths();
         $svg .= $this->getLogo();
-        $svg .= $this->getText($this->options->topText, 8);
-        $svg .= $this->getText($this->options->bottomText, 94);
-        // dd($svg);
+        $svg .= $this->getText($this->options->topText, 7);
+        $svg .= $this->getText($this->options->bottomText, 95);
 
         return $svg;
     }
