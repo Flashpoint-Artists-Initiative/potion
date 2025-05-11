@@ -36,7 +36,7 @@ class OrderTicketsTable extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(PurchasedTicket::query()->where('order_id', $this->record->id))
+            ->query(PurchasedTicket::query()->where('order_id', $this->record->id)->withTrashed())
             ->columns([
                 TextColumn::make('id')
                     ->label('Ticket Number')
