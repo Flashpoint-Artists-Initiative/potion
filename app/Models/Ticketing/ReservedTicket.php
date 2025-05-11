@@ -80,6 +80,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
                 $query->where('expiration_date', '>', now());
             });
         });
+        $query->noActiveTransfer();
     }
 
     public function scopeEvent(Builder $query, int $eventId): void
