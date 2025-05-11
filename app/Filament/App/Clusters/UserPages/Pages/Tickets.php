@@ -110,6 +110,7 @@ class Tickets extends Page
             ->link()
             ->size('large')
             ->label('Find out more about how ticketing works.')
+            ->modalHeading('How Ticketing Works')
             ->modalContent(view('filament.app.modals.ticket-info'))
             ->modalSubmitAction(false)
             ->modalCancelActionLabel('Close');

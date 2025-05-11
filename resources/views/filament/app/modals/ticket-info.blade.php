@@ -5,8 +5,9 @@ use \App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 
 $eventName = Event::getCurrentEvent()?->name;
 $eventName = $eventName ? "<span class=\"font-bold\">{$eventName}</span>" : 'this event';    
-
-@endphp<div class="prose dark:prose-invert max-w-none">
+$maxTickets = Event::getCurrentEvent()?->ticketsPerSale ?? config('app.cart_max_quantity');
+@endphp
+<div class="prose dark:prose-invert max-w-none">
     <h3>A quick summary</h3>
     <ul>
         <li>Everyone who wants to attend the event needs to have their own POTION account and ticket.</li>
@@ -23,7 +24,7 @@ $eventName = $eventName ? "<span class=\"font-bold\">{$eventName}</span>" : 'thi
 
     <h3>Purchasing Tickets</h3>
     <ul>
-        <li>You can purchase up to 4 tickets at a time.</li>
+        <li>You can purchase up to {{ $maxTickets }} tickets at a time.</li>
         <li>Tickets are non-refundable.</li>
         <li>You may not resell tickets for more than face value</li>
         <li>Once you've purchased a ticket, your QR code is available in <x-filament::link size="normal" class="not-prose" href="{{ Tickets::getUrl() }}">your profile</x-filament::link>, just click the "Your QR Code" button in the top right. You can print it out or show it on your phone.</li>

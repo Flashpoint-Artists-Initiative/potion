@@ -67,7 +67,8 @@ class EventResource extends Resource
                                         $component->state($record->settings['tickets_per_sale'] ?? config('app.cart_max_quantity'));
                                     })
                                     ->helperText('The maximum number of tickets a user can buy at once.  Does not include reserved tickets or addon tickets.'),
-                            ]),
+                            ])
+                            ->statePath('settings'),
                         Fieldset::make('Art Grants')
                             ->schema([
                                 Forms\Components\Toggle::make('voting_enabled')
