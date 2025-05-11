@@ -29,8 +29,6 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('preferred_name')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('display_name')
-                    ->maxLength(255),
                 Forms\Components\DatePicker::make('birthday'),
                 Forms\Components\TextInput::make('email')
                     ->email()
@@ -51,12 +49,14 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('legal_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('preferred_name')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('legal_name')
+                //     ->searchable()
+                //     ->hidden(),
+                // Tables\Columns\TextColumn::make('preferred_name')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('display_name')
-                    ->searchable(),
+                    ->label('Name')
+                    ->searchable(['legal_name', 'preferred_name']),
                 Tables\Columns\TextColumn::make('birthday')
                     ->date()
                     ->sortable(),

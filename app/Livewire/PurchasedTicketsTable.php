@@ -49,7 +49,7 @@ class PurchasedTicketsTable extends Component implements HasForms, HasTable
         } elseif ($currentEvent->endDateCarbon->isPast()) {
             $emptyDescription = "{$currentEvent->name} has ended.";
         } elseif ($currentEvent->finalTicketEndDate?->isPast() ?? true) {
-            $emptyDescription = "There are no more tickets for {$currentEvent->name} available";
+            $emptyDescription = "There are no tickets for {$currentEvent->name} available";
         } else {
             $emptyDescription = "You have not purchased any tickets for {$currentEvent->name}.";
             $buyButton = true;

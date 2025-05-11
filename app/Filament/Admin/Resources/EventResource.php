@@ -16,9 +16,11 @@ use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -178,6 +180,14 @@ class EventResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
+                    BulkAction::make('make-active')
+                        ->label('Mark as Active')
+                        ->icon('heroicon-o-check-circle')
+                        ->action(fn (Collection $records) => $records->toQuery()->update(['active' => true])),
+                    BulkAction::make('make-inactive')
+                        ->label('Mark as Inactive')
+                        ->icon('heroicon-o-x-circle')
+                        ->action(fn (Collection $records) => $records->toQuery()->update(['active' => false])),
                 ]),
             ]);
     }

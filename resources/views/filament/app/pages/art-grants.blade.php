@@ -44,8 +44,9 @@
             @endif
             {{ $this->form }}
             @if (!$hasVoted && $votingIsOpen)
-                <x-filament::button type="submit">
-                    Submit Votes
+                <x-filament::button type="submit" x-bind:disabled="remaining > 0" x-bind:class="remaining > 0 && 'opacity-50'">
+                    <span x-show="remaining == 0">Submit Votes</span>
+                    <span x-show="remaining > 0">Allocate your <span x-text="remaining"></span> remaining votes before submitting</span>
                 </x-filament::button>
             @endif
         </x-filament-panels::form>

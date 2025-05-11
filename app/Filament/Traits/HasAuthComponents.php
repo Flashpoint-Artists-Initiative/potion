@@ -41,7 +41,7 @@ trait HasAuthComponents
                 'before' => 'You must be at least 18 years old to create an account.',
             ])
             ->displayFormat('d/m/Y')
-            ->helperText('Used to verify your age while entering the event.');
+            ->helperText('Used to verify your identity when entering the event.');
     }
 
     protected function getEmailFormComponent(): Component
@@ -52,7 +52,7 @@ trait HasAuthComponents
             ->required()
             ->default($this->email)
             ->maxLength(255)
-            ->helperText('If you are creating an account to accept a ticket transfer, please use the email address the transfer was sent to.')
+            ->helperText('If you are creating an account to accept a ticket transfer or a directed sale ticket, please use the email address the transfer was sent to. You can always change it later.')
             ->unique(ignoreRecord: true);
     }
 }
