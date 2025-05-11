@@ -40,13 +40,12 @@ class EventSelector extends Component
 
     public function render(): View
     {
-        // if ($this->eventId === 0) {
-        //     $this->eventId = (int) $this->getEvents()->keys()->first();
-        // }
+        if (! $this->getEvents()->has($this->eventId)) {
+            $this->updateEventId((int) $this->getEvents()->keys()->first());
+        }
 
         return view('livewire.event-selector-select', [
             'events' => $this->getEvents(),
-            'currentEvent' => $this->getCurrentEvent(),
         ]);
     }
 
