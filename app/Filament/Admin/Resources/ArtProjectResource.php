@@ -57,6 +57,9 @@ class ArtProjectResource extends Resource
                         Forms\Components\Textarea::make('description')
                             ->required()
                             ->columnSpanFull(),
+                        Forms\Components\Textarea::make('short_description')
+                            ->columnSpanFull()
+                            ->helperText('Optional text to show in the list of projects. If left blank, the first 300 characters of the description will be used.'),
                     ]),
                 Forms\Components\Fieldset::make('Funding')
                     ->schema([

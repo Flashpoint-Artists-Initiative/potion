@@ -26,7 +26,11 @@
             </div>
             <div class="flex-1 mx-3">
                 <p><span class="font-bold">Artist:</span> {{ $getRecord()->artist_name }}</p>
-                <p>{{ str($getRecord()->description)->limit(200, preserveWords: true) }}</p>
+                @if (!empty($getRecord()->short_description))
+                <p>{{ str($getRecord()->short_description)->limit(300, preserveWords: true) }}</p>
+                @else
+                <p>{{ str($getRecord()->description)->limit(300, preserveWords: true) }}</p>
+                @endif
                 <div class="flex flex-col gap-2">
                 <p><span class="font-bold">Minimum Funding Requested:</span> ${{ $getRecord()->min_funding }}</p>
                 <p><span class="font-bold">Maximum Funding Requested:</span> ${{ $getRecord()->max_funding }}</p>
