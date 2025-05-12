@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Services\Helpers\SvgWithLogoOptions;
-use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\Data\QRCodeDataException;
+use chillerlan\QRCode\QRCode;
 
 class QRCodeService
 {
@@ -41,11 +41,10 @@ class QRCodeService
 
     /**
      * Validates and decodes the QR code content
-     * 
-     * @param non-empty-string $content
      *
+     * @param  non-empty-string  $content
      * @return array{user_id: int, event_id: int}
-     * 
+     *
      * @throws QRCodeDataException
      */
     public function decodeTicketContent(string $content): array
@@ -62,7 +61,7 @@ class QRCodeService
             throw new QRCodeDataException('Invalid JSON string');
         }
 
-        if (! array_key_exists('s', $json) || 
+        if (! array_key_exists('s', $json) ||
             ! array_key_exists('u', $json) ||
             ! array_key_exists('e', $json) ||
             ! is_string($json['s']) ||
