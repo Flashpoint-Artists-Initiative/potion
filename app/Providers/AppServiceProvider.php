@@ -10,6 +10,7 @@ use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 use Stripe\StripeClient;
 
 /**
@@ -40,6 +41,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Password::defaults(function () {
+            $rule = Password::min(8);
+            
+            if (! $this->app->isLocal()) {
+                $rule = $rule->letters()->mixedCase()->numbers()->symbols()->uncompromised();
+            }
+
+            return $rule;
+        });
+
         Scramble::extendOpenApi(function (OpenApi $openApi) {
             $openApi->secure(
                 SecurityScheme::http('bearer', 'JWT')
