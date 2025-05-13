@@ -7,6 +7,8 @@ namespace App\Filament\Traits;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Url;
 
 trait HasAuthComponents
@@ -54,5 +56,19 @@ trait HasAuthComponents
             ->maxLength(255)
             ->helperText('If you are creating an account to accept a ticket transfer or a directed sale ticket, please use the email address the transfer was sent to. You can always change it later.')
             ->unique(ignoreRecord: true);
+    }
+
+    protected function getPasswordFormComponent(): Component
+    {
+        return TextInput::make('password')
+            ->label(__('filament-panels::pages/auth/register.form.password.label'))
+            ->password()
+            ->revealable(filament()->arePasswordsRevealable())
+            ->required()
+            ->rule(Password::default())
+            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+            ->same('passwordConfirmation')
+            ->validationAttribute(__('filament-panels::pages/auth/register.form.password.validation_attribute'))
+            ->helperText('Your password must be at least 8 characters long and contain at least one letter and one number.');
     }
 }
