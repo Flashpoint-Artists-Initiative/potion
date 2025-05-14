@@ -16,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Route;
 
 class TicketTransferResource extends Resource
 {
@@ -172,6 +173,14 @@ class TicketTransferResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
+        $route = Route::currentRouteName() ?? '';
+        $parts = explode('.', $route);
+        $lastPart = end($parts);
+        
+        if ($lastPart === 'view') {
+            return parent::getEloquentQuery();
+        }
+
         return parent::getEloquentQuery()
             ->whereRelation('purchasedTickets.ticketType', 'event_id', Event::getCurrentEventId())
             ->orWhereRelation('reservedTickets.ticketType', 'event_id', Event::getCurrentEventId());

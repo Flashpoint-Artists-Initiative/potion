@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\PurchasedTicketResource\Pages;
+use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
 use Filament\Forms;
 use Filament\Infolists\Components\Section;
@@ -13,6 +14,8 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Route;
 
 class PurchasedTicketResource extends Resource
 {
@@ -121,5 +124,19 @@ class PurchasedTicketResource extends Resource
             'view' => Pages\ViewPurchasedTicket::route('/{record}'),
             // 'edit' => Pages\EditPurchasedTicket::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $route = Route::currentRouteName() ?? '';
+        $parts = explode('.', $route);
+        $lastPart = end($parts);
+        
+        if ($lastPart === 'view') {
+            return parent::getEloquentQuery();
+        }
+
+        return parent::getEloquentQuery()
+            ->whereRelation('ticketType', 'event_id', Event::getCurrentEventId());
     }
 }
