@@ -24,6 +24,8 @@ class PurchasedTicketResource extends Resource
 
     protected static ?string $navigationParentItem = 'Ticketing';
 
+    protected static ?string $recordTitleAttribute = 'id';
+
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -54,8 +56,10 @@ class PurchasedTicketResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('ticketType.name')
+                Tables\Columns\TextColumn::make('id')
                     ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('ticketType.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.display_name')
                     ->searchable()

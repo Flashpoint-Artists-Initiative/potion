@@ -7,6 +7,8 @@ namespace App\Filament\Admin\Resources\PurchasedTicketResource\Pages;
 use App\Filament\Admin\Resources\PurchasedTicketResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Contracts\Support\Htmlable;
+use App\Models\Ticketing\PurchasedTicket;
 
 class ViewPurchasedTicket extends ViewRecord
 {
@@ -17,5 +19,12 @@ class ViewPurchasedTicket extends ViewRecord
         return [
             // Actions\EditAction::make(),
         ];
+    }
+
+    public function getRecordTitle(): string|Htmlable
+    {
+        /** @var PurchasedTicket $record */
+        $record = $this->getRecord();
+        return sprintf('Purchased Ticket #%s', $record->id);
     }
 }

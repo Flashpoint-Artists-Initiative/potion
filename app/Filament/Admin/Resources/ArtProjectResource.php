@@ -31,6 +31,8 @@ class ArtProjectResource extends Resource
 
     protected static ?string $navigationLabel = 'Art Grants';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function shouldRegisterNavigation(): bool
     {
         return Event::where('id', Event::getCurrentEventId())->exists();

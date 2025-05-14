@@ -31,6 +31,8 @@ class ReservedTicketResource extends Resource
 
     protected static ?string $navigationParentItem = 'Ticketing';
 
+    protected static ?string $recordTitleAttribute = 'id';
+
     public static function form(Form $form): Form
     {
         if ($form->getOperation() === 'create') {

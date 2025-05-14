@@ -28,6 +28,8 @@ class TicketTypeResource extends Resource
     protected static ?string $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationLabel = 'Ticketing';
+    
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function shouldRegisterNavigation(): bool
     {
