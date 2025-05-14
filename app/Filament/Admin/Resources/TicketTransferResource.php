@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Route;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class TicketTransferResource extends Resource
 {
@@ -159,7 +160,7 @@ class TicketTransferResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 

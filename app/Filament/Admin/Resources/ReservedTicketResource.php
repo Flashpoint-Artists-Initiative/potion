@@ -21,6 +21,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class ReservedTicketResource extends Resource
 {
@@ -193,7 +194,7 @@ class ReservedTicketResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 

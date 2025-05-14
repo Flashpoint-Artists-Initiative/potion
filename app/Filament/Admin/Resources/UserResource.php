@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Admin\Resources\UserResource\RelationManagers;
 use Filament\Resources\Pages\Page;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class UserResource extends Resource
 {
@@ -106,7 +107,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 
@@ -122,6 +123,7 @@ class UserResource extends Resource
             'transfers' => Pages\UserTransfers::route('/{record}/transfers'),
             'tickets' => Pages\UserPurchasedTickets::route('/{record}/tickets'),
             'reserved' => Pages\UserReservedTickets::route('/{record}/reserved'),
+            'audits' => Pages\UserAudits::route('/{record}/audits'),
         ];
     }
 
@@ -142,6 +144,7 @@ class UserResource extends Resource
             Pages\UserTransfers::class,
             Pages\UserPurchasedTickets::class,
             Pages\UserReservedTickets::class,
+            Pages\UserAudits::class,
         ]);
     }
 }

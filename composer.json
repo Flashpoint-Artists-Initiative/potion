@@ -26,7 +26,8 @@
         "php-open-source-saver/jwt-auth": "^2.1",
         "spatie/laravel-permission": "^6.1",
         "stripe/stripe-php": "^17",
-        "tailflow/laravel-orion": "^2"
+        "tailflow/laravel-orion": "^2",
+        "tapp/filament-auditing": "^3.0"
     },
     "require-dev": {
         "agencetwogether/hookshelper": "^0.0.1",

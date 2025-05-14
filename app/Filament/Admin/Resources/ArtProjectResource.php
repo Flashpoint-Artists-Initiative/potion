@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class ArtProjectResource extends Resource
 {
@@ -192,7 +193,7 @@ class ArtProjectResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 

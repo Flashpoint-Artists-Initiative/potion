@@ -213,6 +213,8 @@ return [
                 'lockdown.*',
                 'metrics.*',
                 'artProjects.*',
+                'audit',
+                'restoreAudit',
             ],
             RolesEnum::EventManager->value => [
                 'panelAccess.admin',
@@ -420,6 +422,10 @@ return [
             'artProjects.forceDelete',
             'artProjects.vote',
             'artProjects.*',
+
+            // From tapp/filament-auditing
+            'audit',
+            'restoreAudit',
         ],
     ],
 ];

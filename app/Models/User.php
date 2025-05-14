@@ -35,7 +35,8 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * @property string $display_name
+ * @property-read string $display_name
+ * @property-read string $name
  */
 class User extends Authenticatable implements ContractsAuditable, FilamentUser, HasName, JWTSubject, MustVerifyEmail
 {
@@ -262,6 +263,13 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $attributes['birthday'],
             set: fn (string $value) => Carbon::parse($value)->format('Y-m-d'),
+        );
+    }
+
+    public function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => $attributes['display_name'],
         );
     }
 }

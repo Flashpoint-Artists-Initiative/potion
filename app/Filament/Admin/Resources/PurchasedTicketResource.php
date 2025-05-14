@@ -16,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class PurchasedTicketResource extends Resource
 {
@@ -112,7 +113,7 @@ class PurchasedTicketResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 
@@ -131,7 +132,7 @@ class PurchasedTicketResource extends Resource
         $route = Route::currentRouteName() ?? '';
         $parts = explode('.', $route);
         $lastPart = end($parts);
-        
+
         if ($lastPart === 'view') {
             return parent::getEloquentQuery();
         }
