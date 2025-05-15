@@ -62,7 +62,8 @@ class UserResource extends Resource
                 //     ->searchable(),
                 Tables\Columns\TextColumn::make('display_name')
                     ->label('Name')
-                    ->searchable(['legal_name', 'preferred_name']),
+                    ->searchable(['legal_name', 'preferred_name'])
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('birthday')
                     ->date()
                     ->sortable(),
@@ -120,6 +121,7 @@ class UserResource extends Resource
             'view' => Pages\ViewUser::route('/{record}'),
 
             'orders' => Pages\UserOrders::route('/{record}/orders'),
+            'carts' => Pages\UserCarts::route('/{record}/carts'),
             'transfers' => Pages\UserTransfers::route('/{record}/transfers'),
             'tickets' => Pages\UserPurchasedTickets::route('/{record}/tickets'),
             'reserved' => Pages\UserReservedTickets::route('/{record}/reserved'),
@@ -141,6 +143,7 @@ class UserResource extends Resource
             Pages\ViewUser::class,
             Pages\EditUser::class,
             Pages\UserOrders::class,
+            Pages\UserCarts::class,
             Pages\UserTransfers::class,
             Pages\UserPurchasedTickets::class,
             Pages\UserReservedTickets::class,

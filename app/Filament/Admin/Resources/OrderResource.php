@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\OrderResource\Pages;
+use App\Filament\Infolists\Components\UserEntry;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Livewire\OrderTicketsTable;
 use App\Models\Ticketing\Order;
 use Carbon\Carbon;
@@ -60,21 +62,14 @@ class OrderResource extends Resource
                         TextEntry::make('created_at')
                             ->label('Purchase Date')
                             ->dateTime('F jS, Y g:i A T', 'America/New_York'),
-                        TextEntry::make('user.display_name')
-                            ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                            ->color('primary')
-                            ->icon('heroicon-m-user')
-                            ->iconColor('primary')
-                            ->weight(FontWeight::Bold),
+                        UserEntry::make('user')
+                            ->userPage('orders'),
                         TextEntry::make('user_email'),
                         TextEntry::make('event.name')
                             ->url(fn ($record) => EventResource::getUrl('view', ['record' => $record->event_id]))
                             ->color('primary')
                             ->icon('heroicon-m-calendar')
-                            ->iconColor('primary')
-                            ->weight(FontWeight::Bold),
-                        // TextEntry::make('purchasedTickets.id')
-                        //     ->badge(),
+                            ->iconColor('primary'),
                     ])->grow(false),
                 ])->from('lg'),
             ])
@@ -88,12 +83,9 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.display_name')
+                UserColumn::make('user.display_name')
                     ->searchable(['users.display_name', 'users.email'])
-                    ->sortable()
-                    ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('Email')
                     ->toggleable(isToggledHiddenByDefault: true),

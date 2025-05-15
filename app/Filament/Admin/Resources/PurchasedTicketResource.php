@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\PurchasedTicketResource\Pages;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
 use Filament\Forms;
@@ -65,12 +66,9 @@ class PurchasedTicketResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ticketType.name')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.display_name')
-                    ->searchable()
-                    ->sortable()
-                    ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                UserColumn::make('user.display_name')
+                    ->searchable(['users.display_name', 'users.email'])
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('order.id')
                     ->label('Order #')
                     ->numeric()

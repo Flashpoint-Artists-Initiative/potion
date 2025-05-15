@@ -7,6 +7,8 @@ namespace App\Filament\Admin\Resources;
 use App\Enums\CartStatusEnum;
 use App\Filament\Admin\Resources\CartResource\Pages;
 use App\Filament\Admin\Resources\CartResource\RelationManagers;
+use App\Filament\Infolists\Components\UserEntry;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Ticketing\Cart;
 use Carbon\Carbon;
 use Filament\Forms;
@@ -34,8 +36,8 @@ class CartResource extends Resource
         return $infolist
             ->schema([
                 Infolists\Components\Section::make([
-                    Infolists\Components\TextEntry::make('user.name')
-                        ->label('User'),
+                    UserEntry::make('user')
+                        ->userPage('carts'),
                     Infolists\Components\TextEntry::make('created_at')
                         ->label('Created')
                         ->dateTime('F jS, Y g:i A T', 'America/New_York'),
@@ -89,9 +91,8 @@ class CartResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
+                UserColumn::make('user')
+                    ->searchable(['users.display_name', 'users.email']),
                 Tables\Columns\TextColumn::make('created_at')
                     ->since()
                     ->sortable()

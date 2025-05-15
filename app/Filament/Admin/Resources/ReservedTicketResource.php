@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ReservedTicketResource\Pages;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Ticketing\ReservedTicket;
 use App\Models\Ticketing\TicketType;
@@ -154,12 +155,9 @@ class ReservedTicketResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.display_name')
-                    ->searchable()
-                    ->sortable()
-                    ->url(fn ($record) => $record?->user_id ? UserResource::getUrl('view', ['record' => $record->user_id]) : null)
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                UserColumn::make('user.display_name')
+                    ->searchable(['users.display_name', 'users.email'])
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('expiration_date')
                     ->dateTime()
                     ->sortable(),

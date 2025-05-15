@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\TicketTransferResource\Pages;
 use App\Filament\Admin\Resources\TicketTransferResource\RelationManagers;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Ticketing\TicketTransfer;
 use Filament\Infolists;
@@ -128,13 +129,9 @@ class TicketTransferResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('user.display_name')
-                    ->label('Sender')
+                UserColumn::make('user.display_name')
                     ->searchable(['users.display_name', 'users.email'])
-                    ->sortable()
-                    ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('recipient_email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('recipient.display_name')
