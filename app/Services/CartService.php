@@ -120,12 +120,12 @@ class CartService
     public function expireExtraCarts(Collection $carts): Collection
     {
         return $carts->filter(function (Cart $c, int $k) {
-            if (! $c->is_expired && $k > 0) {
+            if (! $c->isExpired && $k > 0) {
                 $c->expire();
                 static::$cartWasExpired = true;
             }
 
-            return ! $c->is_expired;
+            return ! $c->isExpired;
         });
     }
 

@@ -45,17 +45,8 @@ class UserReservedTickets extends ManageRelatedRecords
                     ->label('Created At'),
                 Tables\Columns\IconColumn::make('isPurchased')
                     ->label('Purchased')
-                    // ->boolean()
+                    ->boolean()
                     ->sortable()
-                    ->color(fn($state) => $state ? 'success' : 'danger')
-                    ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle'),
-
-                // Tables\Columns\TextColumn::make('order.id')
-                //     ->label('Order ID')
-                //     ->sortable()
-                //     ->url(fn($record) => OrderResource::getUrl('view', ['record' => $record->order_id]))
-                //     ->color('primary')
-                //     ->icon('heroicon-m-shopping-bag'),
             ])
             ->filters([
             ])
