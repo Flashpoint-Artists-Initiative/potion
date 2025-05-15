@@ -1,6 +1,9 @@
 name: Deploy to AWS Lambda
 
 on:
+  push:
+    branches:
+      - main
   release:
     types:
       - released
@@ -9,13 +12,19 @@ on:
       environment:
         type: environment
 env:
-  ENVIRONMENT: ${{ inputs.environment || 'Production' }}
+  ENVIRONMENT: ${{ 
+    github.event_name == 'release' && github.event.action == 'released' 
+      ? 'Production' 
+      : (github.event_name == 'push' 
+        ? 'Development' 
+        : inputs.environment || 'Production') 
+  }}
 
 jobs:
   deploy:
     name: deploy
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'Production' }}
+    environment: ${{ env.ENVIRONMENT }}
     steps:
       # Check out a copy of your repository.
       - name: Checkout code
@@ -24,7 +33,7 @@ jobs:
       # Use parameter expansion to make environment lowercase.
       - name: Downcase environment
         run: |
-          echo "ENVIRONMENT_LC=${ENVIRONMENT,,}" >>${GITHUB_ENV}
+          echo "ENVIRONMENT_LC=${{ env.ENVIRONMENT,, }}" >>${GITHUB_ENV}
 
       # Get the base domain from the APP_URL environment variable.
       - name: Get base domain from APP_URL
