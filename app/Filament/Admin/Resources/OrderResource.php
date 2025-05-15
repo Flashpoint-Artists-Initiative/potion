@@ -82,9 +82,8 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->searchable()
                     ->sortable(),
-                UserColumn::make('user.display_name')
-                    ->searchable(['users.display_name', 'users.email'])
-                    ->sortable(),
+                UserColumn::make('user')
+                    ->userPage('orders'),
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('Email')
                     ->toggleable(isToggledHiddenByDefault: true),

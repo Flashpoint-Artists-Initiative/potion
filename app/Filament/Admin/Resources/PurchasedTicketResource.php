@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\PurchasedTicketResource\Pages;
+use App\Filament\Infolists\Components\UserEntry;
 use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
@@ -41,7 +42,8 @@ class PurchasedTicketResource extends Resource
                         ->label('Purchased Date')
                         ->dateTime('F jS, Y g:i A T', 'America/New_York'),
                     TextEntry::make('order_id'),
-                    TextEntry::make('user.display_name'),
+                    UserEntry::make('user')
+                        ->userPage('tickets'),
                     TextEntry::make('reserved_ticket_id'),
                 ]),
                 // Forms\Components\Select::make('ticket_type_id')
@@ -66,9 +68,8 @@ class PurchasedTicketResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ticketType.name')
                     ->sortable(),
-                UserColumn::make('user.display_name')
-                    ->searchable(['users.display_name', 'users.email'])
-                    ->sortable(),
+                UserColumn::make('user')
+                    ->userPage('tickets'),
                 Tables\Columns\TextColumn::make('order.id')
                     ->label('Order #')
                     ->numeric()

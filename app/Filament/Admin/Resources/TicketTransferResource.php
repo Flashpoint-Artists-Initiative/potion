@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\TicketTransferResource\Pages;
+use App\Filament\Infolists\Components\UserEntry;
 use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Ticketing\TicketTransfer;
@@ -36,20 +37,14 @@ class TicketTransferResource extends Resource
                 Infolists\Components\Split::make([
                     Infolists\Components\Grid::make(1)->schema([
                         Infolists\Components\Section::make([
-                            Infolists\Components\TextEntry::make('user.display_name')
-                                ->label('Sender')
-                                ->url(fn ($record) => UserResource::getUrl('transfers', ['record' => $record->user_id]))
-                                ->color('primary')
-                                ->iconColor('primary')
-                                ->icon('heroicon-m-user'),
+                            UserEntry::make('user')
+                                ->userPage('transfers')
+                                ->label('Sender'),
                             Infolists\Components\TextEntry::make('recipient_email')
                                 ->label('Recipient Email'),
-                            Infolists\Components\TextEntry::make('recipient.display_name')
-                                ->label('Recipient')
-                                ->url(fn ($record) => $record->recipient_user_id ? UserResource::getUrl('transfers', ['record' => $record->recipient_user_id]) : null)
-                                ->color('primary')
-                                ->iconColor('primary')
-                                ->icon('heroicon-m-user'),
+                            UserEntry::make('recipient')
+                                ->userPage('transfers')
+                                ->label('Recipient'),
                         ])->columns(['md' => 2, 'xl' => 3]),
                         Infolists\Components\Section::make([
                             Infolists\Components\RepeatableEntry::make('purchasedTickets')
@@ -126,18 +121,13 @@ class TicketTransferResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                UserColumn::make('user.display_name')
-                    ->searchable(['users.display_name', 'users.email'])
-                    ->sortable(),
+                UserColumn::make('user')
+                    ->userPage('transfers'),
                 Tables\Columns\TextColumn::make('recipient_email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('recipient.display_name')
-                    ->label('Recipient')
-                    ->searchable(['users.display_name', 'users.email'])
-                    ->sortable()
-                    ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                UserColumn::make('recipient')
+                    ->userPage('transfers')
+                    ->label('Recipient'),
                 Tables\Columns\IconColumn::make('completed')
                     ->boolean(),
             ])

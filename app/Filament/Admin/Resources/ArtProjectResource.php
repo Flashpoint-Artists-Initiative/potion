@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Enums\ArtProjectStatusEnum;
 use App\Filament\Admin\Resources\ArtProjectResource\Pages;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Grants\ArtProject;
 use Filament\Forms;
@@ -104,12 +105,9 @@ class ArtProjectResource extends Resource
                     ->searchable()
                     ->limit(30)
                     ->tooltip(fn ($record) => $record->name),
-                Tables\Columns\TextColumn::make('user.display_name')
+                UserColumn::make('user')
                     ->searchable()
                     ->sortable()
-                    ->url(fn ($record) => $record->user_id ? UserResource::getUrl('view', ['record' => $record->user_id]) : null)
-                    ->color('primary')
-                    ->icon('heroicon-m-user')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('artist_name')
                     ->searchable()

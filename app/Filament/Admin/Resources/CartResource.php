@@ -89,7 +89,7 @@ class CartResource extends Resource
         return $table
             ->columns([
                 UserColumn::make('user')
-                    ->searchable(['users.display_name', 'users.email']),
+                    ->userPage('carts'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->since()
                     ->sortable()

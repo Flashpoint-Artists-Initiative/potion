@@ -50,7 +50,7 @@ class EditWaiver extends EditRecord
                 // ->successNotificationTitle('Deleted')
                 // ->color('danger')
                 // ->requiresConfirmation()
-                ->successRedirectUrl(ViewEvent::getUrl(['record' => $this->record])),
+                ->successRedirectUrl($this->getResource()::getUrl('view', ['record' => $this->record])),
         ];
     }
 

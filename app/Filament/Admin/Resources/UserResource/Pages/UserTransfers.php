@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 
 use App\Filament\Admin\Resources\TicketTransferResource;
 use App\Filament\Admin\Resources\UserResource;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Ticketing\TicketTransfer;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
@@ -48,22 +49,12 @@ class UserTransfers extends ManageRelatedRecords
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('user.display_name')
-                    ->label('Sender')
-                    ->searchable(['users.display_name', 'users.email'])
-                    ->sortable()
-                    ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                UserColumn::make('user')
+                    ->label('Sender'),
                 Tables\Columns\TextColumn::make('recipient_email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('recipient.display_name')
-                    ->label('Recipient')
-                    ->searchable(['users.display_name', 'users.email'])
-                    ->sortable()
-                    ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                UserColumn::make('recipient')
+                    ->label('Recipient'),
                 Tables\Columns\IconColumn::make('completed')
                     ->boolean(),
             ])

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\EventResource\RelationManagers;
 
-use App\Filament\Admin\Resources\UserResource;
+use App\Filament\Tables\Columns\UserColumn;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -24,12 +24,8 @@ class CompletedWaiversRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('user_id')
             ->columns([
-                Tables\Columns\TextColumn::make('user.display_name')
-                    ->searchable(['users.display_name', 'users.email'])
-                    ->sortable()
-                    ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                UserColumn::make('user')
+                    ->userPage('waivers'),
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('Email')
                     ->searchable()

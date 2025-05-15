@@ -13,6 +13,8 @@ trait HasConditionalUserDisplay
 {
     protected string|Closure $userPage = 'view';
 
+    protected string|Closure $userRelation = 'user';
+
     public function userPage(string|Closure $page): static
     {
         $this->userPage = $page;
@@ -25,6 +27,23 @@ trait HasConditionalUserDisplay
         return (string) $this->evaluate($this->userPage);
     }
 
+    public function userRelation(string|Closure $relation): static
+    {
+        $this->userRelation = $relation;
+
+        return $this;
+    }
+
+    public function getUserRelation(): string
+    {
+        return (string) $this->evaluate($this->userRelation);
+    }
+
+    public static function make(string $name): static
+    {
+        return parent::make($name . '.display_name')->userRelation($name);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -33,10 +52,20 @@ trait HasConditionalUserDisplay
             ->iconColor($this->checkAccess('primary'))
             ->icon('heroicon-m-user')
             ->url($this->checkAccess(
-                fn ($record) => UserResource::getUrl($this->getUserPage(), ['record' => $record->user->id])
+                function ($record) {
+                    if ($record->{$this->getUserRelation()}) {
+                        return UserResource::getUrl($this->getUserPage(), ['record' => $record->{$this->getUserRelation()}->id]);
+                    }
+
+                    return null;
+                }
             ))
-            ->formatStateUsing(fn ($record) => $record->user->display_name);
+            ->formatStateUsing(fn ($record) => $record->{$this->getUserRelation()}->display_name);
+
+        $this->additionalSetUp();
     }
+
+    protected function additionalSetUp(): void {}
 
     protected function checkAccess(string|Htmlable|Closure|null $hasAccess, string|Htmlable|Closure|null $noAccess = null): Closure
     {

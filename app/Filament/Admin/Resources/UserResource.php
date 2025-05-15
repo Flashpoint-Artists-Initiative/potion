@@ -76,7 +76,8 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('legal_name')
                     ->searchable()
-                    ->visible(fn () => Auth::authenticate()->can('users.viewPrivate')),
+                    ->visible(fn () => Auth::authenticate()->can('users.viewPrivate'))
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('display_name')
                     ->label(fn () => Auth::authenticate()->can('users.viewPrivate') ? 'Display Name' : 'Name')
                     ->searchable(['preferred_name'])

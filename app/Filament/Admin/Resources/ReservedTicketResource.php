@@ -121,7 +121,7 @@ class ReservedTicketResource extends Resource
                         return Action::make()
                             ->label($record->user->display_name)
                             ->icon('heroicon-m-user')
-                            ->url(UserResource::getUrl('view', ['record' => $record->user_id]))
+                            ->url(UserResource::getUrl('reserved', ['record' => $record->user_id]))
                             ->link();
                     }
                 })
@@ -155,9 +155,8 @@ class ReservedTicketResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
-                UserColumn::make('user.display_name')
-                    ->searchable(['users.display_name', 'users.email'])
-                    ->sortable(),
+                UserColumn::make('user')
+                    ->userPage('reserved'),
                 Tables\Columns\TextColumn::make('expiration_date')
                     ->dateTime()
                     ->sortable(),

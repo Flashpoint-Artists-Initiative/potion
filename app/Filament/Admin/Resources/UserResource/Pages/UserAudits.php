@@ -100,7 +100,7 @@ class UserAudits extends ManageRelatedRecords
      * Map the auditable type to the corresponding Filament resource.
      *
      * $record is actually an instance of OwenIt\Auditing\Models\Audit,
-     * but that model doesn't have it's attributes defined in a way that makes phpstsan happy
+     * but that model doesn't have it's attributes defined in a way that makes phpstan happy
      */
     protected function mapTypeToResource(mixed $record): HtmlString
     {
