@@ -95,6 +95,23 @@ abstract class AbstractModelPolicy
         return $user->can("{$this->prefix}.history");
     }
 
+    /**
+     * Audit is a special case, there's one audit policy for all models
+     * It calls hasPermissionTo directly to avoid an infinite loop
+     */
+    public function audit(User $user, Model $model): bool
+    {
+        return $user->hasPermissionTo('audit');
+    }
+
+    /**
+     * RestoreAudit is also a special case
+     */
+    public function restoreAudit(User $user, Model $model): bool
+    {
+        return $this->isNotLocked() && $user->hasPermissionTo('restoreAudit');
+    }
+
     protected function isNotLocked(): bool
     {
         if ($this->lockdownKey) {

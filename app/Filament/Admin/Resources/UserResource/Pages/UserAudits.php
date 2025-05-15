@@ -12,6 +12,7 @@ use Filament\Tables\Columns\Column;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
@@ -31,6 +32,11 @@ class UserAudits extends ManageRelatedRecords
     public static function getNavigationLabel(): string
     {
         return 'Audit Log';
+    }
+
+    public static function canAccess(array $parameters = []): bool
+    {
+        return Auth::authenticate()->can('users.viewAuditLog');
     }
 
     public function table(Table $table): Table

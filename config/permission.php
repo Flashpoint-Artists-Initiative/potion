@@ -234,6 +234,9 @@ return [
                 'waivers.*',
             ],
             RolesEnum::BoxOffice->value => [
+                'users.viewAny',
+                'users.view',
+                'users.viewPrivate',
                 'panelAccess.admin',
                 'events.viewPending',
                 'events.viewDeleted',
@@ -274,6 +277,8 @@ return [
 
             'users.viewAny',
             'users.view',
+            'users.viewPrivate',
+            'users.viewAuditLog',
             'users.viewDeleted',
             'users.create',
             'users.update',

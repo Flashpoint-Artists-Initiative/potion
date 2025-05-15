@@ -9,12 +9,15 @@ use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class UserResource extends Resource
@@ -24,6 +27,23 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
 
     protected static ?string $recordTitleAttribute = 'display_name';
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make([
+                    Infolists\Components\TextEntry::make('legal_name')
+                        ->label('Legal Name')
+                        ->visible(fn () => Auth::authenticate()->can('users.viewPrivate')),
+                    Infolists\Components\TextEntry::make('display_name')
+                        ->label('Display Name'),
+                    Infolists\Components\TextEntry::make('email'),
+                    Infolists\Components\TextEntry::make('birthday')
+                        ->visible(fn () => Auth::authenticate()->can('users.viewPrivate')),
+                ])->columns(2),
+            ]);
+    }
 
     public static function form(Form $form): Form
     {
@@ -54,14 +74,12 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                // Tables\Columns\TextColumn::make('legal_name')
-                //     ->searchable()
-                //     ->hidden(),
-                // Tables\Columns\TextColumn::make('preferred_name')
-                //     ->searchable(),
+                Tables\Columns\TextColumn::make('legal_name')
+                    ->searchable()
+                    ->visible(fn () => Auth::authenticate()->can('users.viewPrivate')),
                 Tables\Columns\TextColumn::make('display_name')
-                    ->label('Name')
-                    ->searchable(['legal_name', 'preferred_name'])
+                    ->label(fn () => Auth::authenticate()->can('users.viewPrivate') ? 'Display Name' : 'Name')
+                    ->searchable(['preferred_name'])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('birthday')
                     ->date()
@@ -120,6 +138,7 @@ class UserResource extends Resource
             'view' => Pages\ViewUser::route('/{record}'),
 
             'orders' => Pages\UserOrders::route('/{record}/orders'),
+            'waivers' => Pages\UserWaivers::route('/{record}/waivers'),
             'carts' => Pages\UserCarts::route('/{record}/carts'),
             'transfers' => Pages\UserTransfers::route('/{record}/transfers'),
             'tickets' => Pages\UserPurchasedTickets::route('/{record}/tickets'),
@@ -141,6 +160,7 @@ class UserResource extends Resource
         return $page->generateNavigationItems([
             Pages\ViewUser::class,
             Pages\EditUser::class,
+            Pages\UserWaivers::class,
             Pages\UserOrders::class,
             Pages\UserCarts::class,
             Pages\UserTransfers::class,
