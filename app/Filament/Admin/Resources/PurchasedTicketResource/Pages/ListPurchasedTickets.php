@@ -16,7 +16,7 @@ class ListPurchasedTickets extends ListRecords
     protected $listeners = [
         'active-event-updated' => '$refresh',
     ];
-    
+
     protected function getHeaderActions(): array
     {
         return [

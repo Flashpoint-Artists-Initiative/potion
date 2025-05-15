@@ -16,7 +16,6 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
@@ -213,7 +212,7 @@ class ArtProjectResource extends Resource
         $route = Route::currentRouteName() ?? '';
         $parts = explode('.', $route);
         $lastPart = end($parts);
-        
+
         if ($lastPart === 'view') {
             return parent::getEloquentQuery();
         }

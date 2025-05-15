@@ -37,7 +37,7 @@ return [
             'model' => \App\Models\User::class,
             'field' => 'display_name',
             'label' => 'User',
-        ]
+        ],
     ],
 
 ];

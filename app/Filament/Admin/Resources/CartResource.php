@@ -6,20 +6,17 @@ namespace App\Filament\Admin\Resources;
 
 use App\Enums\CartStatusEnum;
 use App\Filament\Admin\Resources\CartResource\Pages;
-use App\Filament\Admin\Resources\CartResource\RelationManagers;
 use App\Filament\Infolists\Components\UserEntry;
 use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Ticketing\Cart;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists\Infolist;
 use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Blade;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
@@ -28,7 +25,7 @@ class CartResource extends Resource
     protected static ?string $model = Cart::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
-    
+
     protected static ?string $navigationParentItem = 'Orders';
 
     public static function infolist(Infolist $infolist): Infolist
@@ -102,6 +99,7 @@ class CartResource extends Resource
                         if ($record->isExpired) {
                             return 'Expired';
                         }
+
                         return Carbon::parse($state)
                             ->diffForHumans();
                     })

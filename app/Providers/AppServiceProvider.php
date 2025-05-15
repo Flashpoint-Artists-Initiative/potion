@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Password::defaults(function () {
             $rule = Password::min(8);
-            
+
             if (! $this->app->isLocal()) {
                 $rule = $rule->letters()->numbers()->uncompromised();
             }

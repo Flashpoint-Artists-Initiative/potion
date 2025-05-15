@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\TicketTransferResource\Pages;
-use App\Filament\Admin\Resources\TicketTransferResource\RelationManagers;
 use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Ticketing\TicketTransfer;
 use Filament\Infolists;
-use Filament\Forms\Form;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Route;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
@@ -29,7 +26,7 @@ class TicketTransferResource extends Resource
     protected static ?string $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationParentItem = 'Ticketing';
-    
+
     protected static ?string $recordTitleAttribute = 'id';
 
     public static function infolist(Infolist $infolist): Infolist
@@ -61,7 +58,7 @@ class TicketTransferResource extends Resource
                                     Infolists\Components\TextEntry::make('id')
                                         ->label('')
                                         ->url(fn ($state) => PurchasedTicketResource::getUrl('view', ['record' => $state]))
-                                        ->formatStateUsing(fn ($record) => sprintf('%s (#%d)',$record->ticketType->name, $record->id))
+                                        ->formatStateUsing(fn ($record) => sprintf('%s (#%d)', $record->ticketType->name, $record->id))
                                         ->color('primary')
                                         ->iconColor('primary')
                                         ->icon('heroicon-s-ticket'),
@@ -80,7 +77,7 @@ class TicketTransferResource extends Resource
                                     Infolists\Components\TextEntry::make('id')
                                         ->label('')
                                         ->url(fn ($state) => ReservedTicketResource::getUrl('view', ['record' => $state]))
-                                        ->formatStateUsing(fn ($record) => sprintf('%s (#%d)',$record->ticketType->name, $record->id))
+                                        ->formatStateUsing(fn ($record) => sprintf('%s (#%d)', $record->ticketType->name, $record->id))
                                         ->color('primary')
                                         ->iconColor('primary')
                                         ->icon('heroicon-s-ticket'),
@@ -174,7 +171,7 @@ class TicketTransferResource extends Resource
         $route = Route::currentRouteName() ?? '';
         $parts = explode('.', $route);
         $lastPart = end($parts);
-        
+
         if ($lastPart === 'view') {
             return parent::getEloquentQuery();
         }

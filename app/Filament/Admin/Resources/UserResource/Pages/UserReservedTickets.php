@@ -4,18 +4,11 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\UserResource\Pages;
 
-use App\Filament\Admin\Resources\OrderResource;
-use App\Filament\Admin\Resources\PurchasedTicketResource;
 use App\Filament\Admin\Resources\ReservedTicketResource;
 use App\Filament\Admin\Resources\UserResource;
-use Filament\Actions;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserReservedTickets extends ManageRelatedRecords
 {
@@ -46,14 +39,14 @@ class UserReservedTickets extends ManageRelatedRecords
                 Tables\Columns\IconColumn::make('isPurchased')
                     ->label('Purchased')
                     ->boolean()
-                    ->sortable()
+                    ->sortable(),
             ])
             ->filters([
             ])
             ->headerActions([])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->url(fn($record) => ReservedTicketResource::getUrl('view', ['record' => $record->id])),
+                    ->url(fn ($record) => ReservedTicketResource::getUrl('view', ['record' => $record->id])),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),

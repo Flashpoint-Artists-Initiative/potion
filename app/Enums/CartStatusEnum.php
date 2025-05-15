@@ -21,6 +21,5 @@ enum CartStatusEnum: string implements HasLabel
         };
     }
 }
-{
-    //
-}
+
+//

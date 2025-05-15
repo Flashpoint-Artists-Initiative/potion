@@ -15,7 +15,6 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Route;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
@@ -30,7 +29,7 @@ class TicketTypeResource extends Resource
     protected static ?string $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationLabel = 'Ticketing';
-    
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function shouldRegisterNavigation(): bool
@@ -172,7 +171,7 @@ class TicketTypeResource extends Resource
         $route = Route::currentRouteName() ?? '';
         $parts = explode('.', $route);
         $lastPart = end($parts);
-        
+
         if ($lastPart === 'view') {
             return parent::getEloquentQuery();
         }

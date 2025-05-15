@@ -7,14 +7,10 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\TicketTransferResource;
 use App\Filament\Admin\Resources\UserResource;
 use App\Models\Ticketing\TicketTransfer;
-use Filament\Actions;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserTransfers extends ManageRelatedRecords
 {
@@ -38,13 +34,14 @@ class UserTransfers extends ManageRelatedRecords
             ->modifyQueryUsing(function (Builder $query) {
                 /** @var TicketTransfer $record */
                 $record = $this->record;
+
                 return $query->orWhere('ticket_transfers.recipient_user_id', $record->id);
             })
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('id')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')

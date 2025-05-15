@@ -32,6 +32,7 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  * @property-read int $feesOwed
  * @property-read int $total
  * @property-read CartStatusEnum $status
+ *
  * @method Builder<static> notExpired()
  */
 #[ObservedBy(CartObserver::class)]

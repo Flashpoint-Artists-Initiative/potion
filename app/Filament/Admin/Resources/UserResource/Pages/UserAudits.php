@@ -4,26 +4,19 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\UserResource\Pages;
 
-use App\Filament\Admin\Resources\TicketTransferResource;
 use App\Filament\Admin\Resources\UserResource;
-use App\Models\Ticketing\TicketTransfer;
-use Filament\Actions;
-use Filament\Forms;
-use Filament\Forms\Form;
+use App\Models\User;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
-use Illuminate\View\View;
-use OwenIt\Auditing\Models\Audit;
-use App\Models\User;
-use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
+use OwenIt\Auditing\Models\Audit;
 
 class UserAudits extends ManageRelatedRecords
 {
@@ -47,6 +40,7 @@ class UserAudits extends ManageRelatedRecords
             ->query(function (Builder $query) {
                 /** @var User $record */
                 $record = $this->record;
+
                 return Audit::query()
                     ->where('user_id', $record->id);
             })
@@ -99,7 +93,7 @@ class UserAudits extends ManageRelatedRecords
     /**
      * Map the auditable type to the corresponding Filament resource.
      *
-     * $record is actually an instance of OwenIt\Auditing\Models\Audit, 
+     * $record is actually an instance of OwenIt\Auditing\Models\Audit,
      * but that model doesn't have it's attributes defined in a way that makes phpstsan happy
      */
     protected function mapTypeToResource(mixed $record): HtmlString

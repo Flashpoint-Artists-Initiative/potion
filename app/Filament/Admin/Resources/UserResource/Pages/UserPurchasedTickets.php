@@ -7,9 +7,6 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\OrderResource;
 use App\Filament\Admin\Resources\PurchasedTicketResource;
 use App\Filament\Admin\Resources\UserResource;
-use Filament\Actions;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -45,23 +42,23 @@ class UserPurchasedTickets extends ManageRelatedRecords
                 Tables\Columns\TextColumn::make('order.id')
                     ->label('Order ID')
                     ->sortable()
-                    ->url(fn($record) => $record->order_id ? OrderResource::getUrl('view', ['record' => $record->order_id]) : null)
+                    ->url(fn ($record) => $record->order_id ? OrderResource::getUrl('view', ['record' => $record->order_id]) : null)
                     ->color('primary')
                     ->icon('heroicon-m-shopping-bag'),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make()
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->headerActions([])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->url(fn($record) => PurchasedTicketResource::getUrl('view', ['record' => $record->id])),
+                    ->url(fn ($record) => PurchasedTicketResource::getUrl('view', ['record' => $record->id])),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([])
-            ->modifyQueryUsing(fn(Builder $query) => $query->withoutGlobalScopes([
+            ->modifyQueryUsing(fn (Builder $query) => $query->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]));
     }

@@ -7,14 +7,9 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\OrderResource\Pages\ViewOrder;
 use App\Filament\Admin\Resources\UserResource;
 use App\Models\Ticketing\Order;
-use Filament\Actions;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserOrders extends ManageRelatedRecords
 {

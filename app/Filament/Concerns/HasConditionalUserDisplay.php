@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Auth;
 
 trait HasConditionalUserDisplay
 {
-    protected string | Closure $userPage = 'view';
+    protected string|Closure $userPage = 'view';
 
-    public function userPage(string | Closure $page): static
+    public function userPage(string|Closure $page): static
     {
         $this->userPage = $page;
 
@@ -35,7 +35,7 @@ trait HasConditionalUserDisplay
             ->url($this->checkAccess(
                 fn ($record) => UserResource::getUrl($this->getUserPage(), ['record' => $record->user->id])
             ))
-            ->formatStateUsing(fn($record) => $record->user->display_name);
+            ->formatStateUsing(fn ($record) => $record->user->display_name);
     }
 
     protected function checkAccess(string|Htmlable|Closure|null $hasAccess, string|Htmlable|Closure|null $noAccess = null): Closure

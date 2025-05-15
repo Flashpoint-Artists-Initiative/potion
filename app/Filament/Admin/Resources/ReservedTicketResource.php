@@ -211,7 +211,7 @@ class ReservedTicketResource extends Resource
         $route = Route::currentRouteName() ?? '';
         $parts = explode('.', $route);
         $lastPart = end($parts);
-        
+
         if ($lastPart === 'view') {
             return parent::getEloquentQuery();
         }
