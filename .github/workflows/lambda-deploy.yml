@@ -11,6 +11,7 @@ on:
     inputs:
       environment:
         type: environment
+
 env:
   ENVIRONMENT: ${{ 
     github.event_name == 'release' && github.event.action == 'released' 
