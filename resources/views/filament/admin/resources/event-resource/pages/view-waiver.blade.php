@@ -1,4 +1,9 @@
 <x-filament-panels::page>
+    @if ($this->record->completedWaivers()->exists())
+        <x-notification-banner color="info">
+            A waiver cannot be modified once it has been signed.
+        </x-notification-banner>
+    @endif
     @if ($this->hasWaiver)
         {{ $this->form }}
     @else
