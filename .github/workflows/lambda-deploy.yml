@@ -28,7 +28,7 @@ jobs:
       # Use parameter expansion to make environment lowercase.
       - name: Downcase environment
         run: |
-          echo "ENVIRONMENT_LC=${ENVIRONMENT,, }" >>${GITHUB_ENV}
+          echo "ENVIRONMENT_LC=${ENVIRONMENT,,}" >>${GITHUB_ENV}
 
       # Get the base domain from the APP_URL environment variable.
       - name: Get base domain from APP_URL
