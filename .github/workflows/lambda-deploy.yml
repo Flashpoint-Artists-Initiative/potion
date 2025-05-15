@@ -13,13 +13,7 @@ on:
         type: environment
 
 env:
-  ENVIRONMENT: ${{ 
-    github.event_name == 'release' && github.event.action == 'released' 
-      ? 'Production' 
-      : (github.event_name == 'push' 
-        ? 'Development' 
-        : inputs.environment || 'Production') 
-  }}
+  ENVIRONMENT: ${{ github.event_name == 'release' && github.event.action == 'released' && 'Production' || github.event_name == 'push' && 'Development' || inputs.environment }}
 
 jobs:
   deploy:
