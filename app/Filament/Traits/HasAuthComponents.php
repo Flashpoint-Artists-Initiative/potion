@@ -71,4 +71,14 @@ trait HasAuthComponents
             ->validationAttribute(__('filament-panels::pages/auth/register.form.password.validation_attribute'))
             ->helperText('Your password must be at least 8 characters long and contain at least one letter and one number.');
     }
+    
+    protected function getPasswordConfirmationFormComponent(): Component
+    {
+        return TextInput::make('passwordConfirmation')
+            ->label(__('filament-panels::pages/auth/register.form.password_confirmation.label'))
+            ->password()
+            ->revealable(filament()->arePasswordsRevealable())
+            ->required()
+            ->dehydrated(false);
+    }
 }

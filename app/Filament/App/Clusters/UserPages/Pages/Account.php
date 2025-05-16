@@ -91,16 +91,16 @@ class Account extends Page
                 $user = Auth::user();
 
                 return [
-                    'legal_name' => $user->legal_name,
+                    // 'legal_name' => $user->legal_name,
                     'preferred_name' => $user->preferred_name,
                     'email' => $user->email,
-                    'birthday' => $user->birthday,
+                    // 'birthday' => $user->birthday,
                 ];
             })
             ->form([
                 Placeholder::make('legal_name')
-                    ->label('Full Legal Name')
-                    ->helperText(new HtmlString('Your legal name cannot be changed.  If you need to change it, please contact <a class="text-primary-400" href="mailto:' . config('mail.from.address') . '?subject=Legal Name Change">' . config('mail.from.address') . '</a>.')),
+                    ->label('')
+                    ->helperText(new HtmlString('Your legal name and birthday cannot be changed.  If you need to change it, please contact <a class="text-primary-400" href="mailto:' . config('mail.from.address') . '?subject=Legal Name Change">' . config('mail.from.address') . '</a>.')),
                 $this->getPreferredNameFormComponent(),
                 TextInput::make('email')
                     ->email()
@@ -108,14 +108,16 @@ class Account extends Page
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->helperText('Changing your email address will require re-verification.'),
-                $this->getBirthdayFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getPasswordConfirmationFormComponent(),
             ])
             ->action(function (array $data) {
                 /** @var User */
                 $user = filament()->auth()->user();
-                $user->legal_name = $data['legal_name'];
+                // $user->legal_name = $data['legal_name'];
                 $user->preferred_name = $data['preferred_name'];
                 $user->email = $data['email'];
+                $user->password = $data['password'] ?? $user->password;
                 $user->save();
             });
     }
