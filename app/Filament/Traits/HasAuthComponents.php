@@ -37,6 +37,7 @@ trait HasAuthComponents
     protected function getBirthdayFormComponent(): Component
     {
         return DatePicker::make('birthday')
+            ->closeOnDateSelection()
             ->required()
             ->before('18 years ago today')
             ->validationMessages([

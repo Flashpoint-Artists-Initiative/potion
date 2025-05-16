@@ -52,10 +52,12 @@ class EventResource extends Resource
                             ->maxLength(255),
                         Forms\Components\DatePicker::make('start_date')
                             ->required()
+                            ->closeOnDateSelection()
                             ->beforeOrEqual('end_date')
                             ->helperText('The first day that has volunteer shifts.'),
                         Forms\Components\DatePicker::make('end_date')
                             ->required()
+                            ->closeOnDateSelection()
                             ->afterOrEqual('start_date')
                             ->helperText('The last public day of the event.'),
                         Fieldset::make('Ticket Sales')

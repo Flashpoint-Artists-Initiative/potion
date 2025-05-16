@@ -47,6 +47,7 @@ class BanResource extends BanhammerResource
                     ),
                 Forms\Components\DatePicker::make('expired_at')
                     ->label('Expiration Date')
+                    ->closeOnDateSelection()
                     ->helperText('Leave blank for permanent ban'),
                 Forms\Components\TextInput::make('comment')
                     ->label('Comment')

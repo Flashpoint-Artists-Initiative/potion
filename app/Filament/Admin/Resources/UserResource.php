@@ -56,7 +56,8 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('preferred_name')
                     ->maxLength(255),
-                Forms\Components\DatePicker::make('birthday'),
+                Forms\Components\DatePicker::make('birthday')
+                    ->closeOnDateSelection(),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()

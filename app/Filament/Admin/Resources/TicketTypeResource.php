@@ -49,9 +49,13 @@ class TicketTypeResource extends Resource
                     ->content(fn (?TicketType $record) => $record->event->name ?? Event::getCurrentEvent()->name ?? 'No Event'),
                 Forms\Components\DateTimePicker::make('sale_start_date')
                     ->required()
+                    ->seconds(false)
+                    ->closeOnDateSelection()
                     ->before('sale_end_date'),
                 Forms\Components\DateTimePicker::make('sale_end_date')
                     ->required()
+                    ->seconds(false)
+                    ->closeOnDateSelection()
                     ->afterOrEqual('sale_start_date')
                     ->helperText('Reserved tickets will expire after this date, by default.'),
                 Forms\Components\TextInput::make('quantity')

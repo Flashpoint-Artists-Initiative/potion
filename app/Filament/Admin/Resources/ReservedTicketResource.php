@@ -102,6 +102,8 @@ class ReservedTicketResource extends Resource
                         return sprintf('Defaults to ticket sale end date: %s', $ticketType->sale_end_date?->timezone('America/New_York')->format('F jS, Y g:i A T') ?? '');
                     })
                     ->format('Y-m-d H:i:s')
+                    ->seconds(false)
+                    ->closeOnDateSelection()
                     ->disabled(fn (?ReservedTicket $record) => $record?->is_purchased),
                 Forms\Components\TextInput::make('note')
                     ->helperText('Use this for the name of the art project, theme camp, or other special note. User will see this.')
