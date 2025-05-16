@@ -15,6 +15,7 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
+use Gerenuk\FilamentBanhammer\FilamentBanhammerPlugin;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
@@ -47,6 +48,13 @@ class AdminPanelProvider extends CommonPanelProvider
                     ->url(fn () => route('filament.app.pages.dashboard'))
                     ->icon('heroicon-o-arrow-left-start-on-rectangle')
                     ->sort(999),
+            ])
+            ->navigationGroups([
+                'Event Specific',
+                'Admin',
+            ])
+            ->plugins([
+                FilamentBanhammerPlugin::make(),
             ])
             ->databaseNotifications();
     }

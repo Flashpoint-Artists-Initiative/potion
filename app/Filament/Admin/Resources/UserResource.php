@@ -15,6 +15,8 @@ use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Gerenuk\FilamentBanhammer\Resources\Actions\BanAction;
+use Gerenuk\FilamentBanhammer\Resources\Actions\UnbanAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
@@ -113,6 +115,13 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    BanAction::make()
+                        ->hidden(fn ($record) => $record->isBanned()),
+                    UnbanAction::make()
+                        ->hidden(fn ($record) => ! $record->isBanned()),
+                ])
+                    ->visible(fn () => Auth::authenticate()->can('users.ban')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Mchev\Banhammer\Traits\Bannable;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
@@ -40,7 +41,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable implements ContractsAuditable, FilamentUser, HasName, JWTSubject, MustVerifyEmail
 {
-    use Auditable, HasFactory, HasRoles, HasVirtualColumns, Notifiable, SoftDeletes;
+    use Auditable, Bannable, HasFactory, HasRoles, HasVirtualColumns, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -220,6 +221,11 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
         return $this->display_name;
     }
 
+    public function getFilamentBanhammerTitleAttribute(): string
+    {
+        return $this->display_name;
+    }
+
     /**
      * Auth for Filament Panels
      */
@@ -266,6 +272,9 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
         );
     }
 
+    /**
+     * Used for Audits
+     */
     public function name(): Attribute
     {
         return Attribute::make(

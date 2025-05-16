@@ -286,6 +286,7 @@ return [
             'users.restore',
             'users.forceDelete',
             'users.history',
+            'users.ban',
             'users.*',
 
             'events.viewAny',
