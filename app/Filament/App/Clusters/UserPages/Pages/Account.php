@@ -108,8 +108,8 @@ class Account extends Page
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->helperText('Changing your email address will require re-verification.'),
-                $this->getPasswordFormComponent(),
-                $this->getPasswordConfirmationFormComponent(),
+                $this->getPasswordFormComponent(false),
+                $this->getPasswordConfirmationFormComponent(false),
             ])
             ->action(function (array $data) {
                 /** @var User */

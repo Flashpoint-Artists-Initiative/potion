@@ -58,27 +58,27 @@ trait HasAuthComponents
             ->unique(ignoreRecord: true);
     }
 
-    protected function getPasswordFormComponent(): Component
+    protected function getPasswordFormComponent(bool $required = true): Component
     {
         return TextInput::make('password')
             ->label(__('filament-panels::pages/auth/register.form.password.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
-            ->required()
+            ->required($required)
             ->rule(Password::default())
             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
             ->same('passwordConfirmation')
             ->validationAttribute(__('filament-panels::pages/auth/register.form.password.validation_attribute'))
             ->helperText('Your password must be at least 8 characters long and contain at least one letter and one number.');
     }
-    
-    protected function getPasswordConfirmationFormComponent(): Component
+
+    protected function getPasswordConfirmationFormComponent(bool $required = true): Component
     {
         return TextInput::make('passwordConfirmation')
             ->label(__('filament-panels::pages/auth/register.form.password_confirmation.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
-            ->required()
+            ->required($required)
             ->dehydrated(false);
     }
 }
