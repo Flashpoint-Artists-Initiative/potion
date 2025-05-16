@@ -20,6 +20,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Mchev\Banhammer\Middleware\LogoutBanned;
 
 class CommonPanelProvider extends PanelProvider
 {
@@ -49,6 +50,7 @@ class CommonPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                LogoutBanned::class,
             ])
             ->discoverResources(...$this->discoverHelper('Resources'))
             ->discoverPages(...$this->discoverHelper('Pages'))

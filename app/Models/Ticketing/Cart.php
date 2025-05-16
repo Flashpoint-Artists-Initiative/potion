@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Ticketing;
 
+use App\Enums\CartStatusEnum;
 use App\Models\Event;
 use App\Models\User;
 use App\Observers\CartObserver;
@@ -15,12 +16,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\App;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
 /**
- * @property bool $is_expired
+ * @property bool $isExpired
  * @property Event $event
  * @property int $quantity
  * @property-read User $user
@@ -29,6 +31,7 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  * @property-read int $taxesOwed
  * @property-read int $feesOwed
  * @property-read int $total
+ * @property-read CartStatusEnum $status
  *
  * @method Builder<static> notExpired()
  */
@@ -63,6 +66,14 @@ class Cart extends Model implements ContractsAuditable
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return HasOne<Order, $this>
+     */
+    public function order(): HasOne
+    {
+        return $this->hasOne(Order::class);
     }
 
     /**
@@ -131,6 +142,23 @@ class Cart extends Model implements ContractsAuditable
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $attributes['expiration_date'] < now();
+            }
+        );
+    }
+
+    public function status(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                if ($this->order()->exists()) {
+                    return CartStatusEnum::Completed;
+                }
+
+                if ($this->isExpired) {
+                    return CartStatusEnum::Expired;
+                }
+
+                return CartStatusEnum::Active;
             }
         );
     }

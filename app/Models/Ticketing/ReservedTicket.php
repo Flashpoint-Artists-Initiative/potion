@@ -28,6 +28,7 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 #[ObservedBy(ReservedTicketObserver::class)]
 class ReservedTicket extends Model implements ContractsAuditable, TicketInterface
 {
+    // Used when importing to create multiple tickets from a single row
     public ?int $count = 1;
 
     use Auditable, HasFactory, HasTicketType;
@@ -80,6 +81,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
                 $query->where('expiration_date', '>', now());
             });
         });
+        $query->noActiveTransfer();
     }
 
     public function scopeEvent(Builder $query, int $eventId): void

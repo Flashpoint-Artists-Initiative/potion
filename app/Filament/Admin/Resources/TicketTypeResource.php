@@ -15,7 +15,8 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Route;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class TicketTypeResource extends Resource
 {
@@ -28,6 +29,8 @@ class TicketTypeResource extends Resource
     protected static ?string $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationLabel = 'Ticketing';
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -75,6 +78,7 @@ class TicketTypeResource extends Resource
                     ->default(true)
                     ->helperText('Transferable tickets can be transferred to another user.'),
                 Forms\Components\Toggle::make('addon')
+                    ->label('Add-on')
                     ->required()
                     ->helperText('Add-on tickets do not count as a ticket for attending the event. They are only for add-on items, such as child tickets, ice sales, etc.'),
             ]);
@@ -148,7 +152,7 @@ class TicketTypeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 
@@ -164,10 +168,15 @@ class TicketTypeResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
+        $route = Route::currentRouteName() ?? '';
+        $parts = explode('.', $route);
+        $lastPart = end($parts);
+
+        if ($lastPart === 'view') {
+            return parent::getEloquentQuery();
+        }
+
         return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ])
             ->where('event_id', Event::getCurrentEventId());
     }
 }

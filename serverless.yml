@@ -21,6 +21,7 @@ provider:
         DB_PASSWORD: ${env:DB_PASSWORD, ''}
         DB_USERNAME: ${env:DB_USERNAME, ''}
         DEFAULT_EVENT_ID: ${env:DEFAULT_EVENT_ID, ''}
+        FILESYSTEM_DISK: s3
         JWT_PRIVATE_KEY: ${env:JWT_PRIVATE_KEY, ''}
         JWT_PUBLIC_KEY: ${env:JWT_PUBLIC_KEY, ''}
         JWT_SECRET: ${env:JWT_SECRET, ''}

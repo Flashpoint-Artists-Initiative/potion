@@ -4,21 +4,48 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enums\RolesEnum;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Gerenuk\FilamentBanhammer\Resources\Actions\BanAction;
+use Gerenuk\FilamentBanhammer\Resources\Actions\UnbanAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+
+    protected static ?string $recordTitleAttribute = 'display_name';
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make([
+                    Infolists\Components\TextEntry::make('legal_name')
+                        ->label('Legal Name')
+                        ->visible(fn () => Auth::authenticate()->can('users.viewPrivate')),
+                    Infolists\Components\TextEntry::make('display_name')
+                        ->label('Display Name'),
+                    Infolists\Components\TextEntry::make('email'),
+                    Infolists\Components\TextEntry::make('birthday')
+                        ->visible(fn () => Auth::authenticate()->can('users.viewPrivate')),
+                ])->columns(2),
+            ]);
+    }
 
     public static function form(Form $form): Form
     {
@@ -28,8 +55,6 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('preferred_name')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('display_name')
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('birthday'),
                 Forms\Components\TextInput::make('email')
@@ -52,11 +77,13 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('legal_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('preferred_name')
-                    ->searchable(),
+                    ->searchable()
+                    ->visible(fn () => Auth::authenticate()->can('users.viewPrivate'))
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('display_name')
-                    ->searchable(),
+                    ->label(fn () => Auth::authenticate()->can('users.viewPrivate') ? 'Display Name' : 'Name')
+                    ->searchable(['preferred_name'])
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('birthday')
                     ->date()
                     ->sortable(),
@@ -80,10 +107,21 @@ class UserResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\SelectFilter::make('role')
+                    ->relationship('roles', 'name')
+                    ->options(RolesEnum::class)
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    BanAction::make()
+                        ->hidden(fn ($record) => $record->isBanned()),
+                    UnbanAction::make()
+                        ->hidden(fn ($record) => ! $record->isBanned()),
+                ])
+                    ->visible(fn () => Auth::authenticate()->can('users.ban')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -97,7 +135,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 
@@ -108,6 +146,14 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
             'view' => Pages\ViewUser::route('/{record}'),
+
+            'orders' => Pages\UserOrders::route('/{record}/orders'),
+            'waivers' => Pages\UserWaivers::route('/{record}/waivers'),
+            'carts' => Pages\UserCarts::route('/{record}/carts'),
+            'transfers' => Pages\UserTransfers::route('/{record}/transfers'),
+            'tickets' => Pages\UserPurchasedTickets::route('/{record}/tickets'),
+            'reserved' => Pages\UserReservedTickets::route('/{record}/reserved'),
+            'audits' => Pages\UserAudits::route('/{record}/audits'),
         ];
     }
 
@@ -117,5 +163,20 @@ class UserResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewUser::class,
+            Pages\EditUser::class,
+            Pages\UserWaivers::class,
+            Pages\UserOrders::class,
+            Pages\UserCarts::class,
+            Pages\UserTransfers::class,
+            Pages\UserPurchasedTickets::class,
+            Pages\UserReservedTickets::class,
+            Pages\UserAudits::class,
+        ]);
     }
 }

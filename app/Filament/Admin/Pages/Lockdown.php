@@ -21,6 +21,8 @@ class Lockdown extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
 
+    protected static ?string $navigationGroup = 'Admin';
+
     protected static string $view = 'filament.admin.pages.lockdown';
 
     protected static ?int $navigationSort = 20;

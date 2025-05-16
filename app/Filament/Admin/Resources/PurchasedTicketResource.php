@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\PurchasedTicketResource\Pages;
+use App\Filament\Infolists\Components\UserEntry;
+use App\Filament\Tables\Columns\UserColumn;
+use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
 use Filament\Forms;
 use Filament\Infolists\Components\Section;
@@ -13,6 +16,9 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Route;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class PurchasedTicketResource extends Resource
 {
@@ -24,6 +30,8 @@ class PurchasedTicketResource extends Resource
 
     protected static ?string $navigationParentItem = 'Ticketing';
 
+    protected static ?string $recordTitleAttribute = 'id';
+
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -34,7 +42,8 @@ class PurchasedTicketResource extends Resource
                         ->label('Purchased Date')
                         ->dateTime('F jS, Y g:i A T', 'America/New_York'),
                     TextEntry::make('order_id'),
-                    TextEntry::make('user.display_name'),
+                    UserEntry::make('user')
+                        ->userPage('tickets'),
                     TextEntry::make('reserved_ticket_id'),
                 ]),
                 // Forms\Components\Select::make('ticket_type_id')
@@ -54,15 +63,13 @@ class PurchasedTicketResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('ticketType.name')
+                Tables\Columns\TextColumn::make('id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.display_name')
-                    ->searchable()
-                    ->sortable()
-                    ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                Tables\Columns\TextColumn::make('ticketType.name')
+                    ->sortable(),
+                UserColumn::make('user')
+                    ->userPage('tickets'),
                 Tables\Columns\TextColumn::make('order.id')
                     ->label('Order #')
                     ->numeric()
@@ -105,7 +112,7 @@ class PurchasedTicketResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 
@@ -117,5 +124,19 @@ class PurchasedTicketResource extends Resource
             'view' => Pages\ViewPurchasedTicket::route('/{record}'),
             // 'edit' => Pages\EditPurchasedTicket::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $route = Route::currentRouteName() ?? '';
+        $parts = explode('.', $route);
+        $lastPart = end($parts);
+
+        if ($lastPart === 'view') {
+            return parent::getEloquentQuery();
+        }
+
+        return parent::getEloquentQuery()
+            ->whereRelation('ticketType', 'event_id', Event::getCurrentEventId());
     }
 }

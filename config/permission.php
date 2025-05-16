@@ -213,6 +213,8 @@ return [
                 'lockdown.*',
                 'metrics.*',
                 'artProjects.*',
+                'audit',
+                'restoreAudit',
             ],
             RolesEnum::EventManager->value => [
                 'panelAccess.admin',
@@ -232,6 +234,9 @@ return [
                 'waivers.*',
             ],
             RolesEnum::BoxOffice->value => [
+                'users.viewAny',
+                'users.view',
+                'users.viewPrivate',
                 'panelAccess.admin',
                 'events.viewPending',
                 'events.viewDeleted',
@@ -272,6 +277,8 @@ return [
 
             'users.viewAny',
             'users.view',
+            'users.viewPrivate',
+            'users.viewAuditLog',
             'users.viewDeleted',
             'users.create',
             'users.update',
@@ -279,6 +286,7 @@ return [
             'users.restore',
             'users.forceDelete',
             'users.history',
+            'users.ban',
             'users.*',
 
             'events.viewAny',
@@ -420,6 +428,10 @@ return [
             'artProjects.forceDelete',
             'artProjects.vote',
             'artProjects.*',
+
+            // From tapp/filament-auditing
+            'audit',
+            'restoreAudit',
         ],
     ],
 ];

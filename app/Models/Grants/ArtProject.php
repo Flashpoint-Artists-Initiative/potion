@@ -40,6 +40,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         'event_id',
         'artist_name',
         'description',
+        'short_description',
         'budget_link',
         'min_funding',
         'max_funding',

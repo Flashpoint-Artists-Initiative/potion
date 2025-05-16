@@ -1,6 +1,9 @@
 name: Deploy to AWS Lambda
 
 on:
+  push:
+    branches:
+      - main
   release:
     types:
       - released
@@ -8,14 +11,15 @@ on:
     inputs:
       environment:
         type: environment
+
 env:
-  ENVIRONMENT: ${{ inputs.environment || 'Production' }}
+  ENVIRONMENT: ${{ github.event_name == 'release' && github.event.action == 'released' && 'Production' || github.event_name == 'push' && 'Development' || inputs.environment }}
 
 jobs:
   deploy:
     name: deploy
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'Production' }}
+    environment: ${{ github.event_name == 'release' && github.event.action == 'released' && 'Production' || github.event_name == 'push' && 'Development' || inputs.environment }}
     steps:
       # Check out a copy of your repository.
       - name: Checkout code

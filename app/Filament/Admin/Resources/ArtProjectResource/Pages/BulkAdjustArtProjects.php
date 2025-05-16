@@ -81,11 +81,12 @@ class BulkAdjustArtProjects extends ListRecords
                     ->label('Votes')
                     ->numeric()
                     ->sortable(query: function (EloquentBuilder $query, string $direction) {
-                        // Copied to BulkAdjustArtProjects
-                        return $query->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
+                        // Copied from ArtProjectResource - Table - totalVotes - sortable
+                        return $query
+                            ->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
                             ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
-                            ->orderBy('totalVotes', $direction)
-                            ->groupBy('art_projects.id');
+                            ->groupBy('art_projects.id')
+                            ->orderBy('totalVotes', $direction);
                     })
                     ->toggleable()
                     ->summarize(Summarizer::make()
@@ -96,8 +97,7 @@ class BulkAdjustArtProjects extends ListRecords
                     ->numeric()
                     ->prefix('$')
                     ->sortable(query: function (EloquentBuilder $query, string $direction) {
-                        // Copied from ArtProjectResource
-                        return $query// ->leftJoinRelationship('votes')
+                        return $query
                             ->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
                             ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
                             ->groupBy('art_projects.id')

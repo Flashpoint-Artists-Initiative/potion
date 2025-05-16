@@ -30,7 +30,7 @@ class ReservedTicketsTable extends Component implements HasForms, HasTable
     public function render(): string
     {
         return <<<'HTML'
-        <div class="grid flex-1 gap-y-8">
+        <div class="flex flex-col flex-1 gap-y-6 print-hide">
             <span class="text-3xl font-semibold">Your Reserved Tickets</span>
             {{  $this->table }}
         </div>
@@ -40,7 +40,7 @@ class ReservedTicketsTable extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(ReservedTicket::query()->currentUser()->currentEvent()->canBePurchased()->noActiveTransfer())
+            ->query(ReservedTicket::query()->currentUser()->currentEvent()->canBePurchased())
             ->columns([
                 TextColumn::make('ticketType.name')
                     ->label('Ticket Type')
@@ -56,8 +56,7 @@ class ReservedTicketsTable extends Component implements HasForms, HasTable
                 TableAction::make('purchase')
                     ->label('Purchase')
                     ->url(fn (ReservedTicket $ticket) => PurchaseTickets::getUrl(['reserved' => $ticket->id]))
-                    ->visible(fn (ReservedTicket $ticket) => $ticket->ticketType->available &&
-                        $ticket->ticketType->event->endDateCarbon->isFuture() &&
+                    ->visible(fn (ReservedTicket $ticket) => $ticket->ticketType->event->endDateCarbon->isFuture() &&
                         ! LockdownEnum::Tickets->isLocked()
                     ),
                 TableAction::make('transfer')

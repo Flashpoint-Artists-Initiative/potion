@@ -47,8 +47,10 @@ class ReservedTicketObserver
 
         $email = $reservedTicket->user->email ?? $reservedTicket->email;
 
-        Mail::to($email)
-            ->send(new ReservedTicketCreatedMail($reservedTicket));
+        if ($reservedTicket->isDirty('email')) {
+            Mail::to($email)
+                ->send(new ReservedTicketCreatedMail($reservedTicket));
+        }
     }
 
     /**

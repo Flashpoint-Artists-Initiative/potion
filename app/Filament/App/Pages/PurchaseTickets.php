@@ -84,7 +84,7 @@ class PurchaseTickets extends Page
         $this->cart = app(CartService::class)->getActiveCart();
         $this->hasPurchasedTickets = $user->purchasedTickets()->currentEvent()->exists();
         $this->pageContent = Event::getCurrentEvent()?->ticketPurchaseContent?->formattedContent;
-        $this->maxTickets = Event::getCurrentEvent()->ticketsPerSale ?? 4;
+        $this->maxTickets = (int) (Event::getCurrentEvent()->ticketsPerSale ?? 4);
     }
 
     public function form(Form $form): Form

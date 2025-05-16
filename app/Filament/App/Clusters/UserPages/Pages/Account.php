@@ -9,6 +9,7 @@ use App\Filament\App\Clusters\UserPages;
 use App\Filament\Traits\HasAuthComponents;
 use App\Models\User;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
@@ -90,14 +91,16 @@ class Account extends Page
                 $user = Auth::user();
 
                 return [
-                    'legal_name' => $user->legal_name,
+                    // 'legal_name' => $user->legal_name,
                     'preferred_name' => $user->preferred_name,
                     'email' => $user->email,
-                    'birthday' => $user->birthday,
+                    // 'birthday' => $user->birthday,
                 ];
             })
             ->form([
-                $this->getLegalNameFormComponent(),
+                Placeholder::make('legal_name')
+                    ->label('')
+                    ->helperText(new HtmlString('Your legal name and birthday cannot be changed.  If you need to change it, please contact <a class="text-primary-400" href="mailto:' . config('mail.from.address') . '?subject=Legal Name Change">' . config('mail.from.address') . '</a>.')),
                 $this->getPreferredNameFormComponent(),
                 TextInput::make('email')
                     ->email()
@@ -105,14 +108,16 @@ class Account extends Page
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->helperText('Changing your email address will require re-verification.'),
-                $this->getBirthdayFormComponent(),
+                $this->getPasswordFormComponent(false),
+                $this->getPasswordConfirmationFormComponent(false),
             ])
             ->action(function (array $data) {
                 /** @var User */
                 $user = filament()->auth()->user();
-                $user->legal_name = $data['legal_name'];
+                // $user->legal_name = $data['legal_name'];
                 $user->preferred_name = $data['preferred_name'];
                 $user->email = $data['email'];
+                $user->password = $data['password'] ?? $user->password;
                 $user->save();
             });
     }

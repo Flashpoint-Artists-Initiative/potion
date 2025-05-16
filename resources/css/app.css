@@ -71,4 +71,8 @@
     .no-print {
         visibility: hidden;
     }
+    
+    .print-hide {
+        display: none;
+    }
 }

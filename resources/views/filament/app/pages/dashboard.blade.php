@@ -1,5 +1,6 @@
 @php
     use \App\Filament\Admin\Resources\EventResource\Pages\EditPageContent;
+    use \App\Filament\Admin\Resources\EventResource\Pages\ListEvents;
     use \App\Filament\App\Pages\PurchaseTickets;
     use App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 @endphp
@@ -26,5 +27,7 @@
     </div>
     @elseif (Auth::user()->can('events.edit') && $event)
     <span>Add content to the dashboard in the <x-filament::link href="{{ EditPageContent::getUrl(['record' => $event->id], panel: 'admin') }}">Admin Panel</x-filament::link></span>
+    @elseif (Auth::user()->can('events.edit'))
+    <span class="text-2xl">There is no active event available. Create a new event or mark one as active in the <x-filament::link size="whatever" href="{{ ListEvents::getUrl(panel: 'admin') }}">Event Manager</x-filament::link>.</span>
     @endif
 </x-filament-panels::page>

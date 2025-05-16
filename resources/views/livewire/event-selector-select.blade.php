@@ -13,7 +13,7 @@
     </x-filament::input.wrapper>
 </div>
 
-@elseif (filled($events) && $events->count() == 1)
+@elseif (filled($events) && $events->count() == 1 && $events->keys()->first() == $eventId)
 
 <div class="flex items-center">
     {{ $events->first() }}

@@ -1,0 +1,53 @@
+name: Run Database Migrations
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+env:
+  ENVIRONMENT: ${{ inputs.environment || 'Production' }}
+
+jobs:
+  migrate:
+    name: migrate
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'Production' }}
+    steps:
+      # Check out a copy of your repository.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Use parameter expansion to make environment lowercase.
+      - name: Downcase environment
+        run: |
+          echo "ENVIRONMENT_LC=${ENVIRONMENT,,}" >>${GITHUB_ENV}
+
+      # Get the base domain from the APP_URL environment variable.
+      - name: Get base domain from APP_URL
+        run: |
+          echo "BASE_DOMAIN=$(echo ${{ vars.APP_URL }} | sed 's/http[s]*:\/\///')" >>${GITHUB_ENV}
+
+      # Set up PHP environment.
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+
+      # Install Composer dependencies with the specified options.
+      - name: Install Composer dependencies
+        uses: "ramsey/composer-install@v2"
+        with:
+          composer-options: "--prefer-dist --optimize-autoloader --no-dev"
+
+      - name: Run Migration
+        uses: serverless/github-action@v4
+        with:
+          args: -c "serverless plugin install -n serverless-lift && serverless bref:cli --args="migrate --force" --stage=${{ env.ENVIRONMENT_LC }}"
+          entrypoint: /bin/sh
+        env:
+          SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BASE_DOMAIN: ${{ env.BASE_DOMAIN }}
+          AWS_CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}

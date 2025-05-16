@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\OrderResource\Pages;
+use App\Filament\Infolists\Components\UserEntry;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Livewire\OrderTicketsTable;
 use App\Models\Ticketing\Order;
 use Carbon\Carbon;
@@ -16,13 +18,13 @@ use Filament\Infolists\Components\Split;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class OrderResource extends Resource
 {
@@ -59,21 +61,14 @@ class OrderResource extends Resource
                         TextEntry::make('created_at')
                             ->label('Purchase Date')
                             ->dateTime('F jS, Y g:i A T', 'America/New_York'),
-                        TextEntry::make('user.display_name')
-                            ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                            ->color('primary')
-                            ->icon('heroicon-m-user')
-                            ->iconColor('primary')
-                            ->weight(FontWeight::Bold),
+                        UserEntry::make('user')
+                            ->userPage('orders'),
                         TextEntry::make('user_email'),
                         TextEntry::make('event.name')
                             ->url(fn ($record) => EventResource::getUrl('view', ['record' => $record->event_id]))
                             ->color('primary')
                             ->icon('heroicon-m-calendar')
-                            ->iconColor('primary')
-                            ->weight(FontWeight::Bold),
-                        // TextEntry::make('purchasedTickets.id')
-                        //     ->badge(),
+                            ->iconColor('primary'),
                     ])->grow(false),
                 ])->from('lg'),
             ])
@@ -87,12 +82,8 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.display_name')
-                    ->searchable(['users.display_name', 'users.email'])
-                    ->sortable()
-                    ->url(fn ($record) => UserResource::getUrl('view', ['record' => $record->user_id]))
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                UserColumn::make('user')
+                    ->userPage('orders'),
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('Email')
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -176,7 +167,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 

@@ -30,6 +30,10 @@ class CompletedWaiver extends Model implements ContractsAuditable
         'form_data' => 'array',
     ];
 
+    protected $with = [
+        'waiver',
+    ];
+
     /**
      * @return BelongsTo<Waiver, $this>
      */

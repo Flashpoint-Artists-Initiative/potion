@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ReservedTicketResource\Pages;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Ticketing\ReservedTicket;
 use App\Models\Ticketing\TicketType;
@@ -20,6 +21,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Route;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class ReservedTicketResource extends Resource
 {
@@ -30,6 +33,8 @@ class ReservedTicketResource extends Resource
     protected static ?string $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationParentItem = 'Ticketing';
+
+    protected static ?string $recordTitleAttribute = 'id';
 
     public static function form(Form $form): Form
     {
@@ -116,7 +121,7 @@ class ReservedTicketResource extends Resource
                         return Action::make()
                             ->label($record->user->display_name)
                             ->icon('heroicon-m-user')
-                            ->url(UserResource::getUrl('view', ['record' => $record->user_id]))
+                            ->url(UserResource::getUrl('reserved', ['record' => $record->user_id]))
                             ->link();
                     }
                 })
@@ -150,12 +155,8 @@ class ReservedTicketResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.display_name')
-                    ->searchable()
-                    ->sortable()
-                    ->url(fn ($record) => $record?->user_id ? UserResource::getUrl('view', ['record' => $record->user_id]) : null)
-                    ->color('primary')
-                    ->icon('heroicon-m-user'),
+                UserColumn::make('user')
+                    ->userPage('reserved'),
                 Tables\Columns\TextColumn::make('expiration_date')
                     ->dateTime()
                     ->sortable(),
@@ -190,7 +191,7 @@ class ReservedTicketResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 
@@ -206,6 +207,14 @@ class ReservedTicketResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
+        $route = Route::currentRouteName() ?? '';
+        $parts = explode('.', $route);
+        $lastPart = end($parts);
+
+        if ($lastPart === 'view') {
+            return parent::getEloquentQuery();
+        }
+
         return parent::getEloquentQuery()
             ->whereRelation('ticketType', 'event_id', Event::getCurrentEventId());
     }

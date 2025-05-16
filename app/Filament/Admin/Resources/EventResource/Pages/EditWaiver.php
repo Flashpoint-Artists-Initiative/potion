@@ -17,6 +17,14 @@ class EditWaiver extends EditRecord
 {
     protected static string $resource = EventResource::class;
 
+    public static function canAccess(array $parameters = []): bool
+    {
+        /** @var Event $event */
+        $event = $parameters['record'];
+
+        return parent::canAccess($parameters) && $event->waiver && ! $event->completedWaivers()->exists();
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -42,7 +50,7 @@ class EditWaiver extends EditRecord
                 // ->successNotificationTitle('Deleted')
                 // ->color('danger')
                 // ->requiresConfirmation()
-                ->successRedirectUrl(ViewEvent::getUrl(['record' => $this->record])),
+                ->successRedirectUrl($this->getResource()::getUrl('view', ['record' => $this->record])),
         ];
     }
 

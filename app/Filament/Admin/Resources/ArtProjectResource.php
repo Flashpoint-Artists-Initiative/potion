@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Enums\ArtProjectStatusEnum;
 use App\Filament\Admin\Resources\ArtProjectResource\Pages;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Grants\ArtProject;
 use Filament\Forms;
@@ -16,8 +17,9 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class ArtProjectResource extends Resource
 {
@@ -30,6 +32,8 @@ class ArtProjectResource extends Resource
     protected static ?string $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationLabel = 'Art Grants';
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -57,6 +61,9 @@ class ArtProjectResource extends Resource
                         Forms\Components\Textarea::make('description')
                             ->required()
                             ->columnSpanFull(),
+                        Forms\Components\Textarea::make('short_description')
+                            ->columnSpanFull()
+                            ->helperText('Optional text to show in the list of projects. If left blank, the first 300 characters of the description will be used.'),
                     ]),
                 Forms\Components\Fieldset::make('Funding')
                     ->schema([
@@ -98,12 +105,9 @@ class ArtProjectResource extends Resource
                     ->searchable()
                     ->limit(30)
                     ->tooltip(fn ($record) => $record->name),
-                Tables\Columns\TextColumn::make('user.display_name')
+                UserColumn::make('user')
                     ->searchable()
                     ->sortable()
-                    ->url(fn ($record) => $record->user_id ? UserResource::getUrl('view', ['record' => $record->user_id]) : null)
-                    ->color('primary')
-                    ->icon('heroicon-m-user')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('artist_name')
                     ->searchable()
@@ -122,11 +126,13 @@ class ArtProjectResource extends Resource
                     ->label('Votes')
                     ->numeric()
                     ->sortable(query: function (Builder $query, string $direction) {
-                        // Copied to BulkAdjustArtProjects
-                        return $query->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
+                        // This query is necessary to sort based on a calculated column and not get duplicate models
+                        // Copy below and to BulkAdjustArtProjects
+                        return $query
+                            ->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
                             ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
-                            ->orderBy('totalVotes', $direction)
-                            ->groupBy('art_projects.id');
+                            ->groupBy('art_projects.id')
+                            ->orderBy('totalVotes', $direction);
                     })
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('totalFunding')
@@ -134,8 +140,7 @@ class ArtProjectResource extends Resource
                     ->numeric()
                     ->prefix('$')
                     ->sortable(query: function (Builder $query, string $direction) use ($dollarsPerVote) {
-                        // Copied to BulkAdjustArtProjects, without the committee funding
-                        return $query// ->leftJoinRelationship('votes')
+                        return $query
                             ->select(['art_projects.*', DB::raw('sum(project_user_votes.votes) as totalVotes')])
                             ->leftJoin('project_user_votes', 'project_user_votes.art_project_id', '=', 'art_projects.id')
                             ->groupBy('art_projects.id')
@@ -163,7 +168,7 @@ class ArtProjectResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Action::make('budget')
@@ -185,7 +190,7 @@ class ArtProjectResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 
@@ -202,10 +207,15 @@ class ArtProjectResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
+        $route = Route::currentRouteName() ?? '';
+        $parts = explode('.', $route);
+        $lastPart = end($parts);
+
+        if ($lastPart === 'view') {
+            return parent::getEloquentQuery();
+        }
+
         return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ])
             ->where('event_id', Event::getCurrentEventId());
     }
 }

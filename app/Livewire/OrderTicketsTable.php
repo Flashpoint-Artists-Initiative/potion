@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Filament\Admin\Resources\PurchasedTicketResource\Pages\ViewPurchasedTicket;
+use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Ticketing\Order;
 use App\Models\Ticketing\PurchasedTicket;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -36,7 +37,7 @@ class OrderTicketsTable extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(PurchasedTicket::query()->where('order_id', $this->record->id))
+            ->query(PurchasedTicket::query()->where('order_id', $this->record->id)->withTrashed())
             ->columns([
                 TextColumn::make('id')
                     ->label('Ticket Number')
@@ -49,7 +50,7 @@ class OrderTicketsTable extends Component implements HasForms, HasTable
                 TextColumn::make('ticketType.price')
                     ->label('Price')
                     ->money('USD'),
-                TextColumn::make('user.display_name')
+                UserColumn::make('user')
                     ->label('Current Owner')
                     ->visible($this->admin),
             ])

@@ -22,10 +22,10 @@ class SvgWithLogoOptions extends QROptions
     // css class for the logo (defined in $svgDefs)
     public string $svgLogoCssClass = '';
 
-    public function __construct()
+    public function __construct(public string $topText = '', public string $bottomText = '')
     {
         $this->svgLogo = public_path('images/alchemy_logo.svg');
-        $this->version = 4;
+        $this->version = 6;
         $this->outputInterface = QRSvgWithLogo::class;
         $this->outputType = 'custom';
         $this->outputBase64 = true;
