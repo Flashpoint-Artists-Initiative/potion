@@ -51,6 +51,15 @@ services:
       MP_DATA_FILE: /data/mailpit.db
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
+  nginx:
+    image: nginx:latest
+    user: root
+    ports:
+      - 2000:443
+    restart: always
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./nginx/certs:/etc/nginx/ssl # Create certs with https://github.com/FiloSottile/mkcert
 volumes:
   mysql-data:
   mailpit-data:
