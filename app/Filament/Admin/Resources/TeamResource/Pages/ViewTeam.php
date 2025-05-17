@@ -20,8 +20,8 @@ class ViewTeam extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
-            Action::make('Edit Shifts')
-                ->url(ManageShiftTypes::getUrl(['record' => $this->record])),
+            // Action::make('Edit Shifts')
+            //     ->url(ManageShiftTypes::getUrl(['record' => $this->record])),
         ];
     }
 }
