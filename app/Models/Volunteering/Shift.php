@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
@@ -22,20 +23,21 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  * @property string $start_datetime
  * @property string $end_datetime
  * @property int $volunteers_count
- * @property float $percent_filled
+ * @property float $percentFilled
  * @property int $num_spots
  * @property-read ShiftType $shiftType
  * @property-read Team $team
  */
 class Shift extends Model implements ContractsAuditable
 {
-    use Auditable, HasFactory;
+    use Auditable, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'shift_type_id',
         'start_offset',
         'length',
         'num_spots',
+        'multiplier',
     ];
 
     protected $with = [
@@ -147,7 +149,7 @@ class Shift extends Model implements ContractsAuditable
                 $start = new Carbon($eventStart);
                 $start->addMinutes($this->start_offset);
 
-                return $start->format('D, M j, g:i a');
+                return $start->format('Y-m-d H:i:s');
             }
         );
     }
@@ -163,7 +165,7 @@ class Shift extends Model implements ContractsAuditable
                 $start = new Carbon($eventStart);
                 $start->addMinutes($this->end_offset);
 
-                return $start->format('D, M j, g:i a');
+                return $start->format('Y-m-d H:i:s');
             }
         );
     }

@@ -30,7 +30,7 @@ class ShiftResource extends JsonResource
             'length' => $this->length,
             'num_spots' => $this->num_spots,
             'volunteers_count' => $this->volunteers_count,
-            'percent_filled' => $this->percent_filled,
+            'percent_filled' => $this->percentFilled,
             'start_datetime' => $this->start_datetime,
             'end_datetime' => $this->end_datetime,
             'shift_type' => $this->whenLoaded('team'),

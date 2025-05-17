@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
@@ -24,12 +25,13 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  */
 class ShiftType extends Model implements ContractsAuditable
 {
-    use Auditable, HasFactory;
+    use Auditable, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'team_id',
         'title',
         'description',
+        'location',
         'length',
         'num_spots',
     ];

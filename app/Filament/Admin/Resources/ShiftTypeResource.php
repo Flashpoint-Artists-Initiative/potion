@@ -23,6 +23,8 @@ class ShiftTypeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $recordTitleAttribute = 'title';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -30,58 +32,69 @@ class ShiftTypeResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('location')
+                    ->label('Check-in Location')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('length')
-                    ->required()
-                    ->numeric(),
+                    ->label('Default Length (hours)')
+                    ->numeric()
+                    ->minValue(.25)
+                    ->step(.25)
+                    ->default(120)
+                    ->formatStateUsing(fn ($state) => $state / 60)
+                    ->dehydrateStateUsing(fn ($state) => $state * 60),
                 Forms\Components\TextInput::make('num_spots')
-                    ->required()
-                    ->numeric(),
+                    ->label('Default Number of People')
+                    ->numeric()
+                    ->default(1)
+                    ->minValue(1),
             ]);
     }
 
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('team.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('length')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('num_spots')
-                    ->numeric()
-                    ->sortable(),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+    // public static function table(Table $table): Table
+    // {
+    //     return $table
+    //         ->columns([
+    //             Tables\Columns\TextColumn::make('created_at')
+    //                 ->dateTime()
+    //                 ->sortable()
+    //                 ->toggleable(isToggledHiddenByDefault: true),
+    //             Tables\Columns\TextColumn::make('updated_at')
+    //                 ->dateTime()
+    //                 ->sortable()
+    //                 ->toggleable(isToggledHiddenByDefault: true),
+    //             Tables\Columns\TextColumn::make('deleted_at')
+    //                 ->dateTime()
+    //                 ->sortable()
+    //                 ->toggleable(isToggledHiddenByDefault: true),
+    //             Tables\Columns\TextColumn::make('team.name')
+    //                 ->numeric()
+    //                 ->sortable(),
+    //             Tables\Columns\TextColumn::make('title')
+    //                 ->searchable(),
+    //             Tables\Columns\TextColumn::make('length')
+    //                 ->numeric()
+    //                 ->sortable(),
+    //             Tables\Columns\TextColumn::make('num_spots')
+    //                 ->numeric()
+    //                 ->sortable(),
+    //         ])
+    //         ->filters([
+    //             //
+    //         ])
+    //         ->actions([
+    //             Tables\Actions\EditAction::make(),
+    //         ])
+    //         ->bulkActions([
+    //             Tables\Actions\BulkActionGroup::make([
+    //                 Tables\Actions\DeleteBulkAction::make(),
+    //             ]),
+    //         ]);
+    // }
 
     public static function getRelations(): array
     {
@@ -93,13 +106,10 @@ class ShiftTypeResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListShiftTypes::route('/'),
-            // 'create' => Pages\CreateShiftType::route('/create'),
             'edit' => Pages\EditShiftType::route('/{record}/edit'),
             'view' => Pages\ViewShiftType::route('/{record}'),
 
             'shifts' => Pages\ManageShifts::route('/{record}/shifts'),
-            'shift.create' => Pages\CreateShift::route('/{record}/shifts/create'),
         ];
     }
 

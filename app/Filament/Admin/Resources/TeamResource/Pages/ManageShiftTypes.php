@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
 use App\Filament\Admin\Resources\TeamResource;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -22,39 +20,54 @@ class ManageShiftTypes extends ManageRelatedRecords
 
     protected static string $relationship = 'shiftTypes';
 
-    // public function form(Form $form): Form
-    // {
-    //     return $form
-    //         ->schema([
-    //             Forms\Components\TextInput::make('title')
-    //                 ->required()
-    //                 ->maxLength(255),
-    //         ]);
-    // }
-
     public function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('title')
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('volunteers_count')
+                    ->label('Filled Shifts')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('totalNumSpots')
+                    ->label('Total Shifts')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('percentFilled')
+                    ->label('Percent Filled')
+                    ->numeric()
+                    ->suffix('%')
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-                // Tables\Actions\AssociateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
-                // Tables\Actions\DissociateAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DissociateBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
