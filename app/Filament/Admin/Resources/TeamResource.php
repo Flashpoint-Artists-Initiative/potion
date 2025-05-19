@@ -17,6 +17,7 @@ use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Route;
 
 class TeamResource extends Resource
 {
@@ -109,16 +110,24 @@ class TeamResource extends Resource
 
             'shiftTypes' => Pages\ManageShiftTypes::route('/{record}/shift-types'),
             'shiftTypes.create' => Pages\CreateShiftType::route('/{record}/shift-types/create'),
+
+            'calendar' => Pages\ShiftCalendar::route('/{record}/shifts'),
         ];
     }
 
     public static function getEloquentQuery(): Builder
     {
+        $route = Route::currentRouteName() ?? '';
+        $parts = explode('.', $route);
+        $lastPart = end($parts);
+
+        if ($lastPart === 'view') {
+            return parent::getEloquentQuery();
+        }
+
         return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ])
             ->where('event_id', Event::getCurrentEventId());
+
     }
 
     // This is the root resource
@@ -138,6 +147,7 @@ class TeamResource extends Resource
             Pages\ViewTeam::class,
             Pages\EditTeam::class,
             Pages\ManageShiftTypes::class,
+            Pages\ShiftCalendar::class,
         ]);
     }
 }
