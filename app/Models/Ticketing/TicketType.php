@@ -116,7 +116,8 @@ class TicketType extends Model implements ContractsAuditable
     public function activeCartItems(): HasMany
     {
         return $this->hasMany(CartItem::class)
-            ->whereHas('cart', fn ($query) => $query->notExpired()); /** @phpstan-ignore method.notFound */
+            /** @phpstan-ignore method.notFound */
+            ->whereHas('cart', fn ($query) => $query->notExpired());
     }
 
     /**
@@ -203,7 +204,7 @@ class TicketType extends Model implements ContractsAuditable
     /**
      * @return Attribute<int, void>
      */
-    public function remainingTicketCount(): Attribute
+    protected function remainingTicketCount(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -212,8 +213,8 @@ class TicketType extends Model implements ContractsAuditable
                 }
 
                 return $attributes['quantity']
-                     - $attributes['purchased_tickets_count']
-                     - $attributes['cartItemsQuantity'];
+                    - $attributes['purchased_tickets_count']
+                    - $attributes['cartItemsQuantity'];
             }
         );
     }
@@ -221,14 +222,14 @@ class TicketType extends Model implements ContractsAuditable
     /**
      * @return Attribute<bool, void>
      */
-    public function available(): Attribute
+    protected function available(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $this->remainingTicketCount > 0
-                && $attributes['active'] == true
-                && now() < $attributes['sale_end_date']
-                && now() > $attributes['sale_start_date'];
+                    && $attributes['active'] == true
+                    && now() < $attributes['sale_end_date']
+                    && now() > $attributes['sale_start_date'];
             }
         );
     }
@@ -236,12 +237,12 @@ class TicketType extends Model implements ContractsAuditable
     /**
      * @return Attribute<bool, void>
      */
-    public function onSale(): Attribute
+    protected function onSale(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return now() < $attributes['sale_end_date']
-                && now() > $attributes['sale_start_date'];
+                    && now() > $attributes['sale_start_date'];
             }
         );
     }

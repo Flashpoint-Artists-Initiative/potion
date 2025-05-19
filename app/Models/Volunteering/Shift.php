@@ -101,7 +101,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
      *
      * @return Attribute<int, void>
      */
-    public function length(): Attribute
+    protected function length(): Attribute
     {
         return Attribute::make(
             get: function (?int $length) {
@@ -115,7 +115,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
      *
      * @return Attribute<int, void>
      */
-    public function numSpots(): Attribute
+    protected function numSpots(): Attribute
     {
         return Attribute::make(
             get: function (?int $numSpots) {
@@ -133,11 +133,12 @@ class Shift extends Model implements ContractsAuditable, Eventable
      *
      * @return Attribute<float, void>
      */
-    public function lengthInHours(): Attribute
+    protected function lengthInHours(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 $length = $attributes['length'] ?? $this->shiftType->length;
+
                 return $length / 60;
             },
             set: fn (mixed $value, array $attributes) => [
@@ -149,7 +150,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     /**
      * @return Attribute<int, void>
      */
-    public function endOffset(): Attribute
+    protected function endOffset(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->start_offset + $this->length
@@ -159,7 +160,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     /**
      * @return Attribute<string, void>
      */
-    public function title(): Attribute
+    protected function title(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->shiftType->title
@@ -169,7 +170,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     /**
      * @return Attribute<string, void>
      */
-    public function startDatetime(): Attribute
+    protected function startDatetime(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -193,7 +194,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     /**
      * @return Attribute<string, void>
      */
-    public function endDatetime(): Attribute
+    protected function endDatetime(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -209,7 +210,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     /**
      * @return Attribute<float, void>
      */
-    public function percentFilled(): Attribute
+    protected function percentFilled(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -225,9 +226,6 @@ class Shift extends Model implements ContractsAuditable, Eventable
         return max($this->start_offset, $shift->start_offset) < min($this->end_offset, $shift->end_offset);
     }
 
-    /**
-     * @return CalendarEvent
-     */
     public function toCalendarEvent(): CalendarEvent
     {
         return CalendarEvent::make($this)
@@ -242,6 +240,6 @@ class Shift extends Model implements ContractsAuditable, Eventable
     {
         return $this->title . "\n" .
             $this->num_spots . " spots\n" .
-            $this->volunteers_count . " signed up";
+            $this->volunteers_count . ' signed up';
     }
 }

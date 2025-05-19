@@ -264,7 +264,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     /**
      * @return Attribute<string, string>
      */
-    public function birthday(): Attribute
+    protected function birthday(): Attribute
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $attributes['birthday'],
@@ -275,7 +275,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     /**
      * Used for Audits
      */
-    public function name(): Attribute
+    protected function name(): Attribute
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $attributes['display_name'],

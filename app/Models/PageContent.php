@@ -42,7 +42,7 @@ class PageContent extends Model
         return $this->belongsTo(Event::class);
     }
 
-    public function formattedContent(): Attribute
+    protected function formattedContent(): Attribute
     {
         return Attribute::make(
             get: function () {

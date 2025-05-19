@@ -109,7 +109,7 @@ class TicketTransfer extends Model implements ContractsAuditable
     /**
      * @return Attribute<int, void>
      */
-    public function ticketCount(): Attribute
+    protected function ticketCount(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -121,7 +121,7 @@ class TicketTransfer extends Model implements ContractsAuditable
     /**
      * @return Attribute<Event, void>
      */
-    public function event(): Attribute
+    protected function event(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
