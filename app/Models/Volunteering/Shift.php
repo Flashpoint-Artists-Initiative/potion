@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace App\Models\Volunteering;
 
 use App\Models\User;
+use App\Observers\ShiftObserver;
 use Carbon\Carbon;
+use Guava\Calendar\Contracts\Eventable;
+use Guava\Calendar\ValueObjects\CalendarEvent;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,17 +22,18 @@ use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
 /**
- * @property int $end_offset
  * @property string $title
- * @property string $start_datetime
- * @property string $end_datetime
+ * @property string $startDatetime
+ * @property string $endDatetime
+ * @property float $length_in_hours
  * @property int $volunteers_count
+ * @property int $end_offset
  * @property float $percentFilled
- * @property int $num_spots
  * @property-read ShiftType $shiftType
  * @property-read Team $team
  */
-class Shift extends Model implements ContractsAuditable
+// #[ObservedBy(ShiftObserver::class)]
+class Shift extends Model implements ContractsAuditable, Eventable
 {
     use Auditable, HasFactory, SoftDeletes;
 
@@ -47,6 +52,11 @@ class Shift extends Model implements ContractsAuditable
 
     protected $withCount = [
         'volunteers',
+    ];
+
+    protected $appends = [
+        'length_in_hours',
+        'end_offset',
     ];
 
     /**
@@ -119,6 +129,24 @@ class Shift extends Model implements ContractsAuditable
     }
 
     /**
+     * Pulls default value from shiftType if not set
+     *
+     * @return Attribute<float, void>
+     */
+    public function lengthInHours(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                $length = $attributes['length'] ?? $this->shiftType->length;
+                return $length / 60;
+            },
+            set: fn (mixed $value, array $attributes) => [
+                'length' => $value * 60,
+            ]
+        );
+    }
+
+    /**
      * @return Attribute<int, void>
      */
     public function endOffset(): Attribute
@@ -148,6 +176,14 @@ class Shift extends Model implements ContractsAuditable
                 $eventStart = $this->team->event->start_date;
                 $start = new Carbon($eventStart);
                 $start->addMinutes($this->start_offset);
+
+                return $start->format('Y-m-d H:i:s');
+            },
+            set: function (string $value) {
+                $eventStart = $this->team->event->start_date;
+                $start = new Carbon($eventStart);
+                $value = Carbon::parse($value);
+                $start->diffInMinutes($value);
 
                 return $start->format('Y-m-d H:i:s');
             }
@@ -187,5 +223,25 @@ class Shift extends Model implements ContractsAuditable
     public function overlapsWith(Shift $shift): bool
     {
         return max($this->start_offset, $shift->start_offset) < min($this->end_offset, $shift->end_offset);
+    }
+
+    /**
+     * @return CalendarEvent
+     */
+    public function toCalendarEvent(): CalendarEvent
+    {
+        return CalendarEvent::make($this)
+            ->title($this->getCalendarEventTitle())
+            ->start($this->startDatetime)
+            ->end($this->endDatetime)
+            ->resourceId($this->shiftType->id)
+            ->action('edit');
+    }
+
+    protected function getCalendarEventTitle(): string
+    {
+        return $this->title . "\n" .
+            $this->num_spots . " spots\n" .
+            $this->volunteers_count . " signed up";
     }
 }

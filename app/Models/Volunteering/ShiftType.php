@@ -6,6 +6,9 @@ namespace App\Models\Volunteering;
 
 use App\Models\Event;
 use App\Models\User;
+use Filament\Support\Colors\Color;
+use Guava\Calendar\Contracts\Resourceable;
+use Guava\Calendar\ValueObjects\CalendarResource;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
+use Spatie\Color\Rgb;
 
 /**
  * @property int $total_num_spots
@@ -23,7 +27,7 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  * @property-read Team $team
  * @property-read Event $event
  */
-class ShiftType extends Model implements ContractsAuditable
+class ShiftType extends Model implements ContractsAuditable, Resourceable
 {
     use Auditable, HasFactory, SoftDeletes;
 
@@ -116,5 +120,18 @@ class ShiftType extends Model implements ContractsAuditable
                 return sprintf('%.1f', $total);
             }
         );
+    }
+
+    public function toCalendarResource(): CalendarResource
+    {
+        $colors = array_values(array_slice(Color::all(), 5));
+        $shiftTypes = $this->team->shiftTypes;
+        $index = $shiftTypes->search(fn ($item) => $item->id === $this->id);
+        // $offset = (360 / $shiftTypes->count()) * $index;
+        $offset = ((int) (count($colors) / $shiftTypes->count())) * $index % count($colors);
+        return CalendarResource::make($this)
+            ->title($this->title)
+            ->eventBackgroundColor((string) Rgb::fromString('rgb('.$colors[$offset]['700'].')')->toHex());
+            // ->eventBackgroundColor($this->hsv2rgb($offset, 100, 50));
     }
 }
