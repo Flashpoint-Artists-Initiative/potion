@@ -79,26 +79,28 @@ class Cart extends Model implements ContractsAuditable
     /**
      * @return Attribute<Event, void>
      */
-    public function event(): Attribute
+    protected function event(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $this->items->firstOrFail()->ticketType->event;
-            });
+            }
+        );
     }
 
     /**
      * @return Attribute<int, void>
      */
-    public function quantity(): Attribute
+    protected function quantity(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $this->items->sum('quantity');
-            });
+            }
+        );
     }
 
-    public function subtotal(): Attribute
+    protected function subtotal(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -107,7 +109,7 @@ class Cart extends Model implements ContractsAuditable
         );
     }
 
-    public function taxesOwed(): Attribute
+    protected function taxesOwed(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -116,7 +118,7 @@ class Cart extends Model implements ContractsAuditable
         );
     }
 
-    public function feesOwed(): Attribute
+    protected function feesOwed(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -125,7 +127,7 @@ class Cart extends Model implements ContractsAuditable
         );
     }
 
-    public function total(): Attribute
+    protected function total(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -137,7 +139,7 @@ class Cart extends Model implements ContractsAuditable
     /**
      * @return Attribute<bool, void>
      */
-    public function isExpired(): Attribute
+    protected function isExpired(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -146,7 +148,7 @@ class Cart extends Model implements ContractsAuditable
         );
     }
 
-    public function status(): Attribute
+    protected function status(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {

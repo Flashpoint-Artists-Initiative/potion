@@ -102,7 +102,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
     /**
      * @return Attribute<bool, void>
      */
-    public function isPurchased(): Attribute
+    protected function isPurchased(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -114,21 +114,21 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
     /**
      * @return Attribute<bool, void>
      */
-    public function canBePurchased(): Attribute
+    protected function canBePurchased(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $this->ticketType->event->active &&
-                ! $this->is_purchased &&
-                (
-                    (! is_null($attributes['expiration_date']) && $attributes['expiration_date'] > now()) ||
-                    (is_null($attributes['expiration_date']) && $this->ticketType->onSale)
-                );
+                    ! $this->is_purchased &&
+                    (
+                        (! is_null($attributes['expiration_date']) && $attributes['expiration_date'] > now()) ||
+                        (is_null($attributes['expiration_date']) && $this->ticketType->onSale)
+                    );
             }
         );
     }
 
-    public function finalExpirationDate(): Attribute
+    protected function finalExpirationDate(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {

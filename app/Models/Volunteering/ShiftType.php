@@ -99,7 +99,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
     /**
      * @return Attribute<int, void>
      */
-    public function totalNumSpots(): Attribute
+    protected function totalNumSpots(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -111,7 +111,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
     /**
      * @return Attribute<float, void>
      */
-    public function percentFilled(): Attribute
+    protected function percentFilled(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -129,9 +129,10 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
         $index = $shiftTypes->search(fn ($item) => $item->id === $this->id);
         // $offset = (360 / $shiftTypes->count()) * $index;
         $offset = ((int) (count($colors) / $shiftTypes->count())) * $index % count($colors);
+
         return CalendarResource::make($this)
             ->title($this->title)
-            ->eventBackgroundColor((string) Rgb::fromString('rgb('.$colors[$offset]['700'].')')->toHex());
-            // ->eventBackgroundColor($this->hsv2rgb($offset, 100, 50));
+            ->eventBackgroundColor((string) Rgb::fromString('rgb(' . $colors[$offset]['700'] . ')')->toHex());
+        // ->eventBackgroundColor($this->hsv2rgb($offset, 100, 50));
     }
 }

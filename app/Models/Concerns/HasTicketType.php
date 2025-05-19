@@ -90,7 +90,7 @@ trait HasTicketType
     /**
      * @return Attribute<bool, void>
      */
-    public function hasActiveTransfer(): Attribute
+    protected function hasActiveTransfer(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {

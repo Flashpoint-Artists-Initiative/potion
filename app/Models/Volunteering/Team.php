@@ -79,7 +79,7 @@ class Team extends Model implements ContractsAuditable
     /**
      * @return Attribute<int, void>
      */
-    public function totalNumSpots(): Attribute
+    protected function totalNumSpots(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
@@ -91,7 +91,7 @@ class Team extends Model implements ContractsAuditable
     /**
      * @return Attribute<float, void>
      */
-    public function percentFilled(): Attribute
+    protected function percentFilled(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {

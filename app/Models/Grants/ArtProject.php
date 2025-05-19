@@ -87,7 +87,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         return $query->where('project_status', ArtProjectStatusEnum::Approved);
     }
 
-    public function artistName(): Attribute
+    protected function artistName(): Attribute
     {
         return Attribute::make(
             get: function (?string $value) {
@@ -96,7 +96,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         );
     }
 
-    public function communityFunding(): Attribute
+    protected function communityFunding(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -105,7 +105,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         );
     }
 
-    public function totalFunding(): Attribute
+    protected function totalFunding(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -114,7 +114,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         );
     }
 
-    public function totalVotes(): Attribute
+    protected function totalVotes(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -123,7 +123,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         );
     }
 
-    public function fundingStatus(): Attribute
+    protected function fundingStatus(): Attribute
     {
         return Attribute::make(
             get: function () {

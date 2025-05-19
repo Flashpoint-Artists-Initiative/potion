@@ -116,7 +116,7 @@ class Order extends Model implements ContractsAuditable
         $query->where('event_id', Event::getCurrentEventId());
     }
 
-    public function refundable(): Attribute
+    protected function refundable(): Attribute
     {
         return Attribute::make(
             get: function () {
