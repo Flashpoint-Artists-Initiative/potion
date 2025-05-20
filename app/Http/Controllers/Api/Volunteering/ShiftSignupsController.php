@@ -9,7 +9,7 @@ use App\Http\Requests\Volunteering\ShiftCancelRequest;
 use App\Http\Requests\Volunteering\ShiftSignupRequest;
 use App\Models\User;
 use App\Models\Volunteering\Shift;
-use App\Policies\Volunteering\ShiftPolicy;
+use App\Policies\ShiftPolicy;
 use Illuminate\Http\JsonResponse;
 
 class ShiftSignupsController extends OrionRelationsController
