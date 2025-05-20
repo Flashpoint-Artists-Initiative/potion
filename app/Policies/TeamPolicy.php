@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Policies\Volunteering;
+namespace App\Policies;
 
 use App\Enums\LockdownEnum;
 use App\Models\User;
