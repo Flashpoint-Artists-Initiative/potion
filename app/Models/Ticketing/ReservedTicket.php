@@ -100,7 +100,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
     }
 
     /**
-     * @return Attribute<bool, void>
+     * @return Attribute<bool,never>
      */
     protected function isPurchased(): Attribute
     {
@@ -112,7 +112,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
     }
 
     /**
-     * @return Attribute<bool, void>
+     * @return Attribute<bool,never>
      */
     protected function canBePurchased(): Attribute
     {

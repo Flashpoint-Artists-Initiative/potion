@@ -22,15 +22,9 @@ use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
 /**
- * @property string $title
- * @property string $startDatetime
- * @property string $endDatetime
- * @property float $length_in_hours
- * @property int $volunteers_count
- * @property int $end_offset
- * @property float $percentFilled
- * @property-read ShiftType $shiftType
+ * @property-read string $title
  * @property-read Team $team
+ * @property-read ShiftType $shiftType
  */
 // #[ObservedBy(ShiftObserver::class)]
 class Shift extends Model implements ContractsAuditable, Eventable
@@ -99,56 +93,18 @@ class Shift extends Model implements ContractsAuditable, Eventable
     /**
      * Pulls default value from shiftType if not set
      *
-     * @return Attribute<int, void>
-     */
-    protected function length(): Attribute
-    {
-        return Attribute::make(
-            get: function (?int $length) {
-                return $length ?? $this->shiftType->length;
-            }
-        );
-    }
-
-    /**
-     * Pulls default value from shiftType if not set
-     *
-     * @return Attribute<int, void>
-     */
-    protected function numSpots(): Attribute
-    {
-        return Attribute::make(
-            get: function (?int $numSpots) {
-                // Null-safe accessor for when a shiftType is deleted,
-                // it returns the model including sum(num_spots) for the child shifts
-                // TODO: Add events to delete child shifts, solving this problem
-                /** @phpstan-ignore-next-line */
-                return $numSpots ?? $this->shiftType?->num_spots;
-            }
-        );
-    }
-
-    /**
-     * Pulls default value from shiftType if not set
-     *
-     * @return Attribute<float, void>
+     * @return Attribute<float,never>
      */
     protected function lengthInHours(): Attribute
     {
         return Attribute::make(
-            get: function (mixed $value, array $attributes) {
-                $length = $attributes['length'] ?? $this->shiftType->length;
-
-                return $length / 60;
-            },
-            set: fn (mixed $value, array $attributes) => [
-                'length' => $value * 60,
-            ]
+            get: fn (mixed $value, array $attributes) => $attributes['length'] / 60,
+            set: fn (mixed $value, array $attributes) => ['length' => $value * 60]
         );
     }
 
     /**
-     * @return Attribute<int, void>
+     * @return Attribute<int,never>
      */
     protected function endOffset(): Attribute
     {
@@ -158,7 +114,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     }
 
     /**
-     * @return Attribute<string, void>
+     * @return Attribute<string,never>
      */
     protected function title(): Attribute
     {
@@ -168,7 +124,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     }
 
     /**
-     * @return Attribute<string, void>
+     * @return Attribute<string,never>
      */
     protected function startDatetime(): Attribute
     {
@@ -192,7 +148,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     }
 
     /**
-     * @return Attribute<string, void>
+     * @return Attribute<string,never>
      */
     protected function endDatetime(): Attribute
     {
@@ -208,7 +164,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     }
 
     /**
-     * @return Attribute<float, void>
+     * @return Attribute<float,never>
      */
     protected function percentFilled(): Attribute
     {
@@ -230,7 +186,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     {
         return CalendarEvent::make($this)
             ->title($this->getCalendarEventTitle())
-            ->start($this->startDatetime)
+            ->start($this->start_datetime)
             ->end($this->endDatetime)
             ->resourceId($this->shiftType->id)
             ->action('edit');

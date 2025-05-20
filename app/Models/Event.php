@@ -174,7 +174,7 @@ class Event extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<string, string>
+     * @return Attribute<string,never>
      */
     protected function startDate(): Attribute
     {
@@ -185,7 +185,7 @@ class Event extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<string, string>
+     * @return Attribute<string,never>
      */
     protected function endDate(): Attribute
     {
@@ -196,7 +196,7 @@ class Event extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<string, Carbon>
+     * @return Attribute<Carbon,never>
      */
     protected function startDateCarbon(): Attribute
     {
@@ -206,7 +206,7 @@ class Event extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<string, Carbon>
+     * @return Attribute<Carbon,never>
      */
     protected function endDateCarbon(): Attribute
     {

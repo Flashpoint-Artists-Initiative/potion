@@ -97,7 +97,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
     }
 
     /**
-     * @return Attribute<int, void>
+     * @return Attribute<int,never>
      */
     protected function totalNumSpots(): Attribute
     {
@@ -109,7 +109,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
     }
 
     /**
-     * @return Attribute<float, void>
+     * @return Attribute<float,never>
      */
     protected function percentFilled(): Attribute
     {
