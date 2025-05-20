@@ -9,7 +9,7 @@ use App\Http\Requests\Volunteering\TeamRequest;
 use App\Models\Event;
 use App\Models\User;
 use App\Models\Volunteering\Team;
-use App\Policies\Volunteering\TeamPolicy;
+use App\Policies\TeamPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;

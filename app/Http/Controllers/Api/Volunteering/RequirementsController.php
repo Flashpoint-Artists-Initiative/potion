@@ -8,7 +8,7 @@ use App\Http\Controllers\OrionController;
 use App\Http\Requests\Volunteering\RequirementRequest;
 use App\Models\User;
 use App\Models\Volunteering\Requirement;
-use App\Policies\Volunteering\ShiftRequirementPolicy;
+use App\Policies\ShiftRequirementPolicy;
 use Illuminate\Database\Eloquent\Builder;
 use Orion\Http\Requests\Request;
 

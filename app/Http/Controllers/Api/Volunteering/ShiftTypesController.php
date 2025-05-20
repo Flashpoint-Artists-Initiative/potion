@@ -7,8 +7,8 @@ namespace App\Http\Controllers\Api\Volunteering;
 use App\Http\Controllers\OrionRelationsController;
 use App\Http\Requests\Volunteering\ShiftTypeRequest;
 use App\Models\Volunteering\Team;
-use App\Policies\Volunteering\ShiftTypePolicy;
-use App\Policies\Volunteering\TeamPolicy;
+use App\Policies\ShiftTypePolicy;
+use App\Policies\TeamPolicy;
 
 class ShiftTypesController extends OrionRelationsController
 {
