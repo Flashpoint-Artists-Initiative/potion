@@ -77,7 +77,7 @@ class ShiftSignupSignupTest extends ApiRouteTestCase
         $user = User::factory()->create();
         $shift = Shift::findOrFail(1);
 
-        $fill = range(1, $shift->num_spots); // Array of user_ids to fill the shift
+        $fill = range(1, (int) $shift->num_spots); // Array of user_ids to fill the shift
         $shift->volunteers()->sync($fill);
 
         $shift->refresh();

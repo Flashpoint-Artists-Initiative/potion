@@ -88,7 +88,7 @@ trait HasTicketType
     }
 
     /**
-     * @return Attribute<bool, void>
+     * @return Attribute<bool,never>
      */
     protected function hasActiveTransfer(): Attribute
     {

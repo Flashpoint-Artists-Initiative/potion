@@ -77,7 +77,7 @@ class Cart extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<Event, void>
+     * @return Attribute<Event,never>
      */
     protected function event(): Attribute
     {
@@ -89,7 +89,7 @@ class Cart extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<int, void>
+     * @return Attribute<int,never>
      */
     protected function quantity(): Attribute
     {
@@ -137,7 +137,7 @@ class Cart extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<bool, void>
+     * @return Attribute<bool,never>
      */
     protected function isExpired(): Attribute
     {

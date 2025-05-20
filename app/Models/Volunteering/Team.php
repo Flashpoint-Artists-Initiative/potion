@@ -77,7 +77,7 @@ class Team extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<int, void>
+     * @return Attribute<int,never>
      */
     protected function totalNumSpots(): Attribute
     {
@@ -89,7 +89,7 @@ class Team extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<float, void>
+     * @return Attribute<float,never>
      */
     protected function percentFilled(): Attribute
     {

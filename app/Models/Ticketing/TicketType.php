@@ -202,7 +202,7 @@ class TicketType extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<int, void>
+     * @return Attribute<int,never>
      */
     protected function remainingTicketCount(): Attribute
     {
@@ -220,7 +220,7 @@ class TicketType extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<bool, void>
+     * @return Attribute<bool,never>
      */
     protected function available(): Attribute
     {
@@ -235,7 +235,7 @@ class TicketType extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<bool, void>
+     * @return Attribute<bool,never>
      */
     protected function onSale(): Attribute
     {

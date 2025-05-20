@@ -262,7 +262,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     }
 
     /**
-     * @return Attribute<string, string>
+     * @return Attribute<string,never>
      */
     protected function birthday(): Attribute
     {
