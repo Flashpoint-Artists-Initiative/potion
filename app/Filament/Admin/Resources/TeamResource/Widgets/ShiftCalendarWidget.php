@@ -286,6 +286,7 @@ class ShiftCalendarWidget extends CalendarWidget
                 'start_offset' => data_get($arguments, 'startStr'),
                 'length_in_hours' => Carbon::parse(data_get($arguments, 'startStr'))
                     ->diffInMinutes(Carbon::parse(data_get($arguments, 'endStr'))) / 60,
+                'multiplier' => '1',
             ]));
     }
 
@@ -347,13 +348,13 @@ class ShiftCalendarWidget extends CalendarWidget
                 $str = 'Are you sure you want to delete this shift?';
                 if ($record->volunteers_count > 0) {
                     $str .= sprintf(
-                        ' %d %s signed up for this shift.',
+                        '<br>%d %s signed up for this shift.',
                         $record->volunteers_count,
                         str('volunteer')->plural($record->volunteers_count)
                     );
                 }
 
-                return $str;
+                return new HtmlString($str);
             })
             ->modalSubmitActionLabel(fn ($record) => $record->volunteers_count > 0 ? 'Delete and Notify' : 'Delete')
             ->extraModalFooterActions(fn ($record) => $record->volunteers_count > 0 ? [
@@ -425,9 +426,9 @@ class ShiftCalendarWidget extends CalendarWidget
                             '1.5' => '1.5x',
                             '2' => '2x',
                         ])
+                        ->required()
                         ->selectablePlaceholder(false)
-                        ->helperText('Used to determine how many hours a volunteer will receive for this shift')
-                        ->default('1'),
+                        ->helperText('Used to determine how many hours a volunteer will receive for this shift'),
                 ]),
             Components\Placeholder::make('warning')
                 ->label('')

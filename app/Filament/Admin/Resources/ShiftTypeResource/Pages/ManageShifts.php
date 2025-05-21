@@ -72,38 +72,19 @@ class ManageShifts extends EditRecord
                             ->label('Start Time')
                             ->required()
                             ->seconds(false)
-                            ->formatStateUsing(fn ($record) => $record->startDatetime)
+                            ->formatStateUsing(fn ($record, $state) => $record->startDatetime ?? $state)
                             ->dehydrateStateUsing(fn ($state) => $event->startDateCarbon->diffInMinutes(Carbon::parse($state)))
                             ->format('Y-m-d H:i:s'),
-                        Components\TextInput::make('length')
+                        Components\TextInput::make('length_in_hours')
                             ->label('Length (hours)')
                             ->numeric()
                             ->minValue(.25)
                             ->step(.25)
-                            ->placeholder((string) $defaultLength)
-                            // length is stored in minutes, but we want to show it in hours
-                            // If the length is the default, return null so the placeholder is used
-                            ->formatStateUsing(fn ($state) => $state / 60 == $defaultLength ? null : $state / 60)
-                            ->dehydrateStateUsing(function ($state) use ($defaultLength) {
-                                if ($state == null || $state * 60 == $defaultLength) {
-                                    return null;
-                                }
-
-                                return $state * 60;
-                            }),
+                            ->default($defaultLength),
                         Components\TextInput::make('num_spots')
                             ->label('Number of People')
                             ->numeric()
-                            ->placeholder((string) $defaultNumSpots)
-                            // use getRawOriginal to ignore the default value
-                            ->formatStateUsing(fn (Shift $record) => $record->getRawOriginal('num_spots'))
-                            ->dehydrateStateUsing(function ($state) use ($defaultNumSpots) {
-                                if ($state == null || $state == $defaultNumSpots) {
-                                    return null;
-                                }
-
-                                return $state;
-                            })
+                            ->default($defaultNumSpots)
                             ->minValue(1),
                         Components\Select::make('multiplier')
                             ->label('Multiplier')
@@ -119,11 +100,18 @@ class ManageShifts extends EditRecord
                     ->columns(4)
                     ->defaultItems(1)
                     ->columnSpanFull()
+                    ->deleteAction(fn (Action $action) => $action
+                        ->requiresConfirmation(function($component) {
+                            /** @var Shift $shift */
+                            $shift = $component->getRecord();
+                            return $shift->volunteers_count > 0;
+                        }),
+                    )
                     ->itemLabel(function (ComponentContainer $container) {
                         /** @var Shift $shift */
                         $shift = $container->getRecord();
 
-                        return sprintf('Current Signups: %s (%s%%)', $shift->volunteers_count, $shift->percentFilled);
+                        return sprintf('Current Signups: %s (%.1f%%)', $shift->volunteers_count ?? 0, $shift->percentFilled ?? 0);
                     })
                     ->addAction(fn (Action $action) => $action
                         ->label('Add Shift')
