@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Traits;
 
+use App\Models\User;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
@@ -56,7 +57,7 @@ trait HasAuthComponents
             ->default($this->email)
             ->maxLength(255)
             ->helperText('If you are creating an account to accept a ticket transfer or a directed sale ticket, please use the email address the transfer was sent to. You can always change it later.')
-            ->unique(ignoreRecord: true);
+            ->unique(table: User::class, ignoreRecord: true);
     }
 
     protected function getPasswordFormComponent(bool $required = true): Component
