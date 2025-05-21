@@ -8,83 +8,118 @@ use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\ShiftType;
 use App\Models\Volunteering\Team;
 use Carbon\Carbon;
-use Dedoc\Scramble\Console\Commands\Components\Component;
+use Closure;
 use Error;
 use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\ViewAction;
+use Filament\Actions\CreateAction as ActionsCreateAction;
 use Filament\Forms\Components;
+use Filament\Forms\Components\Component;
 use Filament\Notifications\Notification;
 use Guava\Calendar\Actions\CreateAction;
-use Guava\Calendar\ValueObjects\CalendarEvent;
-use Guava\Calendar\ValueObjects\CalendarResource;
+use Guava\Calendar\Actions\DeleteAction;
+use Guava\Calendar\Actions\EditAction;
 use Guava\Calendar\Widgets\CalendarWidget;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 
 class ShiftCalendarWidget extends CalendarWidget
 {
     protected string $calendarView = 'timeGridWeek';
-    // protected bool $dateClickEnabled = true;
+
+    protected bool $dateClickEnabled = true;
+
     protected bool $dateSelectEnabled = true;
+
     protected bool $eventClickEnabled = true;
+
     protected bool $eventDragEnabled = true;
+
     protected bool $eventResizeEnabled = true;
 
     public Team $record;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOptions(): array
     {
         return [
-            // 'allDaySlot' => false,
             'date' => $this->record->event->start_date,
-            'headerToolbar' => ['start' => 'title', 'center' => 'resourceTimeGridWeek,resourceTimelineWeek,timeGridWeek', 'end' => 'prev,next'],
+            'headerToolbar' => ['start' => 'title', 'center' => 'resourceTimeGridDay,resourceTimelineWeek,timeGridWeek', 'end' => 'prev,next'],
             'firstDay' => $this->record->event->startDateCarbon->dayOfWeek,
-            // 'highlightedDates' => [
-            //     $this->record->event->start_date,
-            //     $this->record->event->end_date,
-            // ],
             'slotDuration' => '00:15:00',
-            'slotLabelInterval' => '02:00:00',
             'pointer' => true,
-            'duration' => ['days' => $this->record->event->startDateCarbon->diffInDays($this->record->event->endDateCarbon) + 2],
+            'duration' => ['days' => $this->record->event->startDateCarbon->diffInDays($this->record->event->endDateCarbon) + 1], // +1 to include the end date
+            'views' => [
+                'resourceTimeGridDay' => [
+                    'duration' => ['days' => 1],
+                ],
+                'buttonText' => [
+                    'close' => 'Closeddd',
+                    'resourceTimeGridDay' => 'Day',
+                    'resourceTimelineWeek' => 'Week',
+                    'timeGridWeek' => 'Week',
+                ],
+            ],
         ];
     }
 
-    public function authorize($ability, $arguments = []): bool
+    /**
+     * @param array{
+     *  start: string,
+     *  startStr: string,
+     *  end: string,
+     *  endStr: string
+     * } $fetchInfo
+     *
+     * @phpstan-ignore-next-line parameter.defaultValue
+     */
+    public function getEvents(array $fetchInfo = []): Collection|array
     {
-        return true;
-    }
-    // public function onDateClick(array $info = []): void
-    // {
-    //     parent::onDateClick($info);
-    // }
+        /** @var Collection<mixed> $events */
+        $events = collect($this->record->shifts);
+        $events->push([
+            'title' => 'Event Duration',
+            'start' => $this->record->event->start_date,
+            'end' => $this->record->event->endDateCarbon->addDays(1)->subMinute()->format('Y-m-d H:i:s'),
+            'allDay' => true,
+            'startEditable' => false,
+            'durationEditable' => false,
+            'classNames' => ['cursor-default'],
+        ]);
 
-    // public function getDateSelectContextMenuActions(): array
+        return $events;
+    }
+
+    /**
+     * @return Collection<ShiftType> | ShiftType[]
+     */
+    public function getResources(): Collection|array
+    {
+        return $this->record->shiftTypes;
+    }
+
+    /**
+     * @param array{
+     *  start: string,
+     *  startStr: string,
+     *  end: string,
+     *  endStr: string,
+     *  allDay: boolean,
+     *  view: array<string,string>,
+     *  resource?: array<string,string>
+     * } $info
+     *
+     * @phpstan-ignore-next-line parameter.defaultValue
+     */
     public function onDateSelect(array $info = []): void
     {
-        // ->mutateFormDataUsing(fn($data) => array_merge($data, [
-        //     'shift_type_id' => $this->record->id,
-        // ]));
-
-        if (Carbon::parse($info['startStr'])->isBefore($this->record->event->startDateCarbon)) {
-            Notification::make()
-                ->title('Error')
-                ->body('You cannot create a shift before the event starts.')
-                ->danger()
-                ->send();
+        if (! Auth::authenticate()->can('create', Shift::class)) {
             return;
         }
-
-        // if (Carbon::parse($info['endStr'])->isAfter($this->record->event->endDateCarbon)) {
-        //     Notification::make()
-        //         ->title('Error')
-        //         ->body('You cannot create a shift after the event ends.')
-        //         ->danger()
-        //         ->send();
-        //     return;
-        // }
 
         $this->mountAction('createShift', $info);
     }
@@ -93,35 +128,65 @@ class ShiftCalendarWidget extends CalendarWidget
     {
         return CreateAction::make('createShift')
             ->model(Shift::class)
-            ->mountUsing(fn($arguments, $form) => $form->fill([
+            ->mountUsing(fn ($arguments, $form) => $form->fill([
                 'start_offset' => data_get($arguments, 'startStr'),
                 'length_in_hours' => Carbon::parse(data_get($arguments, 'startStr'))
                     ->diffInMinutes(Carbon::parse(data_get($arguments, 'endStr'))) / 60,
             ]));
     }
 
-    // public function getDateClickContextMenuActions(): array
-    // {
-    //     return [
-    //         CreateAction::make('foo')
-    //             ->model(Shift::class)
-    //             ->mountUsing(fn ($arguments, $form) => $form->fill([
-    //                 'start_offset' => data_get($arguments, 'startStr'),
-    //                 'length' => Carbon::parse(data_get($arguments, 'startStr'))
-    //                     ->diffInMinutes(Carbon::parse(data_get($arguments, 'endStr'))),
-    //             ]))
-    //             ->mutateFormDataUsing(fn($data) => array_merge($data, [
-    //                 'shift_type_id' => $this->record->id,
-    //             ]))
-    //     ];
-    // }
+    /**
+     * @return Action[]
+     */
+    public function getDateClickContextMenuActions(): array
+    {
+        return $this->record->shiftTypes->map(function (ShiftType $shiftType) {
+            return Action::make('createClick-' . $shiftType->title)
+                ->label('New ' . $shiftType->title)
+                ->model(Shift::class)
+                ->icon('heroicon-o-plus')
+                ->action(function ($arguments) use ($shiftType) {
+                    return Shift::create([
+                        'start_offset' => $this->record->event->startDateCarbon->diffInMinutes(Carbon::parse(data_get($arguments, 'dateStr'))),
+                        'length' => $shiftType->length,
+                        'num_spots' => $shiftType->num_spots,
+                        'shift_type_id' => $shiftType->id,
+                        'multiplier' => 1,
+                    ]);
+                })
+                ->after(fn (self $livewire) => $livewire->refreshRecords());
 
+        })->all();
+    }
+
+    /**
+     * @param array{
+     *  event: array<string,string|bool|array<mixed>>,
+     *  oldEvent: array<string,string|bool|array<mixed>>,
+     *  resource: array<string,string|bool|array<mixed>>,
+     *  oldResource: array<string,string|bool|array<mixed>>,
+     *  delta: array{
+     *   years: int,
+     *   months: int,
+     *   days: int,
+     *   seconds: int,
+     *  },
+     *  view: array<string,string>
+     * } $info
+     *
+     * @phpstan-ignore-next-line parameter.defaultValue
+     */
     public function onEventDrop(array $info = []): bool
     {
+        // To resolve eventRecord
         parent::onEventDrop($info);
-        $this->eventRecord->start_offset += $info['delta']['seconds'] / 60;
+
+        /** @var Shift $shift */
+        $shift = $this->eventRecord;
+        $shift->start_offset += data_get($info, 'delta.seconds') / 60;
+
         try {
-            $this->eventRecord->save();
+            $shift->save();
         } catch (QueryException $e) {
             return false;
         }
@@ -129,12 +194,32 @@ class ShiftCalendarWidget extends CalendarWidget
         return true;
     }
 
+    /**
+     * @param array{
+     *  event: array<string,string|bool|array<mixed>>,
+     *  oldEvent: array<string,string|bool|array<mixed>>,
+     *  endDelta: array{
+     *   years: int,
+     *   months: int,
+     *   days: int,
+     *   seconds: int,
+     *  },
+     *  view: array<string,string>
+     * } $info
+     *
+     * @phpstan-ignore-next-line parameter.defaultValue
+     */
     public function onEventResize(array $info = []): bool
     {
-        parent::onEventResize($info);
-        $this->eventRecord->length += ($info['endDelta']['seconds'] / 60 / 60);
+        // To resolve eventRecord
+        parent::onEventDrop($info);
+
+        /** @var Shift $shift */
+        $shift = $this->eventRecord;
+        $shift->length += ($info['endDelta']['seconds'] / 60);
+
         try {
-            $this->eventRecord->save();
+            $shift->save();
         } catch (QueryException $e) {
             return false;
         }
@@ -142,152 +227,183 @@ class ShiftCalendarWidget extends CalendarWidget
         return true;
     }
 
-    public function getEvents(array $fetchInfo = []): Collection | array
-    {
-        // return $this->record->shifts;
-        $shifts = Shift::all()->all();
-        array_push($shifts, [
-            'title' => 'Event Duration',
-            'start' => $this->record->event->start_date,
-            'end' => $this->record->event->endDateCarbon->addDay()->format('Y-m-d H:i:s'),
-            'allDay' => true,
-            'startEditable' => false,
-            'durationEditable' => false,
-            'classNames' => ['cursor-default'],
-        ]);
-
-        return $shifts;
-    }
-
-    public function getResources(): Collection|array
-    {
-        return $this->record->shiftTypes;
-    }
-
+    /**
+     * @return Action[]
+     */
     public function getEventClickContextMenuActions(): array
     {
         return [
-            $this->viewAction(),
             $this->editAction(),
             $this->deleteAction(),
         ];
     }
 
-    // public function getEventClickContextMenuActions(): array
-    // {
-    //     return [
-    //         ViewAction::make('viewEvent')
-    //             ->model(Shift::class)
-    //     ];
-    // }
+    public function editAction(): Action
+    {
+        // In order to resolve the form data, we have to use mutateFormDataUsing
+        // Then use makeModalSubmitAction to submit.  Creating a new action
+        // like in deleteAction() does not work.
+        return parent::editAction()
+            ->modalHeading(fn (Shift $record) => sprintf(
+                'Edit Shift #%d (%d %s)',
+                $record->id,
+                $record->volunteers_count,
+                str('signup')->plural($record->volunteers_count)
+            ))
+            ->modalSubmitActionLabel(fn ($record) => $record->volunteers_count > 0 ? 'Save and Notify' : 'Save')
+            ->mutateFormDataUsing(function (array $data, array $arguments, Shift $record) {
+                if ($arguments['quietly'] ?? false) {
+                    $record->dontNotifyVolunteers();
+                }
 
+                return $data;
+            })
+            ->extraModalFooterActions(fn (EditAction $action, $record) => $record->volunteers_count > 0 ? [
+                $action->makeModalSubmitAction('saveQuietly', ['quietly' => true])
+                    ->color('primary')
+                    ->label('Save Quietly'),
+            ] : []);
+    }
+
+    public function deleteAction(): Action
+    {
+        return parent::deleteAction()
+            // Add more description if there are volunteers signed up
+            ->modalDescription(function (Shift $record) {
+                $str = 'Are you sure you want to delete this shift?';
+                if ($record->volunteers_count > 0) {
+                    $str .= sprintf(
+                        ' %d %s signed up for this shift.',
+                        $record->volunteers_count,
+                        str('volunteer')->plural($record->volunteers_count)
+                    );
+                }
+
+                return $str;
+            })
+            ->modalSubmitActionLabel(fn ($record) => $record->volunteers_count > 0 ? 'Delete and Notify' : 'Delete')
+            ->extraModalFooterActions(fn ($record) => $record->volunteers_count > 0 ? [
+                DeleteAction::make('deleteQuietly')
+                    ->label('Delete Quietly')
+                    ->modalHeading(null)
+                    ->successNotificationTitle('Deleted quietly')
+                    ->using(fn (Shift $record) => $record->dontNotifyVolunteers()->delete())
+                    ->requiresConfirmation(false),
+            ] : []);
+    }
+
+    /**
+     * @return Component[]
+     */
     public function getSchema(?string $model = null): ?array
     {
         /** @var Team $team */
         $team = $this->record;
-        /** @var Shift $shift */
-        $shift = $this->eventRecord;
 
         $event = $team->event;
         $startDate = $event->start_date;
         $endDate = $event->end_date;
 
-        // $defaultLength = $shift->shiftType->length / 60;
-        // $defaultNumSpots = $shift->shiftType->num_spots;
-
         return [
-            Components\Placeholder::make('info')
-                ->label('Filled Slots')
-                ->content(fn (?Shift $record) => $record?->volunteers_count)
-                ->visible(fn (?Shift $record) => $record?->volunteers_count !== null),
-            Components\Select::make('shift_type_id')
-                ->label('Shift Type')
-                ->relationship('team.shiftTypes', 'title')
-                ->required()
-                ->searchable()
-                ->preload()
-                // ->default($shift->shift_type_id)
-                ->reactive()
-                ->afterStateUpdated(function ($state, $set, $operation) {
-                    $shiftType = ShiftType::where('id', $state)->firstOrFail();
-                    if ($operation == 'createShift') {
-                        $set('num_spots', $shiftType->num_spots);
-                        // $set('length_in_hours', $shiftType->length / 60);
-                    }
-                }),
-            Components\DateTimePicker::make('start_offset')
-                ->label('Start Time')
-                ->required()
-                ->seconds(false)
-                ->minDate($startDate)
-                ->maxDate($endDate)
-                ->formatStateUsing(fn($state, $record) => $record->startDatetime ?? $state)
-                ->dehydrateStateUsing(fn($state) => $event->startDateCarbon->diffInMinutes(Carbon::parse($state)))
-                ->format('Y-m-d H:i:s'),
-            Components\TextInput::make('length_in_hours')
-                ->label('Length (hours)')
-                ->numeric()
-                ->minValue(.25)
-                ->step(.25),
-                // ->placeholder((string) $defaultLength)
-                // length is stored in minutes, but we want to show it in hours
-                // If the length is the default, return null so the placeholder is used
-                // ->formatStateUsing(fn($state) => $state / 60),
-                // ->dehydrateStateUsing(function ($state) use ($defaultLength) {
-                //     if ($state == null || $state * 60 == $defaultLength) {
-                //         return null;
-                //     }
-
-                //     return $state * 60;
-                // }),
-            Components\TextInput::make('num_spots')
-                ->label('Number of People')
-                ->numeric()
-                // ->placeholder((string) $defaultNumSpots)
-                // use getRawOriginal to ignore the default value
-                // ->formatStateUsing(fn(?Shift $record) => $record?->getRawOriginal('num_spots'))
-                // ->dehydrateStateUsing(function ($state) use ($defaultNumSpots) {
-                //     if ($state == null || $state == $defaultNumSpots) {
-                //         return null;
-                //     }
-
-                //     return $state;
-                // })
-                ->minValue(1),
-            Components\Select::make('multiplier')
-                ->label('Multiplier')
-                ->options([
-                    '1' => '1x',
-                    '1.5' => '1.5x',
-                    '2' => '2x',
-                ])
-                ->selectablePlaceholder(false)
-                ->default('1'),
+            Components\Grid::make()
+                ->schema([
+                    Components\Select::make('shift_type_id')
+                        ->label('Shift Type')
+                        ->relationship('team.shiftTypes', 'title',
+                            fn ($query) => $query->where('team_id', $this->record->id)
+                                ->orderBy('title')
+                        )
+                        ->required()
+                        ->searchable()
+                        ->preload()
+                        // ->default($shift->shift_type_id)
+                        ->live(condition: fn ($operation) => $operation == 'createShift')
+                        ->afterStateUpdated(function ($state, $set, $operation) {
+                            $shiftType = ShiftType::where('id', $state)->firstOrFail();
+                            if ($operation == 'createShift') {
+                                $set('num_spots', $shiftType->num_spots);
+                            }
+                        }),
+                    Components\DateTimePicker::make('start_offset')
+                        ->label('Start Time')
+                        ->required()
+                        ->seconds(false)
+                        ->minDate($startDate)
+                        ->maxDate($endDate)
+                        ->formatStateUsing(fn ($state, $record) => $record->startDatetime ?? $state)
+                        ->dehydrateStateUsing(fn ($state) => $event->startDateCarbon->diffInMinutes(Carbon::parse($state)))
+                        ->format('Y-m-d H:i:s'),
+                    Components\TextInput::make('length_in_hours')
+                        ->label('Length (hours)')
+                        ->numeric()
+                        ->minValue(.25)
+                        ->step(.25)
+                        ->required(),
+                    Components\TextInput::make('num_spots')
+                        ->label('Number of People')
+                        ->numeric()
+                        ->required()
+                        ->minValue(1),
+                    Components\Select::make('multiplier')
+                        ->label('Multiplier')
+                        ->options([
+                            '1' => '1x',
+                            '1.5' => '1.5x',
+                            '2' => '2x',
+                        ])
+                        ->selectablePlaceholder(false)
+                        ->helperText('Used to determine how many hours a volunteer will receive for this shift')
+                        ->default('1'),
+                ]),
+            Components\Placeholder::make('warning')
+                ->label('')
+                ->content(new HtmlString(Blade::render('<x-notification-banner type="warning">{{$text}}</x-notification-banner>',
+                    ['text' => 'WARNING: Volunteers have signed up for this shift. Any changes to this shift will affect their schedule. Click "Save Quietly" to save changes without notifying volunteers.']
+                )))
+                ->visible(fn ($record) => ($record->volunteers_count ?? 0) > 0)
+                ->columnSpanFull(),
         ];
     }
 
-    public function getHeaderActionsssss(): array
+    /**
+     * @return array<mixed>
+     */
+    public function getHeaderActions(): array
     {
         return [
-            // ActionGroup::make([
-            Action::make('view')
-                ->label('View')
-                // ->url($this->record->url())
-                ->action(fn() => $this->setOption('slotLabelInterval', '00:15:00'))
-                ->icon('heroicon-o-eye')
-                ->color('primary'),
-            Action::make('edit')
-                ->label('Edit')
-                // ->url($this->record->editUrl())
-                // ->action(fn () => dd($this->getEventsJs()))
-                ->icon('heroicon-o-pencil')
-                ->color('secondary'),
-            Action::make('delete')
-                ->label('Delete')
-                ->action(fn() => $this->record->delete())
-                ->icon('heroicon-o-trash')
-                ->color('danger'),
-            // ]),
+            ActionsCreateAction::make('createShiftType')
+                ->model(ShiftType::class)
+                ->label('New Shift Type')
+                ->form([
+                    Components\TextInput::make('title')
+                        ->required()
+                        ->maxLength(255),
+                    Components\TextInput::make('location')
+                        ->label('Check-in Location')
+                        ->required()
+                        ->maxLength(255),
+                    Components\Textarea::make('description')
+                        ->required()
+                        ->columnSpanFull(),
+                    Components\TextInput::make('length')
+                        ->label('Default Length (hours)')
+                        ->numeric()
+                        ->minValue(.25)
+                        ->step(.25)
+                        ->default(120)
+                        ->formatStateUsing(fn ($state) => $state / 60)
+                        ->dehydrateStateUsing(fn ($state) => $state * 60),
+                    Components\TextInput::make('num_spots')
+                        ->label('Default Number of People')
+                        ->numeric()
+                        ->default(1)
+                        ->minValue(1),
+                ])
+                ->mutateFormDataUsing(fn ($data) => array_merge($data, [
+                    'team_id' => $this->record->id,
+                ]))
+                // Have to reload after otherwise it doesn't show up in the on-click menu
+                ->after(fn () => $this->js('window.location.reload()')),
         ];
     }
 }

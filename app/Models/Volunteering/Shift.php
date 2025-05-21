@@ -26,15 +26,21 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  * @property-read Team $team
  * @property-read ShiftType $shiftType
  */
-// #[ObservedBy(ShiftObserver::class)]
+#[ObservedBy(ShiftObserver::class)]
 class Shift extends Model implements ContractsAuditable, Eventable
 {
     use Auditable, HasFactory, SoftDeletes;
+
+    /**
+     * Used to determine if volunteers should be notified of a shift change or deletion.
+     */
+    public bool $notifyVolunteersOnChange = true;
 
     protected $fillable = [
         'shift_type_id',
         'start_offset',
         'length',
+        'length_in_hours',
         'num_spots',
         'multiplier',
     ];
@@ -194,8 +200,28 @@ class Shift extends Model implements ContractsAuditable, Eventable
 
     protected function getCalendarEventTitle(): string
     {
-        return $this->title . "\n" .
-            $this->num_spots . " spots\n" .
-            $this->volunteers_count . ' signed up';
+        $spotsPlural = str('spots')->plural($this->num_spots ?? 0);
+        $signupsPlural = str('signup')->plural($this->volunteers_count);
+
+        return sprintf("%s\n%s %s\n%s %s(%.1f%%)",
+            $this->title,
+            $this->num_spots,
+            $spotsPlural,
+            $this->volunteers_count,
+            $signupsPlural,
+            $this->percentFilled
+        );
+    }
+
+    /**
+     * Used to determine if volunteers should be notified of a shift change or deletion.
+     *
+     * Use this instead of updateQuietly() or deleteQuietly() to ensure that we still receive other events for auditing.
+     */
+    public function dontNotifyVolunteers(): static
+    {
+        $this->notifyVolunteersOnChange = false;
+
+        return $this;
     }
 }

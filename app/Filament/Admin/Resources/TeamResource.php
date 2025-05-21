@@ -16,7 +16,6 @@ use Filament\Tables\Table;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Route;
 
 class TeamResource extends Resource
@@ -146,8 +145,8 @@ class TeamResource extends Resource
         return $page->generateNavigationItems([
             Pages\ViewTeam::class,
             Pages\EditTeam::class,
-            Pages\ManageShiftTypes::class,
             Pages\ShiftCalendar::class,
+            Pages\ManageShiftTypes::class,
         ]);
     }
 }
