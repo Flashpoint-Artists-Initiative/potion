@@ -8,11 +8,12 @@ use App\Filament\App\Clusters\UserPages\Pages\Tickets;
 use App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 use App\Models\Ticketing\Order;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 
-class OrderCompletedNotification extends Notification
+class OrderCompletedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

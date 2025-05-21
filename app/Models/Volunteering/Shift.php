@@ -36,6 +36,12 @@ class Shift extends Model implements ContractsAuditable, Eventable
      */
     public bool $notifyVolunteersOnChange = true;
 
+    /**
+     * The reason for the change, if applicable.
+     * This is used when notifying volunteers of the change.
+     */
+    public ?string $changeReason = null;
+
     protected $fillable = [
         'shift_type_id',
         'start_offset',
@@ -43,6 +49,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
         'length_in_hours',
         'num_spots',
         'multiplier',
+        'changeReason',
     ];
 
     protected $with = [
@@ -58,6 +65,17 @@ class Shift extends Model implements ContractsAuditable, Eventable
         'length_in_hours',
         'end_offset',
     ];
+
+    public function update(array $attributes = [], array $options = [])
+    {
+        // Check if `changeReason` is in the attributes
+        if (array_key_exists('changeReason', $attributes)) {
+            $this->changeReason = $attributes['changeReason'];
+            unset($attributes['changeReason']); // Remove it from the attributes to avoid database interaction
+        }
+        
+        return parent::update($attributes, $options);
+    }
 
     /**
      * @return BelongsTo<ShiftType, $this>
@@ -130,7 +148,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     }
 
     /**
-     * @return Attribute<string,never>
+     * @return Attribute<string,string>
      */
     protected function startDatetime(): Attribute
     {
@@ -154,6 +172,20 @@ class Shift extends Model implements ContractsAuditable, Eventable
     }
 
     /**
+     * @return Attribute<Carbon,never>
+     */
+    protected function startCarbon(): Attribute
+    {
+        return Attribute::get(function () {
+            $eventStart = $this->team->event->start_date;
+            $start = new Carbon($eventStart, 'America/New_York');
+            $start->addMinutes($this->start_offset);
+
+            return $start;
+        });
+    }
+
+    /**
      * @return Attribute<string,never>
      */
     protected function endDatetime(): Attribute
@@ -161,7 +193,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
         return Attribute::make(
             get: function () {
                 $eventStart = $this->team->event->start_date;
-                $start = new Carbon($eventStart);
+                $start = new Carbon($eventStart, 'America/New_York');
                 $start->addMinutes($this->end_offset);
 
                 return $start->format('Y-m-d H:i:s');
@@ -182,6 +214,14 @@ class Shift extends Model implements ContractsAuditable, Eventable
             }
         );
     }
+
+    // protected function changeReason(): Attribute
+    // {
+    //     return Attribute::make(
+    //         get: fn () => $this->changeReason,
+    //         set: fn (?string $value) => $this->changeReason = $value,
+    //     );
+    // }
 
     public function overlapsWith(Shift $shift): bool
     {

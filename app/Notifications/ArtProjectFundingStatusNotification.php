@@ -7,10 +7,11 @@ namespace App\Notifications;
 use App\Filament\Admin\Resources\ArtProjectResource;
 use App\Models\Grants\ArtProject;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ArtProjectFundingStatusNotification extends Notification
+class ArtProjectFundingStatusNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
