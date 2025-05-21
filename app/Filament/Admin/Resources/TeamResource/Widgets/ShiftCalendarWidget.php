@@ -124,17 +124,6 @@ class ShiftCalendarWidget extends CalendarWidget
         $this->mountAction('createShift', $info);
     }
 
-    public function createShiftAction(): CreateAction
-    {
-        return CreateAction::make('createShift')
-            ->model(Shift::class)
-            ->mountUsing(fn ($arguments, $form) => $form->fill([
-                'start_offset' => data_get($arguments, 'startStr'),
-                'length_in_hours' => Carbon::parse(data_get($arguments, 'startStr'))
-                    ->diffInMinutes(Carbon::parse(data_get($arguments, 'endStr'))) / 60,
-            ]));
-    }
-
     /**
      * @return Action[]
      */
@@ -142,7 +131,7 @@ class ShiftCalendarWidget extends CalendarWidget
     {
         return $this->record->shiftTypes->map(function (ShiftType $shiftType) {
             return Action::make('createClick-' . $shiftType->title)
-                ->label('New ' . $shiftType->title)
+                ->label('New ' . $shiftType->title . ' Shift')
                 ->model(Shift::class)
                 ->icon('heroicon-o-plus')
                 ->action(function ($arguments) use ($shiftType) {
@@ -181,6 +170,32 @@ class ShiftCalendarWidget extends CalendarWidget
         // To resolve eventRecord
         parent::onEventDrop($info);
 
+        if (data_get($info, 'delta.seconds') == 0) {
+            // No change, so just return
+            return false;
+        }
+
+        /** @var Shift $shift */
+        $shift = $this->eventRecord;
+
+        if ($shift->volunteers_count > 0) {
+            $info['action'] = 'doEventDrop';
+            $this->mountAction('confirmEdit', $info);
+
+            return false;
+        } else {
+            return $this->doEventDrop($info);
+        }
+    }
+
+    /**
+     * @param array<mixed> $info Same as onEventDrop
+     */
+    protected function doEventDrop(array $info): bool
+    {
+        // To resolve eventRecord
+        parent::onEventDrop($info);
+
         /** @var Shift $shift */
         $shift = $this->eventRecord;
         $shift->start_offset += data_get($info, 'delta.seconds') / 60;
@@ -190,7 +205,7 @@ class ShiftCalendarWidget extends CalendarWidget
         } catch (QueryException $e) {
             return false;
         }
-
+        
         return true;
     }
 
@@ -210,6 +225,28 @@ class ShiftCalendarWidget extends CalendarWidget
      * @phpstan-ignore-next-line parameter.defaultValue
      */
     public function onEventResize(array $info = []): bool
+    {
+
+        // To resolve eventRecord
+        parent::onEventDrop($info);
+
+        /** @var Shift $shift */
+        $shift = $this->eventRecord;
+
+        if ($shift->volunteers_count > 0) {
+            $info['action'] = 'doEventResize';
+            $this->mountAction('confirmEdit', $info);
+
+            return false;
+        } else {
+            return $this->doEventResize($info);
+        }
+    }
+
+    /**
+     * @param array<mixed> $info Same as onEventResize
+     */
+    public function doEventResize(array $info): bool
     {
         // To resolve eventRecord
         parent::onEventDrop($info);
@@ -238,6 +275,40 @@ class ShiftCalendarWidget extends CalendarWidget
         ];
     }
 
+    /**
+     * Used when creating a new shift by clicking an empty space on the calendar.
+     */
+    public function createShiftAction(): CreateAction
+    {
+        return CreateAction::make('createShift')
+            ->model(Shift::class)
+            ->mountUsing(fn ($arguments, $form) => $form->fill([
+                'start_offset' => data_get($arguments, 'startStr'),
+                'length_in_hours' => Carbon::parse(data_get($arguments, 'startStr'))
+                    ->diffInMinutes(Carbon::parse(data_get($arguments, 'endStr'))) / 60,
+            ]));
+    }
+
+    /**
+     * Used when editing a shift by dragging or resizing it.
+     */
+    public function confirmEditAction(): Action
+    {
+        return Action::make('confirmEdit')
+            ->requiresConfirmation()
+            ->modalHeading('Confirm Shift Change')
+            ->modalSubmitActionLabel('Save and Notify')
+            ->modalDescription(new HtmlString('This shift has volunteers signed up. Are you sure you want to change the start time?<br>
+            Volunteers will be notified of this change. To save without notifying them, click the event and open the edit modal, make the changes, then click "Save Quietly".'))
+            ->action(function ($arguments) {
+                $this->{$arguments['action']}($arguments);
+            })
+            ->after(fn (self $livewire) => $livewire->refreshRecords());
+    }
+
+    /**
+     * Used when editing a shift via the edit modal.
+     */
     public function editAction(): Action
     {
         // In order to resolve the form data, we have to use mutateFormDataUsing
@@ -265,6 +336,9 @@ class ShiftCalendarWidget extends CalendarWidget
             ] : []);
     }
 
+    /**
+     * Used when deleting a shift via the delete button.
+     */
     public function deleteAction(): Action
     {
         return parent::deleteAction()
@@ -362,6 +436,12 @@ class ShiftCalendarWidget extends CalendarWidget
                 )))
                 ->visible(fn ($record) => ($record->volunteers_count ?? 0) > 0)
                 ->columnSpanFull(),
+            Components\TextInput::make('changeReason')
+                ->label('Reason for Change')
+                ->placeholder('Optional')
+                ->helperText('This will be included in the notification to volunteers')
+                ->columnSpanFull()
+                ->visible(fn ($record) => ($record->volunteers_count ?? 0) > 0),
         ];
     }
 
