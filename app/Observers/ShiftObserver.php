@@ -10,37 +10,43 @@ class ShiftObserver
 {
     public function creating(Shift $shift): void
     {
-        // $this->adjustNumSpots($shift);
-        // $this->adjustLength($shift);
+        $this->adjustLength($shift);
     }
 
     public function updating(Shift $shift): void
     {
-        // $this->adjustNumSpots($shift);
-        // $this->adjustLength($shift);
+        $this->adjustLength($shift);
     }
-    
-    /**
-     * Don't set num_spots if it is the same as the shiftType value
-     */
-    protected function adjustNumSpots(Shift $shift): void
-    {
-        $default = $shift->shiftType->num_spots;
 
-        if ($shift->num_spots == $default) {
-            $shift->num_spots = null;
+    public function updated(Shift $shift): void
+    {
+        if ($shift->notifyVolunteersOnChange) {
+            // Notify volunteers of shift update
+        }
+    }
+
+    public function deleting(Shift $shift): void
+    {
+        if ($shift->notifyVolunteersOnChange) {
+            // Notify volunteers of shift deletion
         }
     }
 
     /**
-     * Don't set length if it is the same as the shiftType value
+     * Set length via length_in_hours or the shiftType default length
      */
     protected function adjustLength(Shift $shift): void
     {
         $default = $shift->shiftType->length;
 
-        if ($shift->length == $default) {
-            $shift->length = null;
+        if ($shift->length === null) {
+            if ($shift->length_in_hours == null) {
+                $shift->length = $default;
+
+                return;
+            }
+
+            $shift->length = (int) ($shift->length_in_hours * 60);
         }
     }
 }
