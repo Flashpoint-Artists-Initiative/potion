@@ -72,8 +72,6 @@ class ManageShifts extends EditRecord
                             ->label('Start Time')
                             ->required()
                             ->seconds(false)
-                            ->minDate($startDate)
-                            ->maxDate($endDate)
                             ->formatStateUsing(fn ($record) => $record->startDatetime)
                             ->dehydrateStateUsing(fn ($state) => $event->startDateCarbon->diffInMinutes(Carbon::parse($state)))
                             ->format('Y-m-d H:i:s'),

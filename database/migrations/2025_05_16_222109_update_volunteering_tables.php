@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('shifts', function (Blueprint $table) {
             $table->softDeletes();
             $table->float('multiplier')->nullable()->change();
+            $table->integer('start_offset')->change();
         });
 
         Schema::table('shift_types', function (Blueprint $table) {
@@ -29,6 +30,7 @@ return new class extends Migration
         Schema::table('shifts', function (Blueprint $table) {
             $table->dropSoftDeletes();
             $table->boolean('multiplier')->nullable()->change();
+            $table->unsignedInteger('start_offset')->change();
         });
 
         Schema::table('shift_types', function (Blueprint $table) {
