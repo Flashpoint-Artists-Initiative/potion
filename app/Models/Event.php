@@ -176,7 +176,7 @@ class Event extends Model implements ContractsAuditable
     /**
      * @return Attribute<string, string>
      */
-    public function startDate(): Attribute
+    protected function startDate(): Attribute
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $attributes['start_date'],
@@ -187,7 +187,7 @@ class Event extends Model implements ContractsAuditable
     /**
      * @return Attribute<string, string>
      */
-    public function endDate(): Attribute
+    protected function endDate(): Attribute
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $attributes['end_date'],
@@ -196,9 +196,9 @@ class Event extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<string, Carbon>
+     * @return Attribute<Carbon,never>
      */
-    public function startDateCarbon(): Attribute
+    protected function startDateCarbon(): Attribute
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => Carbon::parse($attributes['start_date']),
@@ -206,66 +206,32 @@ class Event extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<string, Carbon>
+     * @return Attribute<Carbon,never>
      */
-    public function endDateCarbon(): Attribute
+    protected function endDateCarbon(): Attribute
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => Carbon::parse($attributes['end_date']),
         );
     }
 
-    public function dollarsPerVote(): Attribute
+    /**
+     * @return Attribute<bool,never>
+     */
+    protected function votingIsOpen(): Attribute
     {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('dollars_per_vote', 1.0, 'float'));
-    }
-
-    public function votingEnabled(): Attribute
-    {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('voting_enabled', false, 'bool'));
-    }
-
-    public function votesPerUser(): Attribute
-    {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('votes_per_user', 10, 'int'));
-    }
-
-    public function votingEnds(): Attribute
-    {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('voting_ends', now()->addMinute()));
-    }
-
-    public function ticketsPerSale(): Attribute
-    {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('tickets_per_sale', config('app.cart_max_quantity'), 'int'));
-    }
-
-    public function ticketsLockdown(): Attribute
-    {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('lockdown.tickets', false, 'bool'));
-    }
-
-    public function grantsLockdown(): Attribute
-    {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('lockdown.grants', false, 'bool'));
-    }
-
-    public function volunteersLockdown(): Attribute
-    {
-        return Attribute::make(...$this->createSettingsAttributeFunctions('lockdown.volunteers', false, 'bool'));
-    }
-
-    public function votingIsOpen(): Attribute
-    {
-        // I don't know wtf is going on with enabling votingEnds here, but everything breaks
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => $this->votingEnabled
-            //  &&
-            // now()->lessThan($this->votingEnds),
+            get: function (mixed $value, array $attributes) {
+                return $this->getSetting('art.voting_enabled', false)
+                    && now()->lessThan($this->getSetting('art.voting_end_date', now()->addMinute()));
+            }
         );
     }
 
-    public function nextTicketSaleDate(): Attribute
+    /**
+     * @return Attribute<Carbon,never>
+     */
+    protected function nextTicketSaleDate(): Attribute
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $this->ticketTypes()
@@ -278,7 +244,10 @@ class Event extends Model implements ContractsAuditable
         );
     }
 
-    public function finalTicketEndDate(): Attribute
+    /**
+     * @return Attribute<Carbon,never>
+     */
+    protected function finalTicketEndDate(): Attribute
     {
         return Attribute::make(
             get: fn (mixed $value, array $attributes) => $this->ticketTypes()
