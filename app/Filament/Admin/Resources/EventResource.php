@@ -11,6 +11,7 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Split;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
@@ -44,67 +45,70 @@ class EventResource extends Resource
         return $form
             ->schema([
                 Split::make([
-                    Section::make([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('location')
-                            ->maxLength(255),
-                        Forms\Components\DatePicker::make('start_date')
-                            ->required()
-                            ->closeOnDateSelection()
-                            ->beforeOrEqual('end_date')
-                            ->helperText('The first day that has volunteer shifts.'),
-                        Forms\Components\DatePicker::make('end_date')
-                            ->required()
-                            ->closeOnDateSelection()
-                            ->afterOrEqual('start_date')
-                            ->helperText('The last public day of the event.'),
-                        Fieldset::make('Ticket Sales')
-                            ->schema([
-                                Forms\Components\TextInput::make('tickets_per_sale')
-                                    ->label('Max Tickets per Sale')
-                                    ->required()
-                                    ->numeric()
-                                    ->afterStateHydrated(function (Forms\Components\TextInput $component, ?Event $record) {
-                                        $component->state($record->settings['tickets_per_sale'] ?? config('app.cart_max_quantity'));
-                                    })
-                                    ->helperText('The maximum number of tickets a user can buy at once.  Does not include reserved tickets or addon tickets.'),
-                            ])
-                            ->statePath('settings'),
-                        Fieldset::make('Art Grants')
-                            ->schema([
-                                Forms\Components\Toggle::make('voting_enabled')
-                                    ->inline(false)
-                                    ->label('Voting Enabled')
-                                    ->helperText('Enables public voting for art grants.')
-                                    ->columnSpanFull(),
-                                // Forms\Components\DateTimePicker::make('voting_ends')
-                                //     ->label('Voting Ends')
-                                //     ->afterOrEqual('start_date')
-                                //     ->helperText('The date and time voting ends. Leave blank to disable voting automatically ending.'),
-                                Forms\Components\TextInput::make('dollars_per_vote')
-                                    ->label('Dollars per Vote')
-                                    ->required()
-                                    ->numeric()
-                                    ->afterStateHydrated(function (Forms\Components\TextInput $component, ?Event $record) {
-                                        // default() doesn't work. This sets the default value when the array is empty
-                                        $component->state($record->settings['dollars_per_vote'] ?? '1.0');
-                                    })
-                                    ->helperText('The amount of money each vote is worth.'),
-                                Forms\Components\TextInput::make('votes_per_user')
-                                    ->label('Votes per User')
-                                    ->required()
-                                    ->numeric()
-                                    ->afterStateHydrated(function (Forms\Components\TextInput $component, ?Event $record) {
-                                        $component->state($record->settings['votes_per_user'] ?? 10);
-                                    })
-                                    ->helperText('The maximum number of votes each user can cast.'),
-                            ])
-                            ->columns(2)
-                            ->statePath('settings'),
-                    ])
-                        ->columns(2),
+                    Tabs::make()
+                        ->tabs([
+                            Tabs\Tab::make('Event')
+                                ->schema([
+                                    Section::make()
+                                        ->schema([
+                                            Forms\Components\TextInput::make('name')
+                                                ->required()
+                                                ->maxLength(255),
+                                            Forms\Components\TextInput::make('location')
+                                                ->maxLength(255),
+                                            Forms\Components\DatePicker::make('start_date')
+                                                ->required()
+                                                ->closeOnDateSelection()
+                                                ->beforeOrEqual('end_date')
+                                                ->helperText('The first day that has volunteer shifts.'),
+                                            Forms\Components\DatePicker::make('end_date')
+                                                ->required()
+                                                ->closeOnDateSelection()
+                                                ->afterOrEqual('start_date')
+                                                ->helperText('The last public day of the event.'),
+                                        ])
+                                        ->columns(2)
+                                ]),
+                            Tabs\Tab::make('Ticketing')
+                                ->schema([
+                                    Section::make()
+                                        ->schema([
+                                            Forms\Components\TextInput::make('tickets_per_sale')
+                                                ->label('Max Tickets per Sale')
+                                                ->required()
+                                                ->numeric()
+                                                ->default(4)
+                                                ->helperText('The maximum number of tickets a user can buy at once.  Does not include reserved tickets or addon tickets.'),
+                                        ])
+                                ])
+                                ->statePath('settings.ticketing'),
+                            Tabs\Tab::make('Art Grants')
+                                ->schema([
+                                    Section::make()
+                                        ->schema([
+                                            Forms\Components\Toggle::make('voting_enabled')
+                                                ->inline(false)
+                                                ->label('Voting Enabled')
+                                                ->helperText('Enables public voting for art grants.')
+                                                ->columnSpanFull(),
+                                            Forms\Components\TextInput::make('dollars_per_vote')
+                                                ->label('Dollars per Vote')
+                                                ->required()
+                                                ->numeric()
+                                                ->default(1.0)
+                                                ->helperText('The amount of money each vote is worth.'),
+                                            Forms\Components\TextInput::make('votes_per_user')
+                                                ->label('Votes per User')
+                                                ->required()
+                                                ->numeric()
+                                                ->default(10)
+                                                ->helperText('The maximum number of votes each user can cast.'),
+                                        ])
+                                        ->columns(2)
+                                ])
+                                ->statePath('settings.art'),
+                        ])
+                        ->contained(false),
                     Grid::make(1)->schema([
                         Section::make([
                             Forms\Components\Toggle::make('active')
@@ -112,23 +116,14 @@ class EventResource extends Resource
                         ]),
                         Section::make('Lockdown')
                             ->schema([
-                                Forms\Components\Toggle::make('lockdown.tickets')
-                                    ->label('Tickets')
-                                    ->afterStateHydrated(function (Forms\Components\Toggle $component, ?Event $record) {
-                                        $component->state($record->ticketsLockdown ?? false);
-                                    }),
-                                Forms\Components\Toggle::make('lockdown.grants')
-                                    ->label('Grants')
-                                    ->afterStateHydrated(function (Forms\Components\Toggle $component, ?Event $record) {
-                                        $component->state($record->grantsLockdown ?? false);
-                                    }),
-                                Forms\Components\Toggle::make('lockdown.volunteers')
-                                    ->label('Volunteering')
-                                    ->afterStateHydrated(function (Forms\Components\Toggle $component, ?Event $record) {
-                                        $component->state($record->volunteersLockdown ?? false);
-                                    }),
+                                Forms\Components\Toggle::make('tickets')
+                                    ->label('Tickets'),
+                                Forms\Components\Toggle::make('grants')
+                                    ->label('Grants'),
+                                Forms\Components\Toggle::make('volunteers')
+                                    ->label('Volunteering'),
                             ])
-                            ->statePath('settings')
+                            ->statePath('settings.lockdown')
                             ->hidden(config('app.use_single_lockdown')),
                     ])
                         ->grow(false),
@@ -176,7 +171,7 @@ class EventResource extends Resource
                 Action::make('Select')
                     ->color('success')
                     ->icon('heroicon-m-arrow-right-circle')
-                    ->dispatch('update-active-event', fn (Event $record) => ['eventId' => $record->id])
+                    ->dispatch('update-active-event', fn(Event $record) => ['eventId' => $record->id])
                     ->tooltip('Use this event for the event-specific resources'),
             ])
             ->bulkActions([
@@ -187,11 +182,11 @@ class EventResource extends Resource
                     BulkAction::make('make-active')
                         ->label('Mark as Active')
                         ->icon('heroicon-o-check-circle')
-                        ->action(fn (Collection $records) => $records->toQuery()->update(['active' => true])),
+                        ->action(fn(Collection $records) => $records->toQuery()->update(['active' => true])),
                     BulkAction::make('make-inactive')
                         ->label('Mark as Inactive')
                         ->icon('heroicon-o-x-circle')
-                        ->action(fn (Collection $records) => $records->toQuery()->update(['active' => false])),
+                        ->action(fn(Collection $records) => $records->toQuery()->update(['active' => false])),
                 ]),
             ]);
     }
