@@ -101,9 +101,10 @@ class ManageShifts extends EditRecord
                     ->defaultItems(1)
                     ->columnSpanFull()
                     ->deleteAction(fn (Action $action) => $action
-                        ->requiresConfirmation(function($component) {
+                        ->requiresConfirmation(function ($component) {
                             /** @var Shift $shift */
                             $shift = $component->getRecord();
+
                             return $shift->volunteers_count > 0;
                         }),
                     )

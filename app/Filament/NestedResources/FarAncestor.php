@@ -8,7 +8,7 @@ use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * A child of \Guava\FilamentNestedResources\Ancestor that retrieves 
+ * A child of \Guava\FilamentNestedResources\Ancestor that retrieves
  * the far ancestor of a record for a HasManyThrough relationship.
  */
 class FarAncestor extends \Guava\FilamentNestedResources\Ancestor

@@ -73,7 +73,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
             $this->changeReason = $attributes['changeReason'];
             unset($attributes['changeReason']); // Remove it from the attributes to avoid database interaction
         }
-        
+
         return parent::update($attributes, $options);
     }
 

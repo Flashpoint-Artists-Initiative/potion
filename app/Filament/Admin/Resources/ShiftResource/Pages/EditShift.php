@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\ShiftResource\Pages;
 
 use App\Filament\Admin\Resources\ShiftResource;
+use App\Models\Volunteering\Shift;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use App\Models\Volunteering\Shift;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 
 class EditShift extends EditRecord

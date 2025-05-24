@@ -7,7 +7,6 @@ namespace App\Policies;
 use App\Enums\LockdownEnum;
 use App\Models\User;
 use App\Models\Volunteering\Shift;
-use App\Policies\AbstractModelPolicy;
 use Illuminate\Database\Eloquent\Model;
 
 class ShiftPolicy extends AbstractModelPolicy
