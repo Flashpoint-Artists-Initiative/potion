@@ -69,24 +69,12 @@ class ManageShifts extends ManageRelatedRecords
                 $query->withCount('volunteers');
             })
             ->columns([
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()
                     ->sortable(['shift_types.title']),
                 Tables\Columns\TextColumn::make('start_datetime')
                     ->label('Start')
-                    ->dateTime('D n/j, g:i A', 'America/New_York')
+                    ->dateTime('D n/j, g:i A') // Already in the correct timezone from the event mutator
                     ->sortable(['start_offset']),
                 Tables\Columns\TextColumn::make('length_in_hours')
                     ->label('Length')

@@ -28,6 +28,7 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
 /**
  * @property ArrayObject $settings
+ * @property-read Carbon $volunteerBaseDate
  */
 class Event extends Model implements ContractsAuditable
 {

@@ -25,6 +25,9 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
  * @property-read string $title
  * @property-read Team $team
  * @property-read ShiftType $shiftType
+ * @property-read Carbon $startCarbon
+ * @property-read Carbon $startDatetime
+ * @property-read Carbon $endDatetime
  */
 #[ObservedBy(ShiftObserver::class)]
 class Shift extends Model implements ContractsAuditable, Eventable
@@ -148,25 +151,21 @@ class Shift extends Model implements ContractsAuditable, Eventable
     }
 
     /**
-     * @return Attribute<string,string>
+     * @return Attribute<string,int>
      */
     protected function startDatetime(): Attribute
     {
         return Attribute::make(
             get: function () {
-                $eventStart = $this->team->event->start_date;
-                $start = new Carbon($eventStart);
-                $start->addMinutes($this->start_offset);
+                $baseDate = $this->team->event->volunteerBaseDate->copy();
+                $baseDate->addMinutes($this->start_offset);
 
-                return $start->format('Y-m-d H:i:s');
+                return $baseDate->format('Y-m-d H:i:s');
             },
             set: function (string $value) {
-                $eventStart = $this->team->event->start_date;
-                $start = new Carbon($eventStart);
                 $value = Carbon::parse($value);
-                $start->diffInMinutes($value);
-
-                return $start->format('Y-m-d H:i:s');
+                $baseDate = $this->team->event->volunteerBaseDate;
+                return $baseDate->diffInMinutes($value);
             }
         );
     }
@@ -177,28 +176,24 @@ class Shift extends Model implements ContractsAuditable, Eventable
     protected function startCarbon(): Attribute
     {
         return Attribute::get(function () {
-            $eventStart = $this->team->event->start_date;
-            $start = new Carbon($eventStart, 'America/New_York');
-            $start->addMinutes($this->start_offset);
+            $baseDate = $this->team->event->volunteerBaseDate->copy();
+            $baseDate->addMinutes($this->start_offset);
 
-            return $start;
+            return $baseDate;
         });
     }
 
     /**
-     * @return Attribute<string,never>
+     * @return Attribute<non-falsy-string,never>
      */
     protected function endDatetime(): Attribute
     {
-        return Attribute::make(
-            get: function () {
-                $eventStart = $this->team->event->start_date;
-                $start = new Carbon($eventStart, 'America/New_York');
-                $start->addMinutes($this->end_offset);
+        return Attribute::get(function () {
+            $baseDate = $this->team->event->volunteerBaseDate->copy();
+            $baseDate->addMinutes($this->end_offset);
 
-                return $start->format('Y-m-d H:i:s');
-            }
-        );
+            return $baseDate->format('Y-m-d H:i:s');
+        });
     }
 
     /**
@@ -232,7 +227,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     {
         return CalendarEvent::make($this)
             ->title($this->getCalendarEventTitle())
-            ->start($this->start_datetime)
+            ->start($this->startDatetime)
             ->end($this->endDatetime)
             ->resourceId($this->shiftType->id)
             ->action('edit');

@@ -56,7 +56,7 @@ class ShiftCalendarWidget extends CalendarWidget
                     'duration' => ['days' => 1],
                 ],
                 'buttonText' => [
-                    'close' => 'Closeddd',
+                    'close' => 'Closed',
                     'resourceTimeGridDay' => 'Day',
                     'resourceTimelineWeek' => 'Week',
                     'timeGridWeek' => 'Week',
@@ -134,7 +134,7 @@ class ShiftCalendarWidget extends CalendarWidget
                 ->icon('heroicon-o-plus')
                 ->action(function ($arguments) use ($shiftType) {
                     return Shift::create([
-                        'start_offset' => $this->record->event->startDateCarbon->diffInMinutes(Carbon::parse(data_get($arguments, 'dateStr'))),
+                        'start_offset' => $this->record->event->volunteerBaseDate->diffInMinutes(Carbon::parse(data_get($arguments, 'dateStr'))),
                         'length' => $shiftType->length,
                         'num_spots' => $shiftType->num_spots,
                         'shift_type_id' => $shiftType->id,
@@ -382,8 +382,6 @@ class ShiftCalendarWidget extends CalendarWidget
         $team = $this->record;
 
         $event = $team->event;
-        $startDate = $event->start_date;
-        $endDate = $event->end_date;
 
         return [
             Components\Grid::make()
@@ -409,10 +407,8 @@ class ShiftCalendarWidget extends CalendarWidget
                         ->label('Start Time')
                         ->required()
                         ->seconds(false)
-                        ->minDate($startDate)
-                        ->maxDate($endDate)
                         ->formatStateUsing(fn ($state, $record) => $record->startDatetime ?? $state)
-                        ->dehydrateStateUsing(fn ($state) => $event->startDateCarbon->diffInMinutes(Carbon::parse($state)))
+                        ->dehydrateStateUsing(fn ($state) => $event->volunteerBaseDate->diffInMinutes(Carbon::parse($state, 'America/New_York')))
                         ->format('Y-m-d H:i:s'),
                     Components\TextInput::make('length_in_hours')
                         ->label('Length (hours)')

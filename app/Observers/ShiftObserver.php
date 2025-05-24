@@ -121,10 +121,9 @@ class ShiftObserver
 
     protected function formatOffset(Shift $shift, int $offset): string
     {
-        $eventStart = $shift->team->event->start_date;
-        $start = new Carbon($eventStart, 'America/New_York');
+        $start = $shift->team->event->volunteerBaseDate->copy();
         $start->addMinutes($offset);
 
-        return $start->timezone('America/New_York')->format('D F jS, Y g:i A T');
+        return $start->format('D F jS, Y g:i A T'); // Already in the correct timezone from the volunteerBaseDate mutator
     }
 }

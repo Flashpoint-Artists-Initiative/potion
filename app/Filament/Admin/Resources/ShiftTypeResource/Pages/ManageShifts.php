@@ -39,8 +39,6 @@ class ManageShifts extends EditRecord
         /** @var ShiftType $shiftType */
         $shiftType = $this->getRecord();
         $event = $shiftType->event;
-        $startDate = $event->start_date;
-        $endDate = $event->end_date;
 
         $defaultLength = $shiftType->length / 60;
         $defaultNumSpots = $shiftType->num_spots;

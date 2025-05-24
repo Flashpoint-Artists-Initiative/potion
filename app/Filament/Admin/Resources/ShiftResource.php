@@ -16,6 +16,7 @@ use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
+use App\Models\Volunteering\Team;
 
 class ShiftResource extends Resource
 {
@@ -27,19 +28,22 @@ class ShiftResource extends Resource
 
     public static function form(Form $form): Form
     {
+        // Passed the owner record from the page, if it exists.  See TeamResource/Pages/CreateShift
+        /** @var ?Team $ownerRecord */
         $ownerRecord = $form->getExtraAttributes()['ownerRecord'] ?? null;
 
         return $form
             ->extraAttributes([]) // Reset the extra attributes
             ->schema([
-                // Components\TextInput::make('start_offset')
-                //     ->required()
-                //     ->maxLength(255),
                 Components\Select::make('shift_type_id')
                     ->label('Shift Type')
-                    ->options(function ($record, $operation) use ($ownerRecord) {
-                        if ($operation === 'create') {
+                    ->options(function (?Shift $record, string $operation) use ($ownerRecord) {
+                        if ($operation === 'create' && $ownerRecord) {
                             return ShiftType::whereTeamId($ownerRecord->id)->pluck('title', 'id');
+                        }
+
+                        if (!$record) {
+                            throw new \Exception('Unable to determine shift team');
                         }
 
                         return ShiftType::whereTeamId($record->team->id)->pluck('title', 'id');
@@ -58,9 +62,21 @@ class ShiftResource extends Resource
                     ->label('Start Time')
                     ->required()
                     ->seconds(false)
-                    ->default($ownerRecord?->event->startDateCarbon->format('Y-m-d H:i:s'))
-                    ->formatStateUsing(fn ($state, $record) => $record->startDatetime ?? $state)
-                    ->dehydrateStateUsing(fn ($record, $state) => $record->team->event->startDateCarbon->diffInMinutes(Carbon::parse($state)))
+                    ->default($ownerRecord?->event->volunteerBaseDate->format('Y-m-d H:i:s'))
+                    ->formatStateUsing(fn (?Shift $record, string $state) => $record->startDatetime ?? $state)
+                    ->dehydrateStateUsing(function (?Shift $record, string $state, string $operation) use ($ownerRecord) {
+                        $stateCarbon = Carbon::parse($state, 'America/New_York');
+                        
+                        if ($operation === 'create' && $ownerRecord) {
+                            return $ownerRecord->event->volunteerBaseDate->diffInMinutes($stateCarbon);
+                        }
+
+                        if (!$record) {
+                            throw new \Exception('Unable to determine shift team');
+                        }
+
+                        return $record->team->event->volunteerBaseDate->diffInMinutes($stateCarbon);
+                    })
                     ->format('Y-m-d H:i:s'),
                 Components\TextInput::make('length_in_hours')
                     ->label('Length (in hours)')
