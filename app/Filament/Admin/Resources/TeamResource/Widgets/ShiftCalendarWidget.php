@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\TeamResource\Widgets;
 
+use App\Filament\Admin\Resources\ShiftResource;
+use App\Filament\Admin\Resources\ShiftResource\Pages\ViewShift;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\ShiftType;
 use App\Models\Volunteering\Team;
@@ -270,6 +272,14 @@ class ShiftCalendarWidget extends CalendarWidget
     public function getEventClickContextMenuActions(): array
     {
         return [
+            Action::make('view') // Has to be named 'view' because it checks ShiftPolicy
+                ->label('Manage Shift')
+                ->icon('heroicon-o-adjustments-horizontal')
+                ->action(function ($livewire) {
+                    redirect()->route(ViewShift::getRouteName(), [
+                        'record' => $livewire->getEventRecord()->id,
+                    ]);
+                }),
             $this->editAction(),
             $this->deleteAction(),
         ];

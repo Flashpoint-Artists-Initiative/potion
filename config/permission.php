@@ -384,6 +384,8 @@ return [
             'shifts.create',
             'shifts.update',
             'shifts.delete',
+            'shifts.attach',
+            'shifts.detach',
             'shifts.*',
 
             'requirements.viewAny',

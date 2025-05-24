@@ -15,6 +15,8 @@ trait HasConditionalUserDisplay
 
     protected string|Closure $userRelation = 'user';
 
+    protected bool|Closure $isUserModel = false;
+
     public function userPage(string|Closure $page): static
     {
         $this->userPage = $page;
@@ -38,10 +40,27 @@ trait HasConditionalUserDisplay
     {
         return (string) $this->evaluate($this->userRelation);
     }
+    
+    public function isUserModel(bool|Closure $skip): static
+    {
+        $this->isUserModel = $skip;
+
+        return $this;
+    }
+
+    public function getIsUserModel(): bool
+    {
+        return (bool) $this->evaluate($this->isUserModel);
+    }
 
     public static function make(string $name): static
     {
         return parent::make($name . '.display_name')->userRelation($name);
+    }
+
+    public static function makeForUserModel(): static
+    {
+        return parent::make('display_name')->isUserModel(true);
     }
 
     protected function setUp(): void
@@ -53,14 +72,17 @@ trait HasConditionalUserDisplay
             ->icon('heroicon-m-user')
             ->url($this->checkAccess(
                 function ($record) {
-                    if ($record->{$this->getUserRelation()}) {
+                    if ($this->getIsUserModel()) {
+                        return UserResource::getUrl($this->getUserPage(), ['record' => $record->id]);
+                    }
+                    else if ($record->{$this->getUserRelation()}) {
                         return UserResource::getUrl($this->getUserPage(), ['record' => $record->{$this->getUserRelation()}->id]);
                     }
 
                     return null;
                 }
             ))
-            ->formatStateUsing(fn ($record) => $record->{$this->getUserRelation()}->display_name);
+            ->formatStateUsing(fn ($record, $state) => $this->getIsUserModel() ? $state : $record->{$this->getUserRelation()}->display_name);
 
         $this->additionalSetUp();
     }

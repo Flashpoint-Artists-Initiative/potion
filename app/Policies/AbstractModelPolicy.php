@@ -75,9 +75,9 @@ abstract class AbstractModelPolicy
      *
      * @param  $relation  The name of the relation according to the $model
      */
-    public function attach(User $user, Model $model, string $relation): bool
+    public function attach(User $user, ?Model $model = null, ?string $relation = null): bool
     {
-        return $this->isNotLocked() && $user->can("{$relation}.attach");
+        return $this->isNotLocked() && $user->can("{$this->prefix}.attach");
     }
 
     /**
@@ -85,9 +85,9 @@ abstract class AbstractModelPolicy
      *
      * @param  $relation  The name of the relation according to the $model
      */
-    public function detach(User $user, Model $model, string $relation): bool
+    public function detach(User $user, ?Model $model = null, ?string $relation = null): bool
     {
-        return $this->isNotLocked() && $user->can("{$relation}.detach");
+        return $this->isNotLocked() && $user->can("{$this->prefix}.detach");
     }
 
     public function history(User $user, Model $model): bool
