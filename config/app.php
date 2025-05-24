@@ -216,6 +216,7 @@ return [
         'volunteering' => [
             'signups_start_date' => now()->addMinute(),
             'signups_end_date' => now()->addMinute(),
+            'base_date' => now()->addMinute(),
         ],
     ],
 ];

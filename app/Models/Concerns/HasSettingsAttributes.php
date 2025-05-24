@@ -94,4 +94,12 @@ trait HasSettingsAttributes
     {
         return Attribute::get(fn () => $this->getSetting('volunteering.signups_end'));
     }
+
+    /**
+     * @return Attribute<Carbon,never>
+     */
+    protected function volunteerBaseDate(): Attribute
+    {
+        return Attribute::get(fn () => $this->getSetting('volunteering.base_date'));
+    }
 }

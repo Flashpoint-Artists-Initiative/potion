@@ -131,6 +131,12 @@ class EventResource extends Resource
                                                 ->default(now()->addMinutes(10))
                                                 ->afterOrEqual('signups_start')
                                                 ->helperText('When volunteer signups close.'),
+                                            Forms\Components\DatePicker::make('base_date')
+                                                ->label('Volunteering Base Date')
+                                                ->required()
+                                                ->closeOnDateSelection()
+                                                ->default(now())
+                                                ->helperText("Volunteer shifts are based on this date. It's recommended to set this to burn night. Changing this date will affect all existing volunteer shifts."),
                                         ])
                                         ->columns(2),
                                 ])
