@@ -222,7 +222,7 @@ class Event extends Model implements ContractsAuditable
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                return $this->getSetting('art.voting_enabled', false)
+                return $this->getSetting('art.voting_enabled')
                     && now()->lessThan($this->getSetting('art.voting_end_date', now()->addMinute()));
             }
         );

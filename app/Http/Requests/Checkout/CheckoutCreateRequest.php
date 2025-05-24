@@ -59,8 +59,8 @@ class CheckoutCreateRequest extends FormRequest
             // Make sure the total quantity < the configured max
             $quantities = $this->input('tickets.*.quantity', []);
             $sum = array_sum($quantities);
-            if ($sum > (int) config('app.cart_max_quantity')) {
-                $validator->errors()->add('tickets', 'The total number of tickets in the cart cannot be more than ' . config('app.cart_max_quantity'));
+            if ($sum > (int) config('app.defaults.ticketing.tickets_per_sale')) {
+                $validator->errors()->add('tickets', 'The total number of tickets in the cart cannot be more than ' . config('app.defaults.ticketing.tickets_per_sale'));
 
                 return;
             }

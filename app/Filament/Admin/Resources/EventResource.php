@@ -111,6 +111,28 @@ class EventResource extends Resource
                                         ->columns(2)
                                 ])
                                 ->statePath('settings.art'),
+                            Tabs\Tab::make('Volunteering')
+                                ->schema([
+                                    Section::make()
+                                        ->schema([
+                                            Forms\Components\DateTimePicker::make('signups_start')
+                                                ->label('Signup Start Date')
+                                                ->required()
+                                                ->closeOnDateSelection()
+                                                ->seconds(false)
+                                                ->beforeOrEqual('signups_end')
+                                                ->helperText('When volunteer signups open.'),
+                                            Forms\Components\DateTimePicker::make('signups_end')
+                                                ->label('Signup End Date')
+                                                ->required()
+                                                ->closeOnDateSelection()
+                                                ->seconds(false)
+                                                ->afterOrEqual('signups_start')
+                                                ->helperText('When volunteer signups close.'),
+                                        ])
+                                        ->columns(2)
+                                ])
+                                ->statePath('settings.volunteering'),
                         ])
                         ->contained(false),
                     Grid::make(1)->schema([

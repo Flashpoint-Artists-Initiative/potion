@@ -5,7 +5,7 @@ use \App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 
 $eventName = Event::getCurrentEvent()?->name;
 $eventName = $eventName ? "<span class=\"font-bold\">{$eventName}</span>" : 'this event';    
-$maxTickets = Event::getCurrentEvent()?->ticketsPerSale ?? config('app.cart_max_quantity');
+$maxTickets = Event::getCurrentEvent()?->ticketsPerSale;
 @endphp
 <div class="prose dark:prose-invert max-w-none">
     <h3>A quick summary</h3>

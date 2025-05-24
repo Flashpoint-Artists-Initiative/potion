@@ -192,9 +192,30 @@ return [
     'api_version' => env('API_VERSION', '1.0.0'),
     'api_prefix' => env('API_PREFIX', 'v1'),
 
-    'cart_max_quantity' => 4,
     'cart_expiration_minutes' => 10,
 
     'default_event_id' => env('DEFAULT_EVENT_ID', 0),
     'use_single_lockdown' => env('USE_SINGLE_LOCKDOWN', true),
+
+    // Default values for event settings
+    'defaults' => [
+        'art' => [
+            'dollars_per_vote' => 1.0,
+            'voting_enabled' => false,
+            'votes_per_user' => 11,
+            'voting_end_date' => now()->addMinute(),
+        ],
+        'ticketing' => [
+            'tickets_per_sale' => 4,
+        ],
+        'lockdown' => [
+            'tickets' => false,
+            'grants' => false,
+            'volunteers' => false,
+        ],
+        'volunteering' => [
+            'signups_start_date' => now()->addMinute(),
+            'signups_end_date' => now()->addMinute(),
+        ],
+    ],
 ];

@@ -59,7 +59,7 @@ class TicketSaleRule implements DataAwareRule, ValidationRule
 
         // Make sure the total quantity < the configured max
         $sum = array_sum($this->data['data']['tickets']);
-        $maxQuantity = Event::getCurrentEvent()->ticketsPerSale ?? config('app.cart_max_quantity');
+        $maxQuantity = Event::getCurrentEvent()?->ticketsPerSale;
         if ($sum > $maxQuantity) {
             $fail('The total number of tickets in the cart cannot be more than ' . $maxQuantity);
 
