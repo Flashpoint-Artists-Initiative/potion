@@ -76,7 +76,7 @@ class EventResource extends Resource
                                                 ->label('Max Tickets per Sale')
                                                 ->required()
                                                 ->numeric()
-                                                ->default(4)
+                                                ->default(config('app.defaults.ticketing.tickets_per_sale'))
                                                 ->helperText('The maximum number of tickets a user can buy at once.  Does not include reserved tickets or addon tickets.'),
                                         ]),
                                 ])
@@ -93,18 +93,19 @@ class EventResource extends Resource
                                                 ->required()
                                                 ->closeOnDateSelection()
                                                 ->seconds(false)
+                                                ->default(now()->addMinute())
                                                 ->helperText('When voting automatically closes.'),
                                             Forms\Components\TextInput::make('dollars_per_vote')
                                                 ->label('Dollars per Vote')
                                                 ->required()
                                                 ->numeric()
-                                                ->default(1.0)
+                                                ->default(config('app.defaults.art.dollars_per_vote'))
                                                 ->helperText('The amount of money each vote is worth.'),
                                             Forms\Components\TextInput::make('votes_per_user')
                                                 ->label('Votes per User')
                                                 ->required()
                                                 ->numeric()
-                                                ->default(10)
+                                                ->default(config('app.defaults.art.votes_per_user'))
                                                 ->helperText('The maximum number of votes each user can cast.'),
                                         ])
                                         ->columns(2),
@@ -119,6 +120,7 @@ class EventResource extends Resource
                                                 ->required()
                                                 ->closeOnDateSelection()
                                                 ->seconds(false)
+                                                ->default(now()->addMinute())
                                                 ->beforeOrEqual('signups_end')
                                                 ->helperText('When volunteer signups open.'),
                                             Forms\Components\DateTimePicker::make('signups_end')
@@ -126,6 +128,7 @@ class EventResource extends Resource
                                                 ->required()
                                                 ->closeOnDateSelection()
                                                 ->seconds(false)
+                                                ->default(now()->addMinutes(10))
                                                 ->afterOrEqual('signups_start')
                                                 ->helperText('When volunteer signups close.'),
                                         ])
@@ -142,11 +145,14 @@ class EventResource extends Resource
                         Section::make('Lockdown')
                             ->schema([
                                 Forms\Components\Toggle::make('tickets')
-                                    ->label('Tickets'),
+                                    ->label('Tickets')
+                                    ->default(config('app.defaults.lockdown.tickets')),
                                 Forms\Components\Toggle::make('grants')
-                                    ->label('Grants'),
+                                    ->label('Grants')
+                                    ->default(config('app.defaults.lockdown.grants')),
                                 Forms\Components\Toggle::make('volunteers')
-                                    ->label('Volunteering'),
+                                    ->label('Volunteering')
+                                    ->default(config('app.defaults.lockdown.volunteers')),
                             ])
                             ->statePath('settings.lockdown')
                             ->hidden(config('app.use_single_lockdown')),

@@ -14,7 +14,7 @@ class AddArtProjectsToEventSeeder extends Seeder
      */
     public function run(Event $event): void
     {
-        $event->votingEnabled = true;
+        $event->settings['art']['voting_enabled'] = true;
         $event->save();
 
         ArtProject::factory()->for($event)->count(2)->create();

@@ -27,19 +27,6 @@ use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
 /**
- * @property float $dollarsPerVote
- * @property int $votesPerUser
- * @property bool $votingEnabled
- * @property bool $votingIsOpen
- * @property int $ticketsPerSale
- * @property string $votingEnds
- * @property bool $ticketsLockdown
- * @property bool $grantsLockdown
- * @property bool $volunteersLockdown
- * @property-read Carbon $startDateCarbon
- * @property-read Carbon $endDateCarbon
- * @property-read ?Carbon $nextTicketSaleDate
- * @property-read ?Carbon $finalTicketEndDate
  * @property ArrayObject $settings
  */
 class Event extends Model implements ContractsAuditable
@@ -229,7 +216,7 @@ class Event extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<Carbon,never>
+     * @return Attribute<?Carbon,never>
      */
     protected function nextTicketSaleDate(): Attribute
     {

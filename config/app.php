@@ -202,7 +202,7 @@ return [
         'art' => [
             'dollars_per_vote' => 1.0,
             'voting_enabled' => false,
-            'votes_per_user' => 11,
+            'votes_per_user' => 10,
             'voting_end_date' => now()->addMinute(),
         ],
         'ticketing' => [
