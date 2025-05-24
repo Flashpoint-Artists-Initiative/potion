@@ -134,6 +134,7 @@ class ShiftCalendarWidget extends CalendarWidget
                 ->icon('heroicon-o-plus')
                 ->action(function ($arguments) use ($shiftType) {
                     return Shift::create([
+                        // Set start_offset here instead of start_datetime because no team is set on a new shift record
                         'start_offset' => $this->record->event->volunteerBaseDate->diffInMinutes(Carbon::parse(data_get($arguments, 'dateStr'))),
                         'length' => $shiftType->length,
                         'num_spots' => $shiftType->num_spots,
@@ -282,14 +283,14 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
-     * Used when creating a new shift by clicking an empty space on the calendar.
+     * Used when creating a new shift by selecting an empty space on the calendar.
      */
     public function createShiftAction(): CreateAction
     {
         return CreateAction::make('createShift')
             ->model(Shift::class)
             ->mountUsing(fn ($arguments, $form) => $form->fill([
-                'start_offset' => data_get($arguments, 'startStr'),
+                'start_datetime' => data_get($arguments, 'startStr'),
                 'length_in_hours' => Carbon::parse(data_get($arguments, 'startStr'))
                     ->diffInMinutes(Carbon::parse(data_get($arguments, 'endStr'))) / 60,
                 'multiplier' => '1',
@@ -403,12 +404,13 @@ class ShiftCalendarWidget extends CalendarWidget
                                 $set('num_spots', $shiftType->num_spots);
                             }
                         }),
-                    Components\DateTimePicker::make('start_offset')
+                    Components\DateTimePicker::make('start_datetime')
                         ->label('Start Time')
+                        // ->timezone('America/New_York')
                         ->required()
                         ->seconds(false)
-                        ->formatStateUsing(fn ($state, $record) => $record->startDatetime ?? $state)
-                        ->dehydrateStateUsing(fn ($state) => $event->volunteerBaseDate->diffInMinutes(Carbon::parse($state, 'America/New_York')))
+                        // ->formatStateUsing(fn ($state, $record) => $record->startDatetime ?? $state)
+                        // ->dehydrateStateUsing(fn ($state) => $event->volunteerBaseDate->diffInMinutes(Carbon::parse($state, 'America/New_York')))
                         ->format('Y-m-d H:i:s'),
                     Components\TextInput::make('length_in_hours')
                         ->label('Length (hours)')

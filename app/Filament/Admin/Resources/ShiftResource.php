@@ -58,25 +58,11 @@ class ShiftResource extends Resource
                         $set('num_spots', $shiftType->num_spots);
                         $set('length_in_hours', $shiftType->length / 60);
                     }),
-                Components\DateTimePicker::make('start_offset')
+                Components\DateTimePicker::make('start_datetime')
                     ->label('Start Time')
                     ->required()
                     ->seconds(false)
                     ->default($ownerRecord?->event->volunteerBaseDate->format('Y-m-d H:i:s'))
-                    ->formatStateUsing(fn (?Shift $record, string $state) => $record->startDatetime ?? $state)
-                    ->dehydrateStateUsing(function (?Shift $record, string $state, string $operation) use ($ownerRecord) {
-                        $stateCarbon = Carbon::parse($state, 'America/New_York');
-                        
-                        if ($operation === 'create' && $ownerRecord) {
-                            return $ownerRecord->event->volunteerBaseDate->diffInMinutes($stateCarbon);
-                        }
-
-                        if (!$record) {
-                            throw new \Exception('Unable to determine shift team');
-                        }
-
-                        return $record->team->event->volunteerBaseDate->diffInMinutes($stateCarbon);
-                    })
                     ->format('Y-m-d H:i:s'),
                 Components\TextInput::make('length_in_hours')
                     ->label('Length (in hours)')

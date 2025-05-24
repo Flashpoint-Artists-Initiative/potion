@@ -53,6 +53,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
         'num_spots',
         'multiplier',
         'changeReason',
+        'start_datetime',
     ];
 
     protected $with = [
@@ -67,6 +68,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     protected $appends = [
         'length_in_hours',
         'end_offset',
+        'start_datetime',
     ];
 
     public function update(array $attributes = [], array $options = [])
@@ -118,9 +120,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     }
 
     /**
-     * Pulls default value from shiftType if not set
-     *
-     * @return Attribute<float,never>
+     * @return Attribute<float,array{length:int}>
      */
     protected function lengthInHours(): Attribute
     {
@@ -151,7 +151,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
     }
 
     /**
-     * @return Attribute<string,int>
+     * @return Attribute<string,array{start_offset:int}>
      */
     protected function startDatetime(): Attribute
     {
@@ -163,9 +163,9 @@ class Shift extends Model implements ContractsAuditable, Eventable
                 return $baseDate->format('Y-m-d H:i:s');
             },
             set: function (string $value) {
-                $value = Carbon::parse($value);
+                $value = Carbon::parse($value, 'America/New_York');
                 $baseDate = $this->team->event->volunteerBaseDate;
-                return $baseDate->diffInMinutes($value);
+                return ['start_offset' => $baseDate->diffInMinutes($value)];
             }
         );
     }

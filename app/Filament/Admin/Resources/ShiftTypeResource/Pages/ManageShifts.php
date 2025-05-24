@@ -66,7 +66,7 @@ class ManageShifts extends EditRecord
                     ->label('')
                     ->relationship('shifts')
                     ->schema([
-                        Components\DateTimePicker::make('start_offset')
+                        Components\DateTimePicker::make('start_datetime')
                             ->label('Start Time')
                             ->required()
                             ->seconds(false)
