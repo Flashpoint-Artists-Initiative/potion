@@ -60,7 +60,7 @@ class EventResource extends Resource
                                                 ->required()
                                                 ->closeOnDateSelection()
                                                 ->beforeOrEqual('end_date')
-                                                ->helperText('The first day that has volunteer shifts.'),
+                                                ->helperText('When the gate opens.'),
                                             Forms\Components\DatePicker::make('end_date')
                                                 ->required()
                                                 ->closeOnDateSelection()
@@ -89,8 +89,12 @@ class EventResource extends Resource
                                             Forms\Components\Toggle::make('voting_enabled')
                                                 ->inline(false)
                                                 ->label('Voting Enabled')
-                                                ->helperText('Enables public voting for art grants.')
-                                                ->columnSpanFull(),
+                                                ->helperText('Enables public voting for art grants.'),
+                                            Forms\Components\DateTimePicker::make('voting_end_date')
+                                                ->required()
+                                                ->closeOnDateSelection()
+                                                ->seconds(false)
+                                                ->helperText('When voting automatically closes.'),
                                             Forms\Components\TextInput::make('dollars_per_vote')
                                                 ->label('Dollars per Vote')
                                                 ->required()
