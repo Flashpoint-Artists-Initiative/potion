@@ -94,10 +94,7 @@ class ArtProjectTest extends TestCase
     #[Test]
     public function funded_total_attribute(): void
     {
-        $event = Event::factory()->create([
-            'settings->dollars_per_vote' => 10,
-            'settings->voting_enabled' => true,
-        ]);
+        $event = $this->createEventWithVoting();
 
         /** @var ArtProject $artProject */
         $artProject = ArtProject::factory()->create([
@@ -116,10 +113,7 @@ class ArtProjectTest extends TestCase
     #[Test]
     public function funding_status_attribute(): void
     {
-        $event = Event::factory()->create([
-            'settings->dollars_per_vote' => 10,
-            'settings->voting_enabled' => true,
-        ]);
+        $event = $this->createEventWithVoting();
 
         /** @var ArtProject $artProject */
         $artProject = ArtProject::factory()->create([
@@ -140,10 +134,7 @@ class ArtProjectTest extends TestCase
     #[Test]
     public function vote_method(): void
     {
-        $event = Event::factory()->create([
-            'settings->dollars_per_vote' => 10,
-            'settings->voting_enabled' => true,
-        ]);
+        $event = $this->createEventWithVoting();
 
         /** @var ArtProject $artProject */
         $artProject = ArtProject::factory()->create([
@@ -169,8 +160,12 @@ class ArtProjectTest extends TestCase
         $this->expectExceptionMessage('Grant voting is closed for this event');
 
         $event = Event::factory()->create([
-            'settings->dollars_per_vote' => 10,
-            'settings->voting_enabled' => false,
+            'settings' => [
+                'art' => [
+                    'dollars_per_vote' => 10,
+                    'voting_enabled' => false,
+                ],
+            ],
         ]);
 
         /** @var ArtProject $artProject */
@@ -192,10 +187,7 @@ class ArtProjectTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Only approved projects can be voted on');
 
-        $event = Event::factory()->create([
-            'settings->dollars_per_vote' => 10,
-            'settings->voting_enabled' => true,
-        ]);
+        $event = $this->createEventWithVoting();
 
         /** @var ArtProject $artProject */
         $artProject = ArtProject::factory()->create([
@@ -217,10 +209,7 @@ class ArtProjectTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('User has already voted for this project');
 
-        $event = Event::factory()->create([
-            'settings->dollars_per_vote' => 10,
-            'settings->voting_enabled' => true,
-        ]);
+        $event = $this->createEventWithVoting();
 
         /** @var ArtProject $artProject */
         $artProject = ArtProject::factory()->create([
@@ -242,10 +231,7 @@ class ArtProjectTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Project has already reached maximum funding');
 
-        $event = Event::factory()->create([
-            'settings->dollars_per_vote' => 10,
-            'settings->voting_enabled' => true,
-        ]);
+        $event = $this->createEventWithVoting();
 
         /** @var ArtProject $artProject */
         $artProject = ArtProject::factory()->create([
@@ -262,5 +248,17 @@ class ArtProjectTest extends TestCase
 
         $secondUser = User::factory()->create();
         $artProject->vote($secondUser, 1);
+    }
+
+    protected function createEventWithVoting(): Event
+    {
+        return Event::factory()->create([
+            'settings' => [
+                'art' => [
+                    'dollars_per_vote' => 10,
+                    'voting_enabled' => true,
+                ],
+            ],
+        ]);
     }
 }

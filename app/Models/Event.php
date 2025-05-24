@@ -245,7 +245,7 @@ class Event extends Model implements ContractsAuditable
     }
 
     /**
-     * @return Attribute<Carbon,never>
+     * @return Attribute<?Carbon,never>
      */
     protected function finalTicketEndDate(): Attribute
     {

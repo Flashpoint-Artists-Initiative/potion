@@ -7,7 +7,6 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\EventResource\Pages;
 use App\Models\Event;
 use Filament\Forms;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Split;
@@ -67,7 +66,7 @@ class EventResource extends Resource
                                                 ->afterOrEqual('start_date')
                                                 ->helperText('The last public day of the event.'),
                                         ])
-                                        ->columns(2)
+                                        ->columns(2),
                                 ]),
                             Tabs\Tab::make('Ticketing')
                                 ->schema([
@@ -79,7 +78,7 @@ class EventResource extends Resource
                                                 ->numeric()
                                                 ->default(4)
                                                 ->helperText('The maximum number of tickets a user can buy at once.  Does not include reserved tickets or addon tickets.'),
-                                        ])
+                                        ]),
                                 ])
                                 ->statePath('settings.ticketing'),
                             Tabs\Tab::make('Art Grants')
@@ -108,7 +107,7 @@ class EventResource extends Resource
                                                 ->default(10)
                                                 ->helperText('The maximum number of votes each user can cast.'),
                                         ])
-                                        ->columns(2)
+                                        ->columns(2),
                                 ])
                                 ->statePath('settings.art'),
                             Tabs\Tab::make('Volunteering')
@@ -130,7 +129,7 @@ class EventResource extends Resource
                                                 ->afterOrEqual('signups_start')
                                                 ->helperText('When volunteer signups close.'),
                                         ])
-                                        ->columns(2)
+                                        ->columns(2),
                                 ])
                                 ->statePath('settings.volunteering'),
                         ])
@@ -197,7 +196,7 @@ class EventResource extends Resource
                 Action::make('Select')
                     ->color('success')
                     ->icon('heroicon-m-arrow-right-circle')
-                    ->dispatch('update-active-event', fn(Event $record) => ['eventId' => $record->id])
+                    ->dispatch('update-active-event', fn (Event $record) => ['eventId' => $record->id])
                     ->tooltip('Use this event for the event-specific resources'),
             ])
             ->bulkActions([
@@ -208,11 +207,11 @@ class EventResource extends Resource
                     BulkAction::make('make-active')
                         ->label('Mark as Active')
                         ->icon('heroicon-o-check-circle')
-                        ->action(fn(Collection $records) => $records->toQuery()->update(['active' => true])),
+                        ->action(fn (Collection $records) => $records->toQuery()->update(['active' => true])),
                     BulkAction::make('make-inactive')
                         ->label('Mark as Inactive')
                         ->icon('heroicon-o-x-circle')
-                        ->action(fn(Collection $records) => $records->toQuery()->update(['active' => false])),
+                        ->action(fn (Collection $records) => $records->toQuery()->update(['active' => false])),
                 ]),
             ]);
     }

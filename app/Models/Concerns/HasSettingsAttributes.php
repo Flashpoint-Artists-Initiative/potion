@@ -11,13 +11,14 @@ trait HasSettingsAttributes
 {
     /**
      * A simple way to access nested settings attributes
-     * 
-     * @param string $key The key to access in the settings array, in dot notation
-     * @param mixed $default The default value to return if the key does not exist.  If null, it will check the config file for a default value.
+     *
+     * @param  string  $key  The key to access in the settings array, in dot notation
+     * @param  mixed  $default  The default value to return if the key does not exist.  If null, it will check the config file for a default value.
      */
     protected function getSetting(string $key, mixed $default = null): mixed
     {
         $defaultValue = $default ?? config('app.defaults.' . $key, null);
+
         return Arr::dot($this->settings)[$key] ?? $defaultValue;
     }
 
