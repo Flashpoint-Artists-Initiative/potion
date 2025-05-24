@@ -15,6 +15,8 @@ class WebLockdownService
     // the individual lockdowns can still exist, but they won't be used.
     protected bool $singleLockdown;
 
+    protected static bool $lockdownStatus;
+
     public const GLOBAL_KEY = 'globalLockdown';
 
     public const GLOBAL_TEXT_KEY = 'globalLockdownText';
@@ -57,7 +59,7 @@ class WebLockdownService
     public function getLockdownStatus(LockdownEnum $type, bool $global = false): bool
     {
         if ($this->singleLockdown) {
-            return once(fn () => Cache::get(self::GLOBAL_KEY, false));
+            return static::$lockdownStatus ??= Cache::get(self::GLOBAL_KEY, false);
         }
 
         // We shouldn't need to check a specific event's status, just the current one
