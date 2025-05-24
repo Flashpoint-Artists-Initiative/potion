@@ -18,7 +18,7 @@ class ShiftUpdatedNotification extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param array<string, array<string, scalar>> $changes
+     * @param  array<string, array<string, scalar>>  $changes
      */
     public function __construct(protected Shift $shift, protected array $changes, protected ?string $reason = null) {}
 
@@ -41,8 +41,8 @@ class ShiftUpdatedNotification extends Notification implements ShouldQueue
             ->subject(sprintf('One of your %s shifts has been changed', $this->shift->team->event->name))
             ->greeting('Hello!')
             ->line(sprintf('One of your volunteer shifts for %s has been changed:', $this->shift->team->event->name))
-            ->line(new HtmlString(sprintf('<strong>%s</strong> on <strong>%s</strong>', 
-                $this->shift->title, 
+            ->line(new HtmlString(sprintf('<strong>%s</strong> on <strong>%s</strong>',
+                $this->shift->title,
                 $this->shift->startCarbon->format('D F jS, Y g:i A T')
             )));
 

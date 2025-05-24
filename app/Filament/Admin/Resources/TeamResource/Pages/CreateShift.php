@@ -6,8 +6,8 @@ namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
 use App\Filament\Admin\Resources\TeamResource;
 use Filament\Forms\Form;
-use Guava\FilamentNestedResources\Pages\CreateRelatedRecord;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
+use Guava\FilamentNestedResources\Pages\CreateRelatedRecord;
 
 class CreateShift extends CreateRelatedRecord
 {

@@ -40,7 +40,7 @@ trait HasConditionalUserDisplay
     {
         return (string) $this->evaluate($this->userRelation);
     }
-    
+
     public function isUserModel(bool|Closure $skip): static
     {
         $this->isUserModel = $skip;
@@ -74,8 +74,7 @@ trait HasConditionalUserDisplay
                 function ($record) {
                     if ($this->getIsUserModel()) {
                         return UserResource::getUrl($this->getUserPage(), ['record' => $record->id]);
-                    }
-                    else if ($record->{$this->getUserRelation()}) {
+                    } elseif ($record->{$this->getUserRelation()}) {
                         return UserResource::getUrl($this->getUserPage(), ['record' => $record->{$this->getUserRelation()}->id]);
                     }
 

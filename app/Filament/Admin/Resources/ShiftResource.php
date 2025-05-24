@@ -6,21 +6,16 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ShiftResource\Pages;
 use App\Filament\Admin\Resources\ShiftResource\RelationManagers;
+use App\Filament\NestedResources\FarAncestor;
 use App\Models\Volunteering\Shift;
+use App\Models\Volunteering\ShiftType;
+use Carbon\Carbon;
 use Filament\Forms\Components;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\TeamResource;
-use App\Filament\NestedResources\FarAncestor;
-use App\Models\Volunteering\ShiftType;
-use Carbon\Carbon;
 
 class ShiftResource extends Resource
 {
@@ -46,7 +41,7 @@ class ShiftResource extends Resource
                         if ($operation === 'create') {
                             return ShiftType::whereTeamId($ownerRecord->id)->pluck('title', 'id');
                         }
-                        
+
                         return ShiftType::whereTeamId($record->team->id)->pluck('title', 'id');
                     })
                     ->required()

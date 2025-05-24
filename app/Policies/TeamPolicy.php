@@ -7,7 +7,6 @@ namespace App\Policies;
 use App\Enums\LockdownEnum;
 use App\Models\User;
 use App\Models\Volunteering\Team;
-use App\Policies\AbstractModelPolicy;
 
 class TeamPolicy extends AbstractModelPolicy
 {

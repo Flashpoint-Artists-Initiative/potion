@@ -63,7 +63,7 @@ class ShiftObserver
 
     /**
      * Compile the changes made to the shift, for the notification
-     * 
+     *
      * @return array<string, array<string, scalar>>
      */
     protected function collectChanges(Shift $shift): array
@@ -88,9 +88,7 @@ class ShiftObserver
     /**
      * Format the changes for the notification
      *
-     * @param Shift $shift
-     * @param array<string, array<string, string|int>> $changes
-     * 
+     * @param  array<string, array<string, string|int>>  $changes
      * @return array<string, array<string, scalar>>
      */
     protected function formatChanges(Shift $shift, array $changes): array

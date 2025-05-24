@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\TeamResource\Widgets;
 
-use App\Filament\Admin\Resources\ShiftResource;
 use App\Filament\Admin\Resources\ShiftResource\Pages\ViewShift;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\ShiftType;
 use App\Models\Volunteering\Team;
 use Carbon\Carbon;
-use Closure;
-use Error;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction as ActionsCreateAction;
 use Filament\Forms\Components;
 use Filament\Forms\Components\Component;
-use Filament\Notifications\Notification;
 use Guava\Calendar\Actions\CreateAction;
 use Guava\Calendar\Actions\DeleteAction;
 use Guava\Calendar\Actions\EditAction;
@@ -191,7 +187,7 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
-     * @param array<mixed> $info Same as onEventDrop
+     * @param  array<mixed>  $info  Same as onEventDrop
      */
     protected function doEventDrop(array $info): bool
     {
@@ -207,7 +203,7 @@ class ShiftCalendarWidget extends CalendarWidget
         } catch (QueryException $e) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -246,7 +242,7 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
-     * @param array<mixed> $info Same as onEventResize
+     * @param  array<mixed>  $info  Same as onEventResize
      */
     public function doEventResize(array $info): bool
     {

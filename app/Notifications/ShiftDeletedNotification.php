@@ -39,8 +39,8 @@ class ShiftDeletedNotification extends Notification implements ShouldQueue
             ->subject(sprintf('One of your %s shifts has been deleted', $this->shift->team->event->name))
             ->greeting('Hello!')
             ->line(sprintf('One of your volunteer shifts for %s has been deleted:', $this->shift->team->event->name))
-            ->line(new HtmlString(sprintf('<strong>%s</strong> on <strong>%s</strong>', 
-                $this->shift->title, 
+            ->line(new HtmlString(sprintf('<strong>%s</strong> on <strong>%s</strong>',
+                $this->shift->title,
                 $this->shift->startCarbon->format('D F jS, Y g:i A T')
             )))
             ->action('View your volunteer schedule', url('/'));

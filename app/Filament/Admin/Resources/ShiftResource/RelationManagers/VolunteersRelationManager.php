@@ -11,10 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Volunteering\Shift;
 
 class VolunteersRelationManager extends RelationManager
 {
@@ -36,17 +33,6 @@ class VolunteersRelationManager extends RelationManager
             ->recordTitleAttribute('email')
             ->columns([
                 UserColumn::makeForUserModel(),
-                    // ->iconColor($this->checkAccess('primary'))
-                    // ->icon('heroicon-m-user')
-                    // ->url($this->checkAccess(
-                    //     function ($record) {
-                    //         if ($record->{$this->getUserRelation()}) {
-                    //             return UserResource::getUrl('view', ['record' => $record->{$this->getUserRelation()}->id]);
-                    //         }
-
-                    //         return null;
-                    //     }
-                    // )),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
@@ -58,7 +44,7 @@ class VolunteersRelationManager extends RelationManager
                 Tables\Actions\AttachAction::make()
                     ->color('primary')
                     ->label('Add Volunteer')
-                    ->visible(fn () => Auth::authenticate()->can('shifts.attach'))
+                    ->visible(fn () => Auth::authenticate()->can('shifts.attach')),
             ])
             ->actions([
                 Tables\Actions\DetachAction::make()

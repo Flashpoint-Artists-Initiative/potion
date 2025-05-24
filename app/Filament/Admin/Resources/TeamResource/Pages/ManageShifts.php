@@ -7,18 +7,18 @@ namespace App\Filament\Admin\Resources\TeamResource\Pages;
 use App\Filament\Admin\Resources\ShiftResource;
 use App\Filament\Admin\Resources\TeamResource;
 use App\Models\Volunteering\Shift;
+use App\Models\Volunteering\Team;
+use Filament\Actions\CreateAction as ActionsCreateAction;
 use Filament\Facades\Filament;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
+use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
-use Guava\FilamentNestedResources\Ancestor;
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\Volunteering\Team;
-use Filament\Actions\CreateAction as ActionsCreateAction;
 
 class ManageShifts extends ManageRelatedRecords
 {
@@ -50,10 +50,10 @@ class ManageShifts extends ManageRelatedRecords
         $team = $this->getOwnerRecord();
 
         $tabs = [
-            'all' => Tab::make('All')
+            'all' => Tab::make('All'),
         ];
 
-        $tabs += $team->shiftTypes->map(function ($shiftType){
+        $tabs += $team->shiftTypes->map(function ($shiftType) {
             return Tab::make($shiftType->title)
                 ->query(fn (Builder $query) => $query->where('shift_type_id', $shiftType->id));
         })->toArray();
