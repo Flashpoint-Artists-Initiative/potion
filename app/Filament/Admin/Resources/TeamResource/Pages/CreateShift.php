@@ -28,7 +28,7 @@ class CreateShift extends CreateRelatedRecord
     {
         return parent::makeForm()
             ->extraAttributes([
-                'ownerRecord' => $this->getOwnerRecord(),
+                'team' => $this->getOwnerRecord(),
             ]);
     }
 }

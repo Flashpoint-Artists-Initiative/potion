@@ -165,6 +165,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
             set: function (string $value) {
                 $value = Carbon::parse($value, 'America/New_York');
                 $baseDate = $this->team->event->volunteerBaseDate;
+
                 return ['start_offset' => $baseDate->diffInMinutes($value)];
             }
         );

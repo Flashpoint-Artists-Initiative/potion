@@ -8,7 +8,6 @@ use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\ShiftType;
 use App\Notifications\ShiftDeletedNotification;
 use App\Notifications\ShiftUpdatedNotification;
-use Carbon\Carbon;
 
 class ShiftObserver
 {

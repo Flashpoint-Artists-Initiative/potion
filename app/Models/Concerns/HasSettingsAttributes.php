@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models\Concerns;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Arr;
-use Carbon\Carbon;
 
 trait HasSettingsAttributes
 {

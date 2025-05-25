@@ -9,14 +9,13 @@ use App\Filament\Admin\Resources\ShiftResource\RelationManagers;
 use App\Filament\NestedResources\FarAncestor;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\ShiftType;
-use Carbon\Carbon;
+use App\Models\Volunteering\Team;
 use Filament\Forms\Components;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
-use App\Models\Volunteering\Team;
 
 class ShiftResource extends Resource
 {
@@ -28,41 +27,46 @@ class ShiftResource extends Resource
 
     public static function form(Form $form): Form
     {
-        // Passed the owner record from the page, if it exists.  See TeamResource/Pages/CreateShift
-        /** @var ?Team $ownerRecord */
-        $ownerRecord = $form->getExtraAttributes()['ownerRecord'] ?? null;
+        // This form can be accessed from both the ShiftType and Team resources. Depending on which resource
+        // it's accessed from, we show different fields.
+        // Get the owner record from the page, if it exists.  See TeamResource/Pages/CreateShift
+        /** @var ?Team $team */
+        $team = $form->getExtraAttributes()['team'] ?? null;
+        /** @var ?ShiftType $shiftType */
+        $shiftType = $form->getExtraAttributes()['shiftType'] ?? null;
+
+        if ($team) {
+            $shiftTypeComponent = Components\Select::make('shift_type_id')
+                ->label('Shift Type')
+                ->options(fn () => ShiftType::whereTeamId($team->id)->pluck('title', 'id'))
+                ->required()
+                ->searchable()
+                ->preload()
+                ->live()
+                ->afterStateUpdated(function ($state, $set) {
+                    $shiftType = ShiftType::where('id', $state)->firstOrFail();
+                    $set('num_spots', $shiftType->num_spots);
+                    $set('length_in_hours', $shiftType->length / 60);
+                });
+
+            $startDefault = $team->event->volunteerBaseDate->format('Y-m-d H:i:s');
+        } else {
+            $shiftTypeComponent = Components\Placeholder::make('shift_type')
+                ->label('Shift Type')
+                ->content(fn (?Shift $record) => $record->shiftType->title ?? $shiftType->title ?? 'Unknown');
+
+            $startDefault = $shiftType?->team->event->volunteerBaseDate->format('Y-m-d H:i:s') ?? null;
+        }
 
         return $form
             ->extraAttributes([]) // Reset the extra attributes
             ->schema([
-                Components\Select::make('shift_type_id')
-                    ->label('Shift Type')
-                    ->options(function (?Shift $record, string $operation) use ($ownerRecord) {
-                        if ($operation === 'create' && $ownerRecord) {
-                            return ShiftType::whereTeamId($ownerRecord->id)->pluck('title', 'id');
-                        }
-
-                        if (!$record) {
-                            throw new \Exception('Unable to determine shift team');
-                        }
-
-                        return ShiftType::whereTeamId($record->team->id)->pluck('title', 'id');
-                    })
-                    ->required()
-                    ->searchable()
-                    ->preload()
-                    // ->default($shift->shift_type_id)
-                    ->live()
-                    ->afterStateUpdated(function ($state, $set, $operation) {
-                        $shiftType = ShiftType::where('id', $state)->firstOrFail();
-                        $set('num_spots', $shiftType->num_spots);
-                        $set('length_in_hours', $shiftType->length / 60);
-                    }),
+                $shiftTypeComponent,
                 Components\DateTimePicker::make('start_datetime')
                     ->label('Start Time')
                     ->required()
                     ->seconds(false)
-                    ->default($ownerRecord?->event->volunteerBaseDate->format('Y-m-d H:i:s'))
+                    ->default($startDefault)
                     ->format('Y-m-d H:i:s'),
                 Components\TextInput::make('length_in_hours')
                     ->label('Length (in hours)')

@@ -110,6 +110,7 @@ class ShiftTypeResource extends Resource
             'view' => Pages\ViewShiftType::route('/{record}'),
 
             'shifts' => Pages\ManageShifts::route('/{record}/shifts'),
+            'shifts.create' => Pages\CreateShift::route('/{record}/shifts/create'),
         ];
     }
 

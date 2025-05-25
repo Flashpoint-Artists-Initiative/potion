@@ -30,6 +30,8 @@ class TeamResource extends Resource
 
     protected static ?string $navigationGroup = 'Event Specific';
 
+    protected static ?string $navigationLabel = 'Volunteering';
+
     public static function shouldRegisterNavigation(): bool
     {
         return Event::where('id', Event::getCurrentEventId())->exists();
