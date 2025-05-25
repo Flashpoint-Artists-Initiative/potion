@@ -10,6 +10,7 @@ use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ViewOrder extends ViewRecord
@@ -72,7 +73,7 @@ class ViewOrder extends ViewRecord
             })
             ->modalSubmitAction(fn (Order $record): ?bool => $record->refundable ? null : false)
             ->color('danger')
+            ->visible(fn () => Auth::authenticate()->can('orders.refund'))
             ->action(fn (Order $record) => $record->refund());
-        // ->visible(fn (Order $record): bool => $record->canRefund());
     }
 }

@@ -249,7 +249,8 @@ return [
                 'reservedTickets.update',
                 'reservedTickets.delete',
                 'ticketTransfers.*',
-                'orders.*',
+                'orders.viewAny',
+                'orders.view',
             ],
             RolesEnum::ArtGrantReviewer->value => [
                 'panelAccess.admin',
@@ -361,6 +362,7 @@ return [
 
             'orders.viewAny',
             'orders.view',
+            'orders.refund',
             'orders.*',
 
             'teams.viewAny',
