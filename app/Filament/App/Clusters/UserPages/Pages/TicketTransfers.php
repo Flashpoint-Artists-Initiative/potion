@@ -148,7 +148,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
             ])
             ->modalAutofocus(false)
             ->action(fn (array $data) => $this->createTransfer($data))
-            ->visible(fn () => ! $this->lockdownEnabled);
+            ->visible(fn () => ! $this->lockdownEnabled && Event::getCurrentEvent()?->endDateCarbon->isFuture());
     }
 
     /**
@@ -156,23 +156,33 @@ class TicketTransfers extends Page implements HasForms, HasTable
      */
     public function createTransfer(array $data): void
     {
+        try {
         TicketTransfer::createTransfer((int) Auth::id(), $data['recipient_email'], $data['purchased_tickets'], $data['reserved_tickets']);
         Notification::make()
             ->title('Transfer Created')
             ->success()
             ->send();
+        } catch (\RuntimeException $e) {
+            Notification::make()
+                ->title('Transfer Failed')
+                ->danger()
+                ->body($e->getMessage())
+                ->send();
+        }
     }
 
     public function table(Table $table): Table
     {
+        $eventIsFuture = Event::getCurrentEvent()?->endDateCarbon->isFuture();
+
         return $table
             ->query(TicketTransfer::query()->specificEvent()->involvesUser())
             ->columns([
                 TextColumn::make('completed')
                     ->badge()
                     ->label('Status')
-                    ->formatStateUsing(fn (bool $state) => $state ? 'Completed' : 'Pending')
-                    ->color(fn (bool $state) => $state ? 'success' : 'warning')
+                    ->formatStateUsing(fn (bool $state) => ! $eventIsFuture  && ! $state ? 'Expired' : ($state ? 'Completed' : 'Pending'))
+                    ->color(fn (bool $state) => ! $eventIsFuture && ! $state ? 'danger' : ($state ? 'success' : 'warning'))
                     ->grow(false),
                 TextColumn::make('ticketCount')
                     ->formatStateUsing(function (TicketTransfer $record) {
@@ -199,11 +209,11 @@ class TicketTransfers extends Page implements HasForms, HasTable
                 TableAction::make('accept')
                     ->button()
                     ->action(fn (TicketTransfer $record) => $record->complete())
-                    ->visible(function (TicketTransfer $record) {
+                    ->visible(function (TicketTransfer $record) use ($eventIsFuture) {
                         /** @var User $user */
                         $user = Auth::user();
 
-                        return ! $this->lockdownEnabled && $user->can('complete', $record);
+                        return ! $this->lockdownEnabled && $eventIsFuture && $user->can('complete', $record);
                     })
                     ->color(fn () => $this->showWaiverWarning ? 'gray' : null)
                     ->disabled(fn () => $this->showWaiverWarning),

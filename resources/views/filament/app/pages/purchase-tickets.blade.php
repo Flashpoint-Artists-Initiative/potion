@@ -23,7 +23,7 @@
                 You already have an existing cart with {{  $cart->quantity }} {{ Str::of('ticket')->plural($cart->quantity) }}!  It will expire {{ $cart->expiration_date->diffForHumans() }}. {{ $this->checkoutAction }}
         </x-notification-banner>
         @endif
-        @if ($hasPurchasedTickets)
+        @if ($hasPurchasedTickets && $eventIsFuture)
         <x-notification-banner color="success">
                 You've already got a ticket for this event! You can buy more, but every attendee will need to register their own account here. {{ $this->ticketInfoAction }}
         </x-notification-banner>

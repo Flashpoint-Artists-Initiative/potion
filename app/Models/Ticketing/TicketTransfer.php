@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
@@ -163,18 +164,34 @@ class TicketTransfer extends Model implements ContractsAuditable
      */
     public static function createTransfer(int $userId, string $email, array $purchasedTicketIds = [], array $reservedTicketIds = []): TicketTransfer
     {
+
+        $validPurchasedIds = PurchasedTicket::whereIn('id', $purchasedTicketIds)
+            ->where('user_id', $userId)
+            ->canBeTransferred()
+            ->whereHas('event', function (Builder $query) {
+                $query->where('end_date', '>', DB::raw('NOW()'));
+            })
+            ->pluck('id');
+
+        $validReservedIds = PurchasedTicket::whereIn('id', $reservedTicketIds)
+            ->where('user_id', $userId)
+            ->canBeTransferred()
+            ->whereHas('event', function (Builder $query) {
+                $query->where('end_date', '>', DB::raw('NOW()'));
+            })
+            ->pluck('id');
+
+        if ($validPurchasedIds->isEmpty() && $validReservedIds->isEmpty()) {
+            throw new \RuntimeException('No valid tickets to transfer');
+        }
+
         $transfer = TicketTransfer::create([
             'user_id' => $userId,
             'recipient_email' => $email,
         ]);
 
-        PurchasedTicket::findMany($purchasedTicketIds)->each(function (PurchasedTicket $ticket) use ($transfer) {
-            $transfer->purchasedTickets()->attach($ticket);
-        });
-
-        ReservedTicket::findMany($reservedTicketIds)->each(function (ReservedTicket $ticket) use ($transfer) {
-            $transfer->reservedTickets()->attach($ticket);
-        });
+        $transfer->purchasedTickets()->attach($validPurchasedIds);
+        $transfer->reservedTickets()->attach($validReservedIds);
 
         $transfer->load(['reservedTickets', 'purchasedTickets']);
 

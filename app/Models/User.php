@@ -256,6 +256,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
      */
     public function getValidTicketsForEvent(?int $eventId = null): Collection
     {
+        $eventId = $eventId ?? Event::getCurrentEventId();
         $tickets = $this->purchasedTickets()->noActiveTransfer()->whereRelation('ticketType', fn ($query) => $query->admittance($eventId))->with('ticketType')->get();
 
         return $tickets;

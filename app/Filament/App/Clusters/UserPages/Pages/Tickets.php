@@ -43,6 +43,8 @@ class Tickets extends Page
 
     public bool $showWaiverWarning;
 
+    public bool $showCellServiceWarning;
+
     public function ticketsInfolist(Infolist $infolist): Infolist
     {
         /** @var User */
@@ -127,7 +129,10 @@ class Tickets extends Page
         $waiver = Event::getCurrentEvent()?->waiver;
         $hasSignedWaiver = (Auth::user()?->hasSignedWaiverForEvent(Event::getCurrentEventId()) ?? false);
 
+        $eventIsFuture = Event::getCurrentEvent()?->endDateCarbon->isFuture();
+
         $this->showWaiverWarning = $waiver && $this->hasTickets && ! $hasSignedWaiver;
+        $this->showCellServiceWarning = $this->hasTickets && $eventIsFuture;
     }
 
     public function signWaiverAction(): Action

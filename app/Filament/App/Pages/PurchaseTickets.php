@@ -56,6 +56,8 @@ class PurchaseTickets extends Page
     public ?Cart $cart;
 
     public bool $hasPurchasedTickets;
+    
+    public bool $eventIsFuture;
 
     protected int $ticketCount;
 
@@ -85,11 +87,12 @@ class PurchaseTickets extends Page
         $this->hasPurchasedTickets = $user->purchasedTickets()->currentEvent()->exists();
         $this->pageContent = Event::getCurrentEvent()?->ticketPurchaseContent?->formattedContent;
         $this->maxTickets = (int) (Event::getCurrentEvent()->ticketsPerSale ?? 4);
+        $this->eventIsFuture = Event::getCurrentEvent()?->endDateCarbon->isFuture() ?? false;
     }
 
     public function form(Form $form): Form
     {
-        if (LockdownEnum::Tickets->isLocked()) {
+        if (LockdownEnum::Tickets->isLocked() || $this->eventIsFuture == false) {
             return $form->schema([
                 Placeholder::make('locked')
                     ->label('')
