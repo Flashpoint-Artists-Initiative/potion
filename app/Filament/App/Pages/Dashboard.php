@@ -28,7 +28,8 @@ class Dashboard extends \Filament\Pages\Dashboard
     public function mount(): void
     {
         $this->event = Event::getCurrentEvent();
-        $this->hasReservedTickets = Auth::authenticate()->reservedTickets()->currentEvent()->canBePurchased()->exists();
+        $this->hasReservedTickets = Auth::authenticate()->reservedTickets()->currentEvent()->canBePurchased()->exists() &&
+            Event::getCurrentEvent()?->endDateCarbon->isFuture();
         $this->hasPendingTransfers = Auth::authenticate()->receivedTicketTransfers()->pending()->exists();
     }
 }
