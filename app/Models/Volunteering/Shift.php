@@ -196,6 +196,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
             return $baseDate->format('Y-m-d H:i:s T');
         });
     }
+
     /**
      * @return Attribute<Carbon,never>
      */

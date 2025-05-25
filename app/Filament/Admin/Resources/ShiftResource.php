@@ -68,7 +68,7 @@ class ShiftResource extends Resource
                     ->timezone('America/New_York') // Don't set a timezone. Since everything runs off start_offset, this just breaks things
                     ->seconds(false)
                     ->default($startDefault)
-                    ->step(15*60) // 15 minutes
+                    ->step(15 * 60) // 15 minutes
                     ->format('Y-m-d H:i:s T'),
                 Components\TextInput::make('length_in_hours')
                     ->label('Length (in hours)')
