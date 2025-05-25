@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\ShiftResource\RelationManagers;
 
-use App\Filament\Admin\Resources\UserResource;
 use App\Filament\Tables\Columns\UserColumn;
 use Filament\Forms;
 use Filament\Forms\Form;

@@ -46,7 +46,7 @@ class BulkAdjustArtProjects extends ListRecords
         return $table
             ->columns([
                 Columns\TextColumn::make('fundingStatus')
-                    ->formatStateUsing(fn(GrantFundingStatusEnum $state) => match ($state) {
+                    ->formatStateUsing(fn (GrantFundingStatusEnum $state) => match ($state) {
                         GrantFundingStatusEnum::Unfunded => 'Unfunded',
                         GrantFundingStatusEnum::MinReached => 'Min Reached',
                         GrantFundingStatusEnum::MaxReached => 'Max Reached',
@@ -59,7 +59,7 @@ class BulkAdjustArtProjects extends ListRecords
                 Columns\TextColumn::make('name')
                     ->searchable()
                     ->limit(30)
-                    ->tooltip(fn($record) => $record->name),
+                    ->tooltip(fn ($record) => $record->name),
                 Columns\TextColumn::make('artist_name')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -91,7 +91,7 @@ class BulkAdjustArtProjects extends ListRecords
                     ->toggleable()
                     ->summarize(
                         Summarizer::make()
-                            ->using(fn(Builder $query) => $query->join('project_user_votes', 'art_project_id', '=', 'art_projects.id')->sum('votes'))
+                            ->using(fn (Builder $query) => $query->join('project_user_votes', 'art_project_id', '=', 'art_projects.id')->sum('votes'))
                     ),
                 Columns\TextColumn::make('communityFunding')
                     ->label(new HtmlString('Community<br>Funding'))
@@ -107,7 +107,7 @@ class BulkAdjustArtProjects extends ListRecords
                     })->toggleable()
                     ->summarize(Summarizer::make()
                         ->prefix('$')
-                        ->using(fn(Builder $query) => $query
+                        ->using(fn (Builder $query) => $query
                             ->join('project_user_votes', 'art_project_id', '=', 'art_projects.id')->sum('votes')
                             * $dollarsPerVote)),
                 Columns\TextInputColumn::make('committee_funding')
@@ -116,7 +116,7 @@ class BulkAdjustArtProjects extends ListRecords
                     ->sortable()
                     ->toggleable()
                     ->summarize(Sum::make()->prefix('$'))
-                    ->updateStateUsing(fn(ArtProject $record, $state) => $record->update(['committee_funding' => $state ?? 0])),
+                    ->updateStateUsing(fn (ArtProject $record, $state) => $record->update(['committee_funding' => $state ?? 0])),
                 Columns\SelectColumn::make('project_status')
                     ->label('Status')
                     ->options(ArtProjectStatusEnum::class)
@@ -139,7 +139,7 @@ class BulkAdjustArtProjects extends ListRecords
             ])
             ->actions([
                 Action::make('budget')
-                    ->url(fn($record) => $record->budget_link, true)
+                    ->url(fn ($record) => $record->budget_link, true)
                     ->icon('heroicon-m-link')
                     ->color('primary')
                     ->label(' Budget'),
