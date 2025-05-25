@@ -120,6 +120,7 @@ class TicketTypeResource extends Resource
                     ->formatStateUsing(fn ($state, TicketType $record) => ($record->quantity === 0 && $state === 0) ? '∞' : $state)
                     ->label('Remaining'),
                 Tables\Columns\IconColumn::make('active')
+                    ->label('Public')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('transferable')
                     ->boolean(),

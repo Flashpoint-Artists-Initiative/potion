@@ -19,6 +19,8 @@ use Filament\Forms\Form;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
@@ -175,6 +177,23 @@ class ReservedTicketResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('ticketType')
+                    ->label('Ticket Type')
+                    ->relationship('ticketType', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->placeholder('All Ticket Types'),
+                TernaryFilter::make('is_purchased')
+                    ->label('Purchased Status')
+                    ->placeholder('All Purchased Status')
+                    ->trueLabel('Purchased')
+                    ->falseLabel('Not Purchased')
+                    ->nullable()
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereHas('purchasedTicket'),
+                        false: fn (Builder $query) => $query->whereDoesntHave('purchasedTicket'),
+                        blank: fn (Builder $query) => $query,
+                    ),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
