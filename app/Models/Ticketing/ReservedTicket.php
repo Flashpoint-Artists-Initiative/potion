@@ -29,7 +29,7 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 class ReservedTicket extends Model implements ContractsAuditable, TicketInterface
 {
     // Used when importing to create multiple tickets from a single row
-    public int $count = 1;
+    public ?int $count = 1; // nullable for when import file doesn't have a count column
 
     use Auditable, HasFactory, HasTicketType;
 
