@@ -23,7 +23,7 @@ class ReservedTicketCreatedMail extends Mailable implements ShouldQueue
     /**
      * Create a new message instance.
      */
-    public function __construct(protected ReservedTicket $reservedTicket)
+    public function __construct(protected ReservedTicket $reservedTicket, protected int $count = 1)
     {
         //
     }
@@ -34,7 +34,7 @@ class ReservedTicketCreatedMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         $eventName = $this->reservedTicket->ticketType->event->name;
-        $count = $this->reservedTicket->count ?? 1;
+        $count = $this->count;
         $price = $this->reservedTicket->ticketType->price;
 
         $subject = sprintf('%s: You have been granted %s %s %s',
@@ -66,7 +66,7 @@ class ReservedTicketCreatedMail extends Mailable implements ShouldQueue
     {
         $eventName = $this->reservedTicket->ticketType->event->name;
         $ticketName = $this->reservedTicket->ticketType->name;
-        $count = $this->reservedTicket->count ?? 1;
+        $count = $this->count;
         $ticketWord = str('ticket')->plural($count);
         $isWord = $count > 1 ? 'are' : 'is';
         $url = Tickets::getUrl(panel: 'app');
@@ -91,7 +91,7 @@ class ReservedTicketCreatedMail extends Mailable implements ShouldQueue
         $eventName = $this->reservedTicket->ticketType->event->name;
         $ticketName = $this->reservedTicket->ticketType->name;
         $ticketNote = $this->reservedTicket->note;
-        $count = $this->reservedTicket->count ?? 1;
+        $count = $this->count;
         $ticketWord = str('ticket')->plural($count);
         $isWord = $count > 1 ? 'are' : 'is';
         $expirationDate = $this->reservedTicket->final_expiration_date->format('l, F jS, Y \a\t g:ia');

@@ -49,7 +49,7 @@ class ReservedTicketObserver
 
         if ($reservedTicket->isDirty('email')) {
             Mail::to($email)
-                ->send(new ReservedTicketCreatedMail($reservedTicket));
+                ->send(new ReservedTicketCreatedMail($reservedTicket, $reservedTicket->count));
         }
     }
 
