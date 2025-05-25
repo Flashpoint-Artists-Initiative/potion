@@ -160,7 +160,7 @@ class Shift extends Model implements ContractsAuditable, Eventable
                 $baseDate = $this->team->event->volunteerBaseDate->copy();
                 $baseDate->addMinutes($this->start_offset);
 
-                return $baseDate->format('Y-m-d H:i:s');
+                return $baseDate->format('Y-m-d H:i:s T');
             },
             set: function (string $value) {
                 $value = Carbon::parse($value, 'America/New_York');
@@ -193,7 +193,19 @@ class Shift extends Model implements ContractsAuditable, Eventable
             $baseDate = $this->team->event->volunteerBaseDate->copy();
             $baseDate->addMinutes($this->end_offset);
 
-            return $baseDate->format('Y-m-d H:i:s');
+            return $baseDate->format('Y-m-d H:i:s T');
+        });
+    }
+    /**
+     * @return Attribute<Carbon,never>
+     */
+    protected function endCarbon(): Attribute
+    {
+        return Attribute::get(function () {
+            $baseDate = $this->team->event->volunteerBaseDate->copy();
+            $baseDate->addMinutes($this->end_offset);
+
+            return $baseDate;
         });
     }
 
@@ -226,10 +238,12 @@ class Shift extends Model implements ContractsAuditable, Eventable
 
     public function toCalendarEvent(): CalendarEvent
     {
+        // start and end dates must be set to UTC without changing the value
+        // otherwise the calendar will display the wrong times
         return CalendarEvent::make($this)
             ->title($this->getCalendarEventTitle())
-            ->start($this->startDatetime)
-            ->end($this->endDatetime)
+            ->start($this->startCarbon->copy()->shiftTimezone('UTC'))
+            ->end($this->endCarbon->copy()->shiftTimezone('UTC'))
             ->resourceId($this->shiftType->id)
             ->action('edit');
     }

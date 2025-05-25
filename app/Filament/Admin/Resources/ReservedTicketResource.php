@@ -94,6 +94,7 @@ class ReservedTicketResource extends Resource
                             ->hidden(fn ($operation) => $operation !== 'create'),
                     ),
                 Forms\Components\DateTimePicker::make('expiration_date')
+                    ->timezone('America/New_York')
                     ->helperText(function ($get) {
                         /** @var TicketType $ticketType */
                         $ticketType = TicketType::find($get('ticket_type_id'));

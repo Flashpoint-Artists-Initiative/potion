@@ -88,6 +88,16 @@ class ShiftCalendarWidget extends CalendarWidget
             'durationEditable' => false,
             'classNames' => ['cursor-default'],
         ]);
+        $events->push([
+            'title' => 'Event Start',
+            // 'start' => '2025-10-26 01:00:00 -04:00',
+            // 'end' => '2025-10-26 03:00:00 -04:00',
+            'start' => Carbon::parse('2025-10-26 01:00:00', 'America/New_York'),
+            'end' => Carbon::parse('2025-10-26 03:00:00', 'America/New_York'),
+            'startEditable' => false,
+            'durationEditable' => false,
+            'classNames' => ['cursor-default'],
+        ]);
 
         return $events;
     }
@@ -406,12 +416,12 @@ class ShiftCalendarWidget extends CalendarWidget
                         }),
                     Components\DateTimePicker::make('start_datetime')
                         ->label('Start Time')
-                        // ->timezone('America/New_York')
+                        ->timezone('America/New_York')
                         ->required()
                         ->seconds(false)
                         // ->formatStateUsing(fn ($state, $record) => $record->startDatetime ?? $state)
                         // ->dehydrateStateUsing(fn ($state) => $event->volunteerBaseDate->diffInMinutes(Carbon::parse($state, 'America/New_York')))
-                        ->format('Y-m-d H:i:s'),
+                        ->format('Y-m-d H:i:s T'),
                     Components\TextInput::make('length_in_hours')
                         ->label('Length (hours)')
                         ->numeric()
@@ -421,6 +431,7 @@ class ShiftCalendarWidget extends CalendarWidget
                     Components\TextInput::make('num_spots')
                         ->label('Number of People')
                         ->numeric()
+                        ->integer()
                         ->required()
                         ->minValue(1),
                     Components\Select::make('multiplier')

@@ -91,6 +91,7 @@ class EventResource extends Resource
                                                 ->helperText('Enables public voting for art grants.'),
                                             Forms\Components\DateTimePicker::make('voting_end_date')
                                                 ->required()
+                                                ->timezone('America/New_York')
                                                 ->closeOnDateSelection()
                                                 ->seconds(false)
                                                 ->default(now()->addMinute())
@@ -118,6 +119,7 @@ class EventResource extends Resource
                                             Forms\Components\DateTimePicker::make('signups_start')
                                                 ->label('Signup Start Date')
                                                 ->required()
+                                                ->timezone('America/New_York')
                                                 ->closeOnDateSelection()
                                                 ->seconds(false)
                                                 ->default(now()->addMinute())
@@ -126,6 +128,7 @@ class EventResource extends Resource
                                             Forms\Components\DateTimePicker::make('signups_end')
                                                 ->label('Signup End Date')
                                                 ->required()
+                                                ->timezone('America/New_York')
                                                 ->closeOnDateSelection()
                                                 ->seconds(false)
                                                 ->default(now()->addMinutes(10))

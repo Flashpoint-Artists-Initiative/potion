@@ -49,11 +49,13 @@ class TicketTypeResource extends Resource
                     ->content(fn (?TicketType $record) => $record->event->name ?? Event::getCurrentEvent()->name ?? 'No Event'),
                 Forms\Components\DateTimePicker::make('sale_start_date')
                     ->required()
+                    ->timezone('America/New_York')
                     ->seconds(false)
                     ->closeOnDateSelection()
                     ->before('sale_end_date'),
                 Forms\Components\DateTimePicker::make('sale_end_date')
                     ->required()
+                    ->timezone('America/New_York')
                     ->seconds(false)
                     ->closeOnDateSelection()
                     ->afterOrEqual('sale_start_date')

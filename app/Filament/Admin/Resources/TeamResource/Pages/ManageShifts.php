@@ -74,7 +74,7 @@ class ManageShifts extends ManageRelatedRecords
                     ->sortable(['shift_types.title']),
                 Tables\Columns\TextColumn::make('start_datetime')
                     ->label('Start')
-                    ->dateTime('D n/j, g:i A') // Already in the correct timezone from the event mutator
+                    ->dateTime('D n/j, g:i A T', 'America/New_York') // Already in the correct timezone from the event mutator
                     ->sortable(['start_offset']),
                 Tables\Columns\TextColumn::make('length_in_hours')
                     ->label('Length')

@@ -49,13 +49,13 @@ class ShiftResource extends Resource
                     $set('length_in_hours', $shiftType->length / 60);
                 });
 
-            $startDefault = $team->event->volunteerBaseDate->format('Y-m-d H:i:s');
+            $startDefault = $team->event->volunteerBaseDate->format('Y-m-d H:i:sp');
         } else {
             $shiftTypeComponent = Components\Placeholder::make('shift_type')
                 ->label('Shift Type')
                 ->content(fn (?Shift $record) => $record->shiftType->title ?? $shiftType->title ?? 'Unknown');
 
-            $startDefault = $shiftType?->team->event->volunteerBaseDate->format('Y-m-d H:i:s') ?? null;
+            $startDefault = $shiftType?->team->event->volunteerBaseDate->format('Y-m-d H:i:sp') ?? null;
         }
 
         return $form
@@ -65,9 +65,11 @@ class ShiftResource extends Resource
                 Components\DateTimePicker::make('start_datetime')
                     ->label('Start Time')
                     ->required()
+                    ->timezone('America/New_York') // Don't set a timezone. Since everything runs off start_offset, this just breaks things
                     ->seconds(false)
                     ->default($startDefault)
-                    ->format('Y-m-d H:i:s'),
+                    ->step(15*60) // 15 minutes
+                    ->format('Y-m-d H:i:s T'),
                 Components\TextInput::make('length_in_hours')
                     ->label('Length (in hours)')
                     ->required()
@@ -82,6 +84,17 @@ class ShiftResource extends Resource
                     ->numeric()
                     ->minValue(1)
                     ->default(1),
+                Components\Select::make('multiplier')
+                    ->label('Multiplier')
+                    ->required()
+                    ->default('1')
+                    ->selectablePlaceholder(false)
+                    ->options([
+                        '1' => '1x',
+                        '1.5' => '1.5x',
+                        '2' => '2x',
+                    ])
+                    ->helperText('Multiplier for the number of spots.'),
             ]);
     }
 
