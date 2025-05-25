@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('shifts', function (Blueprint $table) {
             $table->float('multiplier')->change();
-            $table->float('length')->change();
+            $table->unsignedInteger('length')->change();
             $table->unsignedInteger('num_spots')->change();
         });
     }
@@ -25,7 +25,7 @@ return new class extends Migration
     {
         Schema::table('shifts', function (Blueprint $table) {
             $table->float('multiplier')->nullable()->change();
-            $table->float('length')->nullable()->change();
+            $table->unsignedInteger('length')->nullable()->change();
             $table->unsignedInteger('num_spots')->nullable()->change();
         });
     }
