@@ -157,11 +157,11 @@ class TicketTransfers extends Page implements HasForms, HasTable
     public function createTransfer(array $data): void
     {
         try {
-        TicketTransfer::createTransfer((int) Auth::id(), $data['recipient_email'], $data['purchased_tickets'], $data['reserved_tickets']);
-        Notification::make()
-            ->title('Transfer Created')
-            ->success()
-            ->send();
+            TicketTransfer::createTransfer((int) Auth::id(), $data['recipient_email'], $data['purchased_tickets'], $data['reserved_tickets']);
+            Notification::make()
+                ->title('Transfer Created')
+                ->success()
+                ->send();
         } catch (\RuntimeException $e) {
             Notification::make()
                 ->title('Transfer Failed')
@@ -181,7 +181,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
                 TextColumn::make('completed')
                     ->badge()
                     ->label('Status')
-                    ->formatStateUsing(fn (bool $state) => ! $eventIsFuture  && ! $state ? 'Expired' : ($state ? 'Completed' : 'Pending'))
+                    ->formatStateUsing(fn (bool $state) => ! $eventIsFuture && ! $state ? 'Expired' : ($state ? 'Completed' : 'Pending'))
                     ->color(fn (bool $state) => ! $eventIsFuture && ! $state ? 'danger' : ($state ? 'success' : 'warning'))
                     ->grow(false),
                 TextColumn::make('ticketCount')

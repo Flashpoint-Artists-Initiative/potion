@@ -56,7 +56,7 @@ class PurchaseTickets extends Page
     public ?Cart $cart;
 
     public bool $hasPurchasedTickets;
-    
+
     public bool $eventIsFuture;
 
     protected int $ticketCount;
