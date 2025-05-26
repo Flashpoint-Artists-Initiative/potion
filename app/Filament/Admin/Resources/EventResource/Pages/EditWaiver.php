@@ -22,7 +22,7 @@ class EditWaiver extends EditRecord
         /** @var Event $event */
         $event = $parameters['record'];
 
-        return parent::canAccess($parameters) && $event->waiver && ! $event->completedWaivers()->exists();
+        return parent::canAccess($parameters) && ! $event->completedWaivers()->exists();
     }
 
     protected function getHeaderActions(): array
