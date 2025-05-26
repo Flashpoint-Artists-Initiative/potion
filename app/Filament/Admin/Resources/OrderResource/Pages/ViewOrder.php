@@ -73,7 +73,7 @@ class ViewOrder extends ViewRecord
             })
             ->modalSubmitAction(fn (Order $record): ?bool => $record->refundable ? null : false)
             ->color('danger')
-            ->visible(fn () => Auth::authenticate()->can('orders.refund'))
+            ->visible(fn (Order $record) => Auth::authenticate()->can('orders.refund') && $record->refundable)
             ->action(fn (Order $record) => $record->refund());
     }
 }
