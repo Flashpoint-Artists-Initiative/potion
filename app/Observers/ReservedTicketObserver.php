@@ -26,10 +26,10 @@ class ReservedTicketObserver
         // When importing reserved tickets, count is optionally set
         // Create duplicate reserved tickets based on $count
         $count = $reservedTicket->count ?? 1;
-        for ($i = 1; $i < $count; $i++) {
-            $duplicate = $reservedTicket->replicate();
-            $duplicate->saveQuietly(); // We don't want to trigger the observer again. The original model will trigger the email
-        }
+        // for ($i = 1; $i < $count; $i++) {
+        //     $duplicate = $reservedTicket->replicate();
+        //     $duplicate->saveQuietly(); // We don't want to trigger the observer again. The original model will trigger the email
+        // }
     }
 
     public function saved(ReservedTicket $reservedTicket): void
@@ -48,10 +48,10 @@ class ReservedTicketObserver
 
         $email = $reservedTicket->user->email ?? $reservedTicket->email;
 
-        if ($reservedTicket->isDirty('email')) {
-            Mail::to($email)
-                ->send(new ReservedTicketCreatedMail($reservedTicket, $reservedTicket->count ?? 1));
-        }
+        // if ($reservedTicket->isDirty('email')) {
+        //     Mail::to($email)
+        //         ->send(new ReservedTicketCreatedMail($reservedTicket, $reservedTicket->count ?? 1));
+        // }
     }
 
     /**
