@@ -20,7 +20,7 @@ class RevenueWidget extends BaseWidget
             Stat::make('Total Profit', $this->getTotal('amount_subtotal'))
                 ->icon('heroicon-o-currency-dollar')
                 ->color('success'),
-            Stat::make('Tickets Sold', Order::currentEvent()->sum('quantity'))
+            Stat::make('Tickets Sold', Order::currentEvent()->notRefunded()->sum('quantity'))
                 ->icon('heroicon-o-ticket')
                 ->color('success'),
         ];
@@ -28,7 +28,7 @@ class RevenueWidget extends BaseWidget
 
     protected function getTotal(string $field): string
     {
-        $total = Order::currentEvent()->sum($field) / 100;
+        $total = Order::currentEvent()->notRefunded()->sum($field) / 100;
 
         $formatter = new NumberFormatter('en_US', NumberFormatter::CURRENCY);
 
