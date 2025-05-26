@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Imports;
 
+use App\Models\Event;
 use App\Models\Ticketing\ReservedTicket;
+use App\Models\Ticketing\TicketType;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
@@ -25,7 +27,7 @@ class ReservedTicketImporter extends Importer
                 ->label('Ticket Type')
                 ->requiredMapping()
                 ->rules(['required', 'string'])
-                ->relationship('ticketType', 'name')
+                ->relationship('ticketType', fn (string $state) => TicketType::whereEventId(Event::getCurrentEventId())->whereName($state)->first())
                 ->helperText('The name of the ticket type as shown in POTION'),
             ImportColumn::make('expiration_date')
                 ->label('Expiration Date')
