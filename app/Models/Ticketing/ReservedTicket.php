@@ -20,11 +20,6 @@ use Illuminate\Support\Facades\Auth;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
-/**
- * @property bool $is_purchased
- * @property bool $can_be_purchased
- * @property-read Carbon $final_expiration_date
- */
 #[ObservedBy(ReservedTicketObserver::class)]
 class ReservedTicket extends Model implements ContractsAuditable, TicketInterface
 {
@@ -119,20 +114,20 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $this->ticketType->event->active &&
-                    ! $this->is_purchased;
-            //         (
-            //             (! is_null($attributes['expiration_date']) && $attributes['expiration_date'] > now()) ||
-            //             (is_null($attributes['expiration_date']) && $this->ticketType->onSale)
-            //         );
+                    ! $this->is_purchased &&
+                    $this->final_expiration_date > now();
             }
         );
     }
 
+    /**
+     * @return Attribute<Carbon,never>
+     */
     protected function finalExpirationDate(): Attribute
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                return new Carbon($attributes['expiration_date'] ?? $this->ticketType->sale_end_date);
+                return new Carbon($this->expiration_date ?? $this->ticketType->sale_end_date);
             }
         );
     }
