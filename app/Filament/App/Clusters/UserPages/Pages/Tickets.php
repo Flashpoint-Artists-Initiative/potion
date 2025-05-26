@@ -163,6 +163,7 @@ class Tickets extends Page
                     ->label('I agree to the terms of the waiver and understand that I am signing this waiver electronically.')
                     ->helperText('You must enter your full legal name as it is shown on your ID and listed in your profile.')
                     ->required()
+                    ->placeholder($username)
                     ->in([$username])
                     ->validationMessages([
                         'required' => 'You must agree to the terms of the waiver and sign it.',
