@@ -119,11 +119,11 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return $this->ticketType->event->active &&
-                    ! $this->is_purchased &&
-                    (
-                        (! is_null($attributes['expiration_date']) && $attributes['expiration_date'] > now()) ||
-                        (is_null($attributes['expiration_date']) && $this->ticketType->onSale)
-                    );
+                    ! $this->is_purchased;
+            //         (
+            //             (! is_null($attributes['expiration_date']) && $attributes['expiration_date'] > now()) ||
+            //             (is_null($attributes['expiration_date']) && $this->ticketType->onSale)
+            //         );
             }
         );
     }
