@@ -94,19 +94,17 @@ class CartResource extends Resource
                     ->since()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('expiration_date')
-                    ->formatStateUsing(function (Cart $record, $state) {
-                        if ($record->isExpired) {
-                            return 'Expired';
-                        }
-
-                        return Carbon::parse($state)
-                            ->diffForHumans();
-                    })
-                    ->label('Time Remaining')
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->formatStateUsing(fn (Cart $record, CartStatusEnum $state) => match ($state) {
+                        CartStatusEnum::Active => 'Expires ' . Carbon::parse($record->expiration_date)
+                            ->diffForHumans(),
+                        CartStatusEnum::Expired => 'Expired',
+                        CartStatusEnum::Completed => 'Completed',
+                    }),
+                Tables\Columns\TextColumn::make('items_count')
+                    ->label('Tickets in Cart')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('quantity')
-                    ->label('Tickets in Cart'),
                 Tables\Columns\TextColumn::make('subtotal')
                     ->money('usd', 100),
             ])

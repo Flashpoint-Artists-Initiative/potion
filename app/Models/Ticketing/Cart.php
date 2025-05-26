@@ -52,6 +52,10 @@ class Cart extends Model implements ContractsAuditable
         'items.ticketType',
     ];
 
+    protected $withCount = [
+        'items',
+    ];
+
     /**
      * @return HasMany<CartItem, $this>
      */
