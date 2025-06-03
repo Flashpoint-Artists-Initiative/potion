@@ -43,7 +43,8 @@ class ReservedTicketsTable extends Component implements HasForms, HasTable
             ->query(ReservedTicket::query()->currentUser()->currentEvent()->canBePurchased())
             ->columns([
                 TextColumn::make('ticketType.name')
-                    ->label('Ticket Type')
+                    ->label('Ticket')
+                    ->formatStateUsing(fn (ReservedTicket $ticket) => sprintf('%s (#%d)', $ticket->ticketType->name, $ticket->id))
                     ->description(fn (ReservedTicket $ticket) => str($ticket->note)->limit(50)),
                 TextColumn::make('final_expiration_date')
                     ->label('Expiration Date')
