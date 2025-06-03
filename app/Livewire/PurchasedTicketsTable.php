@@ -59,9 +59,9 @@ class PurchasedTicketsTable extends Component implements HasForms, HasTable
             ->query(PurchasedTicket::query()->currentUser()->currentEvent()->noActiveTransfer())
             ->columns([
                 TextColumn::make('ticketType.name')
-                    ->label('Ticket Type')
+                    ->label('Ticket')
                     ->formatStateUsing(function (PurchasedTicket $ticket) {
-                        $output = $ticket->ticketType->name;
+                        $output = sprintf('%s (#%d)', $ticket->ticketType->name, $ticket->id);
                         if ($ticket->ticketType->addon) {
                             $output .= ' ' . Blade::render('<x-filament::badge style="display: inline-flex;">Addon</x-filament::badge>');
                         }

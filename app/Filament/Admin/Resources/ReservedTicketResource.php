@@ -207,6 +207,7 @@ class ReservedTicketResource extends Resource
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ])
+            ->checkIfRecordIsSelectableUsing(fn (ReservedTicket $record): bool => ! $record->is_purchased)
             ->emptyStateHeading(fn () => Event::getCurrentEvent() ? 'No Reserved Tickets' : 'No Event Selected');
     }
 
