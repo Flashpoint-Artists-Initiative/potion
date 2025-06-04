@@ -24,7 +24,7 @@ trait HasAuthComponents
             ->required()
             ->maxLength(255)
             ->helperText('As it shows up on your ID.  This will only be visible to gate staff as you enter the event.')
-            ->dehydrateStateUsing(fn ($state) => trim($state))
+            ->dehydrateStateUsing(fn (?string $state) => $state ? trim($state) : null)
             ->autofocus();
     }
 
@@ -33,7 +33,7 @@ trait HasAuthComponents
         return TextInput::make('preferred_name')
             ->label('Preferred Name')
             ->maxLength(255)
-            ->dehydrateStateUsing(fn ($state) => trim($state))
+            ->dehydrateStateUsing(fn (?string $state) => $state ? trim($state) : null)
             ->helperText('If you don\'t want to use your legal name, what should we call you? Visible to event leadership and volunteer coordinators.');
     }
 
