@@ -13,6 +13,7 @@ enum RolesEnum: string implements HasLabel
     case EventManager = 'event-manager';
     case BoxOffice = 'box-office';
     case ArtGrantReviewer = 'art-grant-reviewer';
+    case Accountant = 'accountant';
 
     public function getLabel(): string
     {
@@ -21,6 +22,7 @@ enum RolesEnum: string implements HasLabel
             self::EventManager => 'Event Manager',
             self::BoxOffice => 'Box Office',
             self::ArtGrantReviewer => 'Art Grant Reviewer',
+            self::Accountant => 'Accountant',
         };
     }
 

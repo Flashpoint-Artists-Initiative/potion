@@ -263,6 +263,11 @@ return [
                 'artProjects.delete',
                 'artProjects.restore',
             ],
+            RolesEnum::Accountant->value => [
+                'panelAccess.admin',
+                'orders.viewAny',
+                'orders.view',
+            ],
         ],
         // List of permissions every user can do, to pass to the front end
         'defaultPermissions' => [
