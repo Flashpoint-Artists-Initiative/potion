@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Events\ArtProjectFundingStatusChange;
-use App\Events\EmailUpdated;
 use App\Listeners\ArtProjectFundingStatusListener;
 use App\Listeners\EmailVerifiedListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
@@ -22,12 +20,6 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
-        EmailUpdated::class => [
-            SendEmailVerificationNotification::class,
-        ],
         Verified::class => [
             EmailVerifiedListener::class,
         ],

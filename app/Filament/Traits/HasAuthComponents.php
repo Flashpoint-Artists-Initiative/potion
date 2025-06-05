@@ -70,7 +70,7 @@ trait HasAuthComponents
             ->revealable(filament()->arePasswordsRevealable())
             ->required($required)
             ->rule(Password::default())
-            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+            ->dehydrateStateUsing(fn (?string $state) => $state ? Hash::make($state) : null)
             ->same('passwordConfirmation')
             ->validationAttribute(__('filament-panels::pages/auth/register.form.password.validation_attribute'))
             ->helperText('Your password must be at least 8 characters long and contain at least one letter and one number.');

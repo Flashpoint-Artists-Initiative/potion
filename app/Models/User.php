@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Events\EmailUpdated;
 use App\Models\Concerns\HasVirtualColumns;
 use App\Models\Grants\ArtProject;
 use App\Models\Ticketing\Cart;
@@ -14,11 +13,13 @@ use App\Models\Ticketing\PurchasedTicket;
 use App\Models\Ticketing\ReservedTicket;
 use App\Models\Ticketing\TicketTransfer;
 use App\Models\Volunteering\Shift;
+use App\Observers\UserObserver;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -39,6 +40,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read string $display_name
  * @property-read string $name
  */
+#[ObservedBy(UserObserver::class)]
 class User extends Authenticatable implements ContractsAuditable, FilamentUser, HasName, JWTSubject, MustVerifyEmail
 {
     use Auditable, Bannable, HasFactory, HasRoles, HasVirtualColumns, Notifiable, SoftDeletes;
@@ -87,17 +89,6 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     protected $virtualColumns = [
         'display_name',
     ];
-
-    protected static function booted(): void
-    {
-        // Send a new verification email when the email address changes
-        static::updating(function (User $user) {
-            if ($user->isDirty('email') && $user->hasVerifiedEmail()) {
-                $user->email_verified_at = null;
-                event(new EmailUpdated($user));
-            }
-        });
-    }
 
     /**
      * @return HasMany<PurchasedTicket, $this>
