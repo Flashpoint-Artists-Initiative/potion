@@ -29,22 +29,15 @@ class ReservedTicketObserver
         for ($i = 1; $i < $count; $i++) {
             $duplicate = $reservedTicket->replicate();
             $duplicate->saveQuietly(); // We don't want to trigger the observer again. The original model will trigger the email
+            // Since we saved quietly, manually add the purchased ticket if applicable
+            $this->addPurchasedTicket($duplicate);
         }
     }
 
     public function saved(ReservedTicket $reservedTicket): void
     {
         // If the reserved ticket type has a price of 0, automatically create a purchased ticket when possible
-        if ($reservedTicket->user_id &&
-        $reservedTicket->ticketType->price === 0 &&
-        $reservedTicket->can_be_purchased
-        ) {
-            $purchasedTicket = new PurchasedTicket;
-            $purchasedTicket->ticket_type_id = $reservedTicket->ticket_type_id;
-            $purchasedTicket->user_id = $reservedTicket->user_id;
-            $purchasedTicket->reserved_ticket_id = $reservedTicket->id;
-            $purchasedTicket->save();
-        }
+        $this->addPurchasedTicket($reservedTicket);
 
         $email = $reservedTicket->user->email ?? $reservedTicket->email;
 
@@ -76,5 +69,19 @@ class ReservedTicketObserver
         }
 
         return true;
+    }
+
+    protected function addPurchasedTicket(ReservedTicket $reservedTicket): void
+    {
+        if ($reservedTicket->user_id &&
+        $reservedTicket->ticketType->price === 0 &&
+        $reservedTicket->can_be_purchased
+        ) {
+            $purchasedTicket = new PurchasedTicket;
+            $purchasedTicket->ticket_type_id = $reservedTicket->ticket_type_id;
+            $purchasedTicket->user_id = $reservedTicket->user_id;
+            $purchasedTicket->reserved_ticket_id = $reservedTicket->id;
+            $purchasedTicket->save();
+        }
     }
 }
