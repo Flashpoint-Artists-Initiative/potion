@@ -101,7 +101,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                return $this->purchasedTicket()->exists();
+                return ! is_null($this->purchasedTicket);
             }
         );
     }

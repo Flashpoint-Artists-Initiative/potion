@@ -37,7 +37,7 @@ class ArtProjectResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Event::where('id', Event::getCurrentEventId())->exists();
+        return ! is_null(Event::getCurrentEvent());
     }
 
     public static function form(Form $form): Form

@@ -17,6 +17,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
@@ -87,6 +88,7 @@ class CartResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['order']))
             ->columns([
                 UserColumn::make('user')
                     ->userPage('carts'),

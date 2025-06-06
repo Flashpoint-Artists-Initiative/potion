@@ -153,6 +153,7 @@ class ReservedTicketResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['ticketType', 'user', 'purchasedTicket']))
             ->columns([
                 Tables\Columns\TextColumn::make('ticketType.name')
                     ->numeric()

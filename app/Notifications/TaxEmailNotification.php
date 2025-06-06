@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -16,9 +15,7 @@ class TaxEmailNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected string $revenue, protected string $tax)
-    {
-    }
+    public function __construct(protected string $revenue, protected string $tax) {}
 
     /**
      * Get the notification's delivery channels.
@@ -37,7 +34,7 @@ class TaxEmailNotification extends Notification
     {
         return (new MailMessage)
             ->subject('Monthly Sales Report')
-            ->line("The monthly sales report is ready.")
+            ->line('The monthly sales report is ready.')
             ->line("Revenue collected: {$this->revenue}")
             ->line("Tax collected: {$this->tax}");
     }

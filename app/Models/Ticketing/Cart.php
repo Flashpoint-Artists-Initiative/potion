@@ -156,7 +156,7 @@ class Cart extends Model implements ContractsAuditable
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                if ($this->order()->exists()) {
+                if ($this->order) {
                     return CartStatusEnum::Completed;
                 }
 
