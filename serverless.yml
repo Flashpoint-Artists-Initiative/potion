@@ -122,11 +122,10 @@ functions:
         layers:
             - ${bref-extra:gd-php-84}
         timeout: 720 # in seconds
-        # Uncomment to also run the scheduler every minute
-        #events:
-        #    - schedule:
-        #          rate: rate(1 minute)
-        #          input: '"schedule:run"'
+        events:
+           - schedule:
+                 rate: cron(0 8 1 * ? *) # Runs on the first day of every month at 8:00 AM UTC
+                 input: '"potion:send-tax-email"'
 
 plugins:
   - ./vendor/bref/bref
