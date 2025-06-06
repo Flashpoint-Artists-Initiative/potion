@@ -173,7 +173,7 @@ class TicketTransfer extends Model implements ContractsAuditable
             })
             ->pluck('id');
 
-        $validReservedIds = PurchasedTicket::whereIn('id', $reservedTicketIds)
+        $validReservedIds = ReservedTicket::whereIn('id', $reservedTicketIds)
             ->where('user_id', $userId)
             ->canBeTransferred()
             ->whereHas('event', function (Builder $query) {
