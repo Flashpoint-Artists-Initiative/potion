@@ -17,6 +17,7 @@
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "filament/spatie-laravel-settings-plugin": "^3.2",
+        "flowframe/laravel-trend": "^0.4.0",
         "gerenuk/filament-banhammer": "^1.1",
         "guava/calendar": "^1.13",
         "guava/filament-nested-resources": "^1.3",
