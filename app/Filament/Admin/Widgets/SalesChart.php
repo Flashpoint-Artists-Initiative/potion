@@ -12,11 +12,11 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
-class OrdersChart extends ChartWidget
+class SalesChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Orders per Day';
+    protected static ?string $heading = 'Tickets Sold';
 
     protected static ?string $pollingInterval = null;
 
@@ -26,18 +26,38 @@ class OrdersChart extends ChartWidget
 
     protected static ?int $sort = 2;
 
+    public ?string $filter = 'day';
+
+    protected function getFilters(): ?array
+    {
+        return [
+            'day' => 'Day',
+            'hour' => 'Hour',
+
+        ];
+    }
+
     protected function getData(): array
     {
         $startDate = now()->subMonth();
         $endDate = now();
         $query = Order::query();
+        $dateFormat = 'Y-m-d';
 
-        if ($this->filters && array_key_exists('startDate', $this->filters) && $this->filters['startDate']) {
-            $startDate = new Carbon($this->filters['startDate']);
-        }
 
-        if ($this->filters && array_key_exists('endDate', $this->filters) && $this->filters['endDate']) {
-            $endDate = new Carbon($this->filters['endDate']);
+        if ($this->filter === 'day') {
+            $dateFormat = 'F j';
+            if ($this->filters && array_key_exists('startDate', $this->filters) && $this->filters['startDate']) {
+                $startDate = new Carbon($this->filters['startDate']);
+            }
+
+            if ($this->filters && array_key_exists('endDate', $this->filters) && $this->filters['endDate']) {
+                $endDate = new Carbon($this->filters['endDate']);
+            }
+        } elseif ($this->filter === 'hour') {
+            $dateFormat = 'ga';
+            $startDate = now()->subDays(1);
+            $endDate = now();
         }
 
         if ($this->filters && array_key_exists('event', $this->filters) && $this->filters['event'] === 'current') {
@@ -48,20 +68,24 @@ class OrdersChart extends ChartWidget
             $query = $query->notRefunded();
         }
 
-        $data = Trend::query($query)
+        $trend = Trend::query($query)
             ->between(
                 start: $startDate,
                 end: $endDate,
-            )
-            ->perDay()
-            ->count();
+            );
+
+        $data = match ($this->filter) {
+            'hour' => $trend->perHour()->count(),
+            'day' => $trend->perDay()->count(),
+            default => $trend->perDay()->count(),
+        };
 
         return [
-            'labels' => $data->map(fn (TrendValue $value) => $value->date),
+            'labels' => $data->map(fn(TrendValue $value) => Carbon::parse($value->date)->format($dateFormat)),
             'datasets' => [
                 [
                     'label' => 'Orders',
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                    'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
                     'fill' => 'start',
                 ],
             ],
