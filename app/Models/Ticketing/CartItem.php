@@ -39,6 +39,6 @@ class CartItem extends Model
      */
     public function ticketType(): BelongsTo
     {
-        return $this->belongsTo(TicketType::class);
+        return $this->belongsTo(TicketType::class)->withTrashed();
     }
 }
