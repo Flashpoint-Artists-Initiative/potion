@@ -75,16 +75,16 @@ class SalesChart extends ChartWidget
             );
 
         $data = match ($this->filter) {
-            'hour' => $trend->perHour()->count(),
-            'day' => $trend->perDay()->count(),
-            default => $trend->perDay()->count(),
+            'hour' => $trend->perHour()->sum('quantity'),
+            'day' => $trend->perDay()->sum('quantity'),
+            default => $trend->perDay()->sum('quantity'),
         };
 
         return [
-            'labels' => $data->map(fn(TrendValue $value) => Carbon::parse($value->date)->format($dateFormat)),
+            'labels' => $data->map(fn(TrendValue $value) => Carbon::parse($value->date)->setTimezone('America/New_York')->format($dateFormat)),
             'datasets' => [
                 [
-                    'label' => 'Orders',
+                    'label' => 'Tickets Sold',
                     'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
                     'fill' => 'start',
                 ],
