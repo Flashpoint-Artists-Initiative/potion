@@ -41,4 +41,8 @@ $maxTickets = Event::getCurrentEvent()?->ticketsPerSale;
     <p>Reserved tickets are distributed outside of the main sale.  Previous volunteers, theme camp organizers, artists, and scholarship recipients may be eligible for reserved tickets. If you are eligible for a reserved ticket, you will receive an email with instructions on how to claim it.  If you think you're missing reserved tickets that you should've received, <x-filament::link size="normal" class="not-prose" href="mailto:{{ config('mail.from.address') }}">contact us</x-filament::link></p>
     <p>Reserved tickets are assigned to you and can be purchased at any time, but will expire on a set date. When you are assigned reserved tickets you will receive an email, and will see them in <x-filament::link size="normal" class="not-prose" href="{{ Tickets::getUrl() }}">your profile</x-filament::link>. You can purchase them at any time before the expiration date.</p>
     <p>Some reserved tickets are transferable, and can be sent to someone else the same way a purchased ticket can be. A transferred reserved ticket will still need to be purchased by the person receiving it.</p>
+
+    <h3>Child Tickets</h3>
+    <p>Child tickets are available for attendees aged 12 and under. Each child must have their own ticket, and they must be accompanied by a parent or legal guardian with a valid ticket.</p>
+    <p>Children between 13 and 17 must have an adult ticket in the account of the parent or legal guardian bringing them to the event.</p>
 </div>
