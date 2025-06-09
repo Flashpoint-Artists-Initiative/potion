@@ -42,7 +42,7 @@ class Dashboard extends \Filament\Pages\Dashboard
                 ->label('Edit Content')
                 ->icon('heroicon-o-pencil')
                 ->url(EventResource::getUrl('content', ['record' => $this->event?->id], panel: 'admin'))
-                ->visible(fn() => $this->event && Auth::authenticate()->can('events.edit'))
+                ->visible(fn () => $this->event && Auth::authenticate()->can('events.edit')),
         ];
     }
 }

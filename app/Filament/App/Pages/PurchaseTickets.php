@@ -201,8 +201,7 @@ class PurchaseTickets extends Page
         $this->ticketCount = $tickets->count() + $reserved->count();
 
         return Wizard\Step::make('Select Tickets')
-            ->schema($schema)
-            ->afterValidation($this->createCart(...));
+            ->schema($schema);
     }
 
     /**
@@ -230,6 +229,8 @@ class PurchaseTickets extends Page
                     ->required()
                     ->placeholder($username)
                     ->in([$username])
+                    ->mutateStateForValidationUsing(fn ($state) => trim($state))
+                    ->dehydrateStateUsing(fn ($state) => trim($state))
                     ->validationMessages([
                         'required' => 'You must agree to the terms of the waiver and sign it.',
                         'in' => 'The entered value must match your legal name, as listed in your profile.',

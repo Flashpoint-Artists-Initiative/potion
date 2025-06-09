@@ -44,7 +44,6 @@ class SalesChart extends ChartWidget
         $query = Order::query();
         $dateFormat = 'Y-m-d';
 
-
         if ($this->filter === 'day') {
             $dateFormat = 'F j';
             if ($this->filters && array_key_exists('startDate', $this->filters) && $this->filters['startDate']) {
@@ -81,11 +80,11 @@ class SalesChart extends ChartWidget
         };
 
         return [
-            'labels' => $data->map(fn(TrendValue $value) => Carbon::parse($value->date)->setTimezone('America/New_York')->format($dateFormat)),
+            'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->setTimezone('America/New_York')->format($dateFormat)),
             'datasets' => [
                 [
                     'label' => 'Tickets Sold',
-                    'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
+                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     'fill' => 'start',
                 ],
             ],
