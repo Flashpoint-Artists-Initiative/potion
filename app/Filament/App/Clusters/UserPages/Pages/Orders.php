@@ -37,16 +37,19 @@ class Orders extends Page implements HasTable
                     ->sortable(),
                 TextColumn::make('event.name')
                     ->label('Event')
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Purchase Date')
                     ->dateTime('F jS, Y g:i A T', 'America/New_York'),
+                TextColumn::make('refunded')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (bool $state) => $state ? 'danger' : 'success')
+                    ->formatStateUsing(fn (bool $state) => $state ? 'Refunded' : 'Complete'),
                 TextColumn::make('amount_total')
                     ->label('Total')
                     ->money('usd', 100)
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
             ])
             ->actions([
                 Action::make('view')

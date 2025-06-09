@@ -6,6 +6,7 @@ namespace App\Models\Ticketing;
 
 use App\Models\Event;
 use App\Models\User;
+use App\Notifications\OrderRefundedNotification;
 use App\Observers\OrderObserver;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -153,5 +154,7 @@ class Order extends Model implements ContractsAuditable
 
         $this->refunded = true;
         $this->save();
+
+        $this->user->notify(new OrderRefundedNotification($this));
     }
 }

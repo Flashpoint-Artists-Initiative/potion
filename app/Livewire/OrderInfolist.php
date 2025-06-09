@@ -27,7 +27,7 @@ class OrderInfolist extends Component implements HasForms, HasInfolists
         return $infolist
             ->record(Order::find($this->orderId))
             ->schema([
-                Grid::make(3)
+                Grid::make(4)
                     ->schema([
                         TextEntry::make('id')
                             ->label('Order Number')
@@ -37,6 +37,11 @@ class OrderInfolist extends Component implements HasForms, HasInfolists
                             ->dateTime('F jS, Y g:i A T', 'America/New_York'),
                         TextEntry::make('event.name')
                             ->label('Event'),
+                        TextEntry::make('refunded')
+                            ->label('Status')
+                            ->badge()
+                            ->color(fn (bool $state) => $state ? 'danger' : 'success')
+                            ->formatStateUsing(fn (bool $state) => $state ? 'Refunded' : 'Complete'),
                     ]),
                 Livewire::make(OrderTicketsTable::class),
                 Fieldset::make('Order Summary')
