@@ -229,8 +229,7 @@ class PurchaseTickets extends Page
                     ->required()
                     ->placeholder($username)
                     ->in([$username])
-                    ->mutateStateForValidationUsing(fn ($state) => trim($state))
-                    ->dehydrateStateUsing(fn ($state) => trim($state))
+                    ->mutateStateForValidationUsing(fn (?string $state) => $state ? trim($state) : null)
                     ->validationMessages([
                         'required' => 'You must agree to the terms of the waiver and sign it.',
                         'in' => 'The entered value must match your legal name, as listed in your profile.',
@@ -280,7 +279,7 @@ class PurchaseTickets extends Page
             $this->waiver->completedWaivers()->create([
                 'user_id' => Auth::id(),
                 'form_data' => [
-                    'signature' => $this->data['signature'],
+                    'signature' => trim($this->data['signature']),
                 ],
             ]);
         }

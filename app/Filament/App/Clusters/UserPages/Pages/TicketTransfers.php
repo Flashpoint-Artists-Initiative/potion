@@ -251,6 +251,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
                     ->required()
                     ->placeholder($username)
                     ->in([$username])
+                    ->mutateStateForValidationUsing(fn (?string $state) => $state ? trim($state) : null)
                     ->validationMessages([
                         'required' => 'You must agree to the terms of the waiver and sign it.',
                         'in' => 'The entered value must match your legal name, as listed in your profile.',
@@ -267,7 +268,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
             $waiver->completedWaivers()->create([
                 'user_id' => Auth::id(),
                 'form_data' => [
-                    'signature' => $data['signature'],
+                    'signature' => trim($data['signature']),
                 ],
             ]);
 
