@@ -15,7 +15,7 @@ class TaxEmailNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected string $revenue, protected string $tax) {}
+    public function __construct(protected string $revenue, protected string $tax, protected string $month) {}
 
     /**
      * Get the notification's delivery channels.
@@ -34,7 +34,7 @@ class TaxEmailNotification extends Notification
     {
         return (new MailMessage)
             ->subject('Monthly Sales Report')
-            ->line('The monthly sales report is ready.')
+            ->line("The monthly sales report for {$this->month} is ready.")
             ->line("Revenue collected: {$this->revenue}")
             ->line("Tax collected: {$this->tax}");
     }

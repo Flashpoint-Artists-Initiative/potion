@@ -44,11 +44,12 @@ class SendTaxEmailCommand extends Command
 
         $finalRevenue = $formatter->formatCurrency($finalRevenue / 100, 'USD') ?: '$0.00';
         $finalTax = $formatter->formatCurrency($finalTax / 100, 'USD') ?: '$0.00';
+        $month = now()->subMonth()->format('F Y');
 
         $accountants = User::role('accountant')->get();
 
         foreach ($accountants as $accountant) {
-            $accountant->notify(new TaxEmailNotification($finalRevenue, $finalTax));
+            $accountant->notify(new TaxEmailNotification($finalRevenue, $finalTax, $month));
         }
     }
 }
