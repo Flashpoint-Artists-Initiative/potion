@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 
 use App\Filament\Admin\Resources\OrderResource\Pages\ViewOrder;
 use App\Filament\Admin\Resources\UserResource;
+use App\Models\Ticketing\CompletedWaiver;
 use App\Models\Ticketing\Order;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
@@ -33,7 +34,8 @@ class UserWaivers extends ManageRelatedRecords
                 Tables\Columns\TextColumn::make('waiver.event.name')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('waiver.title'),
+                Tables\Columns\TextColumn::make('waiver.title')
+                    ->limit(50),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('F jS, Y g:i A T', 'America/New_York')
                     ->sortable()
@@ -46,6 +48,8 @@ class UserWaivers extends ManageRelatedRecords
                 // Tables\Actions\CreateAction::make(),
             ])
             ->actions([
+                Tables\Actions\DeleteAction::make()
+                    ->modalHeading(fn (CompletedWaiver $record): string => "Delete Signed Waiver for {$record->waiver->title}"),
                 // Tables\Actions\ViewAction::make()
                 //     ->url(fn (Order $record): string => ViewOrder::getUrl(['record' => $record->id])),
             ])

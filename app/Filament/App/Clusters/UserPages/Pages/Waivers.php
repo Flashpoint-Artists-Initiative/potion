@@ -37,7 +37,8 @@ class Waivers extends Page implements HasForms, HasTable
                 TextColumn::make('waiver.event.name')
                     ->label('Event'),
                 TextColumn::make('waiver.title')
-                    ->label('Waiver'),
+                    ->label('Waiver')
+                    ->limit(50),
             ])
             ->actions([
                 Action::make('view')
