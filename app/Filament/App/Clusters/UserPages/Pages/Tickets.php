@@ -165,6 +165,7 @@ class Tickets extends Page
                     ->required()
                     ->placeholder($username)
                     ->in([$username])
+                    ->mutateStateForValidationUsing(fn (?string $state) => $state ? trim($state) : null)
                     ->validationMessages([
                         'required' => 'You must agree to the terms of the waiver and sign it.',
                         'in' => 'The entered value must match your legal name, as listed in your profile.',
