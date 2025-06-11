@@ -204,6 +204,7 @@ return [
                 'completedWaivers.*',
                 'waivers.*',
                 'orders.*',
+                'carts.*',
                 'teams.*',
                 'shiftTypes.*',
                 'shifts.*',
@@ -369,6 +370,11 @@ return [
             'orders.view',
             'orders.refund',
             'orders.*',
+
+            'carts.viewAny',
+            'carts.view',
+            'carts.complete',
+            'carts.*',
 
             'teams.viewAny',
             'teams.view',
