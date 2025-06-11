@@ -91,12 +91,14 @@ class StripeService
                 'event_id' => $cart->event->id,
                 'user_id' => $cart->user_id,
                 'ticket_quantity' => $cart->quantity,
+                'cart_id' => $cart->id,
             ],
             'payment_intent_data' => [
                 'metadata' => [
                     'event_id' => $cart->event->id,
                     'user_id' => $cart->user_id,
                     'ticket_quantity' => $cart->quantity,
+                    'cart_id' => $cart->id,
                 ],
             ],
             'custom_text' => [
