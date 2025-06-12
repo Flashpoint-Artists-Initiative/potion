@@ -43,6 +43,7 @@ return [
         'sales_tax_rate' => env('SALES_TAX_RATE', 0),
         'stripe_fee_percentage' => env('STRIPE_FEE_PERCENTAGE', 0),
         'stripe_fee_flat' => env('STRIPE_FEE_FLAT', 0),
+        'dashboard_url' => env('STRIPE_DASHBOARD_URL', 'https://dashboard.stripe.com'),
 
     ],
 

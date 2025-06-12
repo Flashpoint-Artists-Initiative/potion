@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Stripe\Checkout\Session;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\InvalidRequestException;
+use Stripe\PaymentIntent;
 use Stripe\Refund;
 use Stripe\StripeClient;
 
@@ -271,5 +272,33 @@ class StripeService
     {
         abort_if($session->status !== 'complete', 422, 'Session has not been completed');
         abort_if($session->payment_status !== 'paid', 422, 'Session payment is not complete');
+    }
+
+    /**
+     * @return array<int, \Stripe\PaymentIntent>
+     */
+    public function getUserPaymentIntents(User $user): array
+    {
+        $paymentIntents = $this->stripeClient->paymentIntents->search([
+            'query' => sprintf('metadata["user_id"]:"%s"', $user->id),
+        ]);
+
+        return $paymentIntents->data;
+    }
+
+    public function getCartFromPaymentIntent(PaymentIntent $paymentIntent): ?Cart
+    {
+        if (array_key_exists('cart_id', $paymentIntent->metadata->toArray())) {
+            return Cart::find((int) $paymentIntent->metadata['cart_id']);
+        }
+
+        // If the payment intent does not have a cart_id, we can get it from the checkout session
+        $result = $this->stripeClient->checkout->sessions->all(['payment_intent' => $paymentIntent->id])->first();
+
+        if (! $result) {
+            return null;
+        }
+
+        return Cart::whereStripeCheckoutId($result->id)->first();
     }
 }
