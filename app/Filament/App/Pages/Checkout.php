@@ -9,7 +9,9 @@ use App\Services\CartService;
 use App\Services\CheckoutService;
 use App\Services\StripeService;
 use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Log;
 
 class Checkout extends Page
 {
@@ -35,6 +37,24 @@ class Checkout extends Page
 
         if (! $this->cart) {
             $this->redirect(PurchaseTickets::getUrl());
+
+            return;
+        }
+
+        if (! $this->cart->stripe_checkout_id) {
+            // $this->cart->expire();
+            $this->redirect(PurchaseTickets::getUrl());
+
+            Log::warning('Cart is missing Stripe Checkout ID.', [
+                'cart_id' => $this->cart->id,
+                'user_id' => $this->cart->user_id,
+            ]);
+
+            Notification::make()
+                ->title('Cart Error')
+                ->body('There was an error with your cart. Please try again.')
+                ->danger()
+                ->send();
 
             return;
         }
