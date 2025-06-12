@@ -6,6 +6,7 @@ namespace App\Filament\App\Clusters\UserPages\Pages;
 
 use App\Enums\LockdownEnum;
 use App\Filament\App\Clusters\UserPages;
+use App\Forms\Components\WaiverSignatureInput;
 use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
 use App\Models\Ticketing\ReservedTicket;
@@ -223,10 +224,6 @@ class TicketTransfers extends Page implements HasForms, HasTable
 
     public function signWaiverAction(): Action
     {
-        /** @var User */
-        $user = Auth::user();
-        $username = $user->legal_name;
-
         $waiver = Event::getCurrentEvent()?->waiver;
 
         return Action::make('signWaiver')
@@ -245,17 +242,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
                     ->content(new HtmlString($waiver->content ?? ''))
                     ->label('')
                     ->dehydrated(false),
-                TextInput::make('signature')
-                    ->label('I agree to the terms of the waiver and understand that I am signing this waiver electronically.')
-                    ->helperText('You must enter your full legal name as it is shown on your ID and listed in your profile.')
-                    ->required()
-                    ->placeholder($username)
-                    ->in([$username])
-                    ->mutateStateForValidationUsing(fn (?string $state) => $state ? trim($state) : null)
-                    ->validationMessages([
-                        'required' => 'You must agree to the terms of the waiver and sign it.',
-                        'in' => 'The entered value must match your legal name, as listed in your profile.',
-                    ]),
+                WaiverSignatureInput::make('signature'),
             ]);
     }
 

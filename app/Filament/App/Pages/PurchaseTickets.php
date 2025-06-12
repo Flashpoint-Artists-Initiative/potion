@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\App\Pages;
 
 use App\Enums\LockdownEnum;
+use App\Forms\Components\WaiverSignatureInput;
 use App\Models\Event;
 use App\Models\Ticketing\Cart;
 use App\Models\Ticketing\ReservedTicket;
@@ -223,18 +224,7 @@ class PurchaseTickets extends Page
                     ->content(new HtmlString($this->waiver->content ?? ''))
                     ->label('')
                     ->dehydrated(false),
-                TextInput::make('signature')
-                    ->label('I agree to the terms of the waiver and understand that I am signing this waiver electronically.')
-                    ->helperText('You must enter your full legal name as it is shown on your ID and listed in your profile.')
-                    ->required()
-                    ->placeholder($username)
-                    ->in([$username])
-                    ->mutateStateForValidationUsing(fn (?string $state) => $state ? trim($state) : null)
-                    ->validationMessages([
-                        'required' => 'You must agree to the terms of the waiver and sign it.',
-                        'in' => 'The entered value must match your legal name, as listed in your profile.',
-                    ])
-                    ->hidden($this->waiver === null),
+                WaiverSignatureInput::make('signature'),
             ])
             ->hidden(fn () => ! $this->waiver || $user->waivers()->where('waiver_id', $this->waiver->id)->count() > 0)
             ->afterValidation($this->createCompletedWaiver(...));
