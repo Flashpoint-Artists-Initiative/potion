@@ -94,6 +94,7 @@ class StripeService
                 'cart_id' => $cart->id,
             ],
             'payment_intent_data' => [
+                'description' => $client_reference_id,
                 'metadata' => [
                     'event_id' => $cart->event->id,
                     'user_id' => $cart->user_id,
