@@ -20,7 +20,7 @@ class TicketTransferPolicy extends AbstractModelPolicy
         /** @var TicketTransfer $model */
         if ($user->id === $model->user_id ||
             $user->id === $model->recipient_user_id ||
-            ($model->completed == false && $user->email === $model->recipient_email)
+            ($model->completed == false && strcasecmp($user->email, $model->recipient_email) === 0)
         ) {
             return true;
         }
@@ -49,7 +49,7 @@ class TicketTransferPolicy extends AbstractModelPolicy
             return false;
         }
 
-        if ($user->email === $model->recipient_email) {
+        if (strcasecmp($user->email, $model->recipient_email) === 0) {
             return true;
         }
 
