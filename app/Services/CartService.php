@@ -11,6 +11,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use LogicException;
 
 class CartService
 {
@@ -83,6 +84,10 @@ class CartService
     {
         $user = Auth::user();
         abort_unless($user instanceof User, 400, 'User not found');
+
+        if (empty($tickets) && empty($reserved)) {
+            throw new LogicException('Cannot create empty cart');
+        }
 
         $cart = Cart::create(['user_id' => $user->id]);
 

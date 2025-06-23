@@ -25,13 +25,14 @@ use Filament\Forms\Components\ViewField;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
@@ -295,8 +296,21 @@ class PurchaseTickets extends Page
 
     public function checkout(): void
     {
-        App::call([$this, 'createCart']);
-        redirect(Checkout::getUrl());
+        try {
+            App::call([$this, 'createCart']);
+            $this->redirect(Checkout::getUrl());
+        } catch (\Throwable $e) {
+            Log::error('Error during checkout process', [
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+            ]);
+
+            Notification::make()
+                ->title('Cart Error')
+                ->body('There was an error processing your cart. Please try again.')
+                ->danger()
+                ->send();
+        }
     }
 
     #[On('active-event-updated')]

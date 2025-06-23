@@ -42,7 +42,7 @@ class Checkout extends Page
         }
 
         if (! $this->cart->stripe_checkout_id) {
-            // $this->cart->expire();
+            $this->cart->expire();
             $this->redirect(PurchaseTickets::getUrl());
 
             Log::warning('Cart is missing Stripe Checkout ID.', [
