@@ -9,21 +9,19 @@ use App\Filament\Admin\Resources\CartResource;
 use App\Filament\Admin\Resources\EventResource;
 use App\Filament\Admin\Resources\OrderResource;
 use App\Filament\Admin\Resources\UserResource;
-use App\Models\Ticketing\Cart;
+use App\Models\User;
 use App\Services\StripeService;
 use Filament\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Components;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Filament\Infolists\Infolist;
 use NumberFormatter;
-use Filament\Infolists\Components;
-use Stripe\PaymentIntent;
 
 class UserStripeData extends Page implements HasForms, HasInfolists
 {
@@ -47,7 +45,7 @@ class UserStripeData extends Page implements HasForms, HasInfolists
         $this->stripeService = $stripeService;
     }
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         $this->record = $this->resolveRecord($record);
 

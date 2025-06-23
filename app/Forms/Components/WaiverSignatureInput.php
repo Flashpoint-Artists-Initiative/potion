@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Forms\Components;
 
+use App\Models\User;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 
 class WaiverSignatureInput extends TextInput
 {

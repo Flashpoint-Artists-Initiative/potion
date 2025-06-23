@@ -33,7 +33,7 @@ class ViewCart extends ViewRecord
                 ->action(function (Cart $record, StripeService $stripeService, CheckoutService $checkoutService): void {
                     $session = $stripeService->getCheckoutSession($record->stripe_checkout_id);
                     $checkoutService->resolveCompletedCheckoutSession($session);
-                })
+                }),
         ];
     }
 }
