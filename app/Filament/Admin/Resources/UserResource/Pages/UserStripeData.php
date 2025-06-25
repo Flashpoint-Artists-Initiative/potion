@@ -150,12 +150,24 @@ class UserStripeData extends Page implements HasForms, HasInfolists
 
         foreach ($paymentIntents as $paymentIntent) {
             $cart = $this->stripeService->getCartFromPaymentIntent($paymentIntent);
+            $disputes = $this->stripeService->getDisputesFromPaymentIntent($paymentIntent);
+            $refunds = $this->stripeService->getRefundsFromPaymentIntent($paymentIntent);
+
+            $status = $paymentIntent->status;
+            
+            if (! empty($disputes)) {
+                $status = 'dispute ' . $disputes[0]->status;
+            } 
+            
+            if (! empty($refunds)) {
+                $status = 'refund ' . $refunds[0]->status;
+            }
 
             $this->paymentIntents[$paymentIntent->id] = [
                 'id' => $paymentIntent->id,
                 'amount' => $formatter->formatCurrency($paymentIntent->amount / 100, 'USD'),
                 'status' => [
-                    'stripe' => $paymentIntent->status,
+                    'stripe' => $status,
                     'cart' => $cart ? $cart->status : false,
                 ],
                 'created_at' => $paymentIntent->created,

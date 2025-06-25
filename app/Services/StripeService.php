@@ -301,4 +301,28 @@ class StripeService
 
         return Cart::whereStripeCheckoutId($result->id)->first();
     }
+
+    /**
+     * @return array<int, \Stripe\Dispute>
+     */
+    public function getDisputesFromPaymentIntent(PaymentIntent $paymentIntent): array
+    {
+        $disputes = $this->stripeClient->disputes->all([
+            'payment_intent' => $paymentIntent->id,
+        ]);
+
+        return $disputes->data;
+    }
+
+    /**
+     * @return array<int, \Stripe\Refund>
+     */
+    public function getRefundsFromPaymentIntent(PaymentIntent $paymentIntent): array
+    {
+        $refunds = $this->stripeClient->refunds->all([
+            'payment_intent' => $paymentIntent->id,
+        ]);
+
+        return $refunds->data;
+    }
 }
