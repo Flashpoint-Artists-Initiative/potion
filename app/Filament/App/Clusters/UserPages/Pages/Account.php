@@ -9,6 +9,7 @@ use App\Filament\App\Clusters\UserPages;
 use App\Filament\Traits\HasAuthComponents;
 use App\Models\User;
 use Filament\Actions\Action;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Section;
@@ -77,8 +78,14 @@ class Account extends Page
                 ->requiresConfirmation()
                 ->modalDescription('Are you sure you want to delete your account? This action cannot be undone.  Any tickets you have purchased will no longer be available.')
                 ->modalHeading('Delete Account')
-                ->color(Color::Red),
-            // ->action(fn () => $this->post->delete()),
+                ->color(Color::Red)
+                ->action(function () {
+                    /** @var User */
+                    $user = Auth::user();
+                    $user->delete();
+                    Auth::logout();
+                    $this->redirect(Filament::getLoginUrl());
+                }),
         ];
     }
 
