@@ -21,8 +21,6 @@ class QRCodeService
 
     public function buildTicketContent(int $userId, int $eventId): string
     {
-        $userId = 123456;
-        $eventId = 123456;
         $content = ['u' => $userId, 'e' => $eventId];
 
         /**
