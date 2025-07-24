@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Filament\App\Pages\CheckoutComplete;
 use App\Models\Ticketing\Cart;
 use App\Models\Ticketing\CartItem;
 use App\Models\Ticketing\Order;
@@ -79,7 +80,7 @@ class StripeService
 
         // @phpstan-ignore argument.type
         $checkout_session = $this->stripeClient->checkout->sessions->create([
-            'redirect_on_completion' => 'never',
+            'return_url' => CheckoutComplete::getUrl() . '?sessionId={CHECKOUT_SESSION_ID}', // getUrl encodes the query string, so add it manually
             'payment_method_configuration' => config('services.stripe.payment_method_configuration'),
             'mode' => 'payment',
             'ui_mode' => 'embedded',
