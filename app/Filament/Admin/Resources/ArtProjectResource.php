@@ -15,8 +15,10 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
@@ -183,6 +185,16 @@ class ArtProjectResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    BulkAction::make('adjustStatus')
+                        ->label('Adjust Status')
+                        ->form([
+                            Forms\Components\Select::make('project_status')
+                                ->options(ArtProjectStatusEnum::toArray())
+                                ->default(ArtProjectStatusEnum::PendingReview)
+                                ->required(),
+                        ])
+                        ->action(fn (array $data, Collection $records) => ArtProject::whereIn('id', $records->pluck('id'))->update(['project_status' => $data['project_status']]))
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ]);
     }
