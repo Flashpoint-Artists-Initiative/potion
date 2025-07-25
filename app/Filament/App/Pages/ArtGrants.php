@@ -77,7 +77,7 @@ class ArtGrants extends Page
 
     public function form(Form $form): Form
     {
-        $projects = once(fn () => ArtProject::query()->currentEvent()->approved()->orderBy('name', 'desc')->get());
+        $projects = once(fn () => ArtProject::query()->currentEvent()->approved()->orderBy('name', 'asc')->get());
 
         // When voting is closed hide the unfunded projects
         if (! $this->votingIsOpen) {
