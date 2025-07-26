@@ -138,7 +138,7 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
         );
     }
 
-    public function checkVotingStatus(?User $user, bool $throwException = true): bool
+    public function checkVotingStatus(?User $user = null, bool $throwException = true): bool
     {
         try {
             if (! $this->event->votingIsOpen) {
@@ -151,6 +151,10 @@ class ArtProject extends Model implements ContractsAuditable, HasMedia
 
             if ($user && $this->votes()->where('user_id', $user->id)->exists()) {
                 throw new \Exception('User has already voted for this project');
+            }
+
+            if ($this->fundingStatus === GrantFundingStatusEnum::MinReached) {
+                throw new \Exception('Project has already reached minimum funding');
             }
 
             if ($this->fundingStatus === GrantFundingStatusEnum::MaxReached) {

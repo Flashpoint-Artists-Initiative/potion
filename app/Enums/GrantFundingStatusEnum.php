@@ -28,7 +28,7 @@ enum GrantFundingStatusEnum implements HasColor, HasLabel
     {
         return match ($this) {
             self::Unfunded => 'danger',
-            self::MinReached => 'warning',
+            self::MinReached => 'success',
             self::MaxReached => 'success',
         };
     }
