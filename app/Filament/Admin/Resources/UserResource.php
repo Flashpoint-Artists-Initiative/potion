@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources;
 
+use App\Actions\SendEmailBulkAction;
 use App\Enums\RolesEnum;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Models\User;
@@ -127,6 +128,8 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    SendEmailBulkAction::make()
+                        ->hidden(fn () => ! Auth::authenticate()->hasRole(RolesEnum::Admin)),
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),

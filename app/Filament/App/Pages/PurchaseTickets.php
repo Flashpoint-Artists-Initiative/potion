@@ -94,12 +94,12 @@ class PurchaseTickets extends Page
     public function form(Form $form): Form
     {
         //Temporary
-        return $form->schema([
-            Placeholder::make('locked')
-                ->label('')
-                ->content(new HtmlString('<h1 class="text-2xl text-center">Ticket sales are temporarily closed while we work out an issue with our payment processor.</h1>'))
-                ->dehydrated(false),
-        ]);
+        // return $form->schema([
+        //     Placeholder::make('locked')
+        //         ->label('')
+        //         ->content(new HtmlString('<h1 class="text-2xl text-center">Ticket sales are temporarily closed while we work out an issue with our payment processor.</h1>'))
+        //         ->dehydrated(false),
+        // ]);
 
         if (LockdownEnum::Tickets->isLocked() || $this->eventIsFuture == false) {
             return $form->schema([
