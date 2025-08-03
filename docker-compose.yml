@@ -55,7 +55,7 @@ services:
     image: nginx:latest
     user: root
     ports:
-      - 2000:443
+      - 443:443
     restart: always
     volumes:
       - ./nginx/conf/:/etc/nginx/conf.d/:ro
