@@ -15,6 +15,8 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\QueryBuilder;
+use Filament\Tables\Filters\QueryBuilder\Constraints\RelationshipConstraint;
 use Filament\Tables\Table;
 use Gerenuk\FilamentBanhammer\Resources\Actions\BanAction;
 use Gerenuk\FilamentBanhammer\Resources\Actions\UnbanAction;
@@ -114,6 +116,12 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->options(RolesEnum::class)
                     ->preload(),
+                QueryBuilder::make()
+                    ->constraints([
+                        RelationshipConstraint::make('orders')
+                            ->icon('heroicon-o-shopping-bag')
+                            ->multiple()
+                    ])
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
