@@ -145,7 +145,7 @@ class ShiftCalendarWidget extends CalendarWidget
                 ->action(function ($arguments) use ($shiftType) {
                     return Shift::create([
                         // Set start_offset here instead of start_datetime because no team is set on a new shift record
-                        'start_offset' => $this->record->event->volunteerBaseDate->diffInMinutes(Carbon::parse(data_get($arguments, 'dateStr'), 'America/New_York')),
+                        'start_offset' => $this->record->event->volunteerBaseDate->diffInMinutes(Carbon::parse(data_get($arguments, 'dateStr'))),
                         'length' => $shiftType->length,
                         'num_spots' => $shiftType->num_spots,
                         'shift_type_id' => $shiftType->id,
