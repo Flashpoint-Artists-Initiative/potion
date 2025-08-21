@@ -12,6 +12,7 @@ use App\Models\Ticketing\Order;
 use App\Models\Ticketing\PurchasedTicket;
 use App\Models\Ticketing\ReservedTicket;
 use App\Models\Ticketing\TicketTransfer;
+use App\Models\Volunteering\AdditionalHours;
 use App\Models\Volunteering\Shift;
 use App\Observers\UserObserver;
 use Carbon\Carbon;
@@ -176,6 +177,11 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     public function votes(): BelongsToMany
     {
         return $this->belongsToMany(ArtProject::class, 'project_user_votes')->withTimestamps()->withPivot('votes');
+    }
+
+    public function additionalHours(): HasMany
+    {
+        return $this->hasMany(AdditionalHours::class);
     }
 
     /**

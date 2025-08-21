@@ -71,6 +71,14 @@ class Team extends Model implements ContractsAuditable
         return $this->belongsToMany(User::class, 'volunteer_data');
     }
 
+    /**
+     * @return HasMany<AdditionalHours, $this>
+     */
+    public function additionalHours(): HasMany
+    {
+        return $this->hasMany(AdditionalHours::class, 'team_id');
+    }
+
     public function scopeCurrentEvent(Builder $query): Builder
     {
         return $query->where('event_id', Event::getCurrentEventId());
