@@ -84,7 +84,7 @@ trait HasSettingsAttributes
      */
     protected function volunteerSignupsStart(): Attribute
     {
-        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.signups_start'), 'America/New_York'));
+        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.signups_start'))->setTimezone('America/New_York'));
     }
 
     /**
@@ -92,7 +92,7 @@ trait HasSettingsAttributes
      */
     protected function volunteerSignupsEnd(): Attribute
     {
-        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.signups_end'), 'America/New_York'));
+        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.signups_end'))->setTimezone('America/New_York'));
     }
 
     /**
@@ -100,6 +100,6 @@ trait HasSettingsAttributes
      */
     protected function volunteerBaseDate(): Attribute
     {
-        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.base_date'), 'America/New_York'));
+        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.base_date'))->setTimezone('America/New_York'));
     }
 }

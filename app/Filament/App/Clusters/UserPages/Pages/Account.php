@@ -32,7 +32,7 @@ class Account extends Page
 
     protected static string $view = 'filament.app.clusters.user-pages.pages.account';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 10;
 
     protected static ?string $cluster = UserPages::class;
 

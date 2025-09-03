@@ -21,7 +21,7 @@ class Orders extends Page implements HasTable
 
     protected static ?string $navigationLabel = 'Orders';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 25;
 
     protected static string $view = 'filament.app.clusters.user-pages.pages.orders';
 

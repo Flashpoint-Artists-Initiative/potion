@@ -47,7 +47,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.app.clusters.user-pages.pages.ticket-transfers';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 15;
 
     protected static ?string $cluster = UserPages::class;
 

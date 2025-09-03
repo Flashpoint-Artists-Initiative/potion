@@ -247,6 +247,14 @@ class Event extends Model implements ContractsAuditable
         );
     }
 
+    protected function volunteerSignupsOpen(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => now()->greaterThan($this->getSetting('volunteering.signups_start', now()->addMinute()))
+                && now()->lessThan($this->getSetting('volunteering.signups_end', now()->subMinute()))
+        );
+    }
+
     /**
      * Returns the current event ID from the session,
      * otherwise the default set in the config, otherwise 0
