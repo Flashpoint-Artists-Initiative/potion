@@ -66,6 +66,7 @@ class ReservedTicketCreatedMail extends Mailable implements ShouldQueue
     {
         $eventName = $this->reservedTicket->ticketType->event->name;
         $ticketName = $this->reservedTicket->ticketType->name;
+        $ticketNote = $this->reservedTicket->note;
         $count = $this->count;
         $ticketWord = str('ticket')->plural($count);
         $isWord = $count > 1 ? 'are' : 'is';
@@ -75,6 +76,7 @@ class ReservedTicketCreatedMail extends Mailable implements ShouldQueue
         $message = (new MailMessage)
             ->greeting("Your {$ticketWord} for {$eventName} {$isWord} ready!")
             ->line(new HtmlString("You've received <b>{$count}</b> free <b>{$ticketName}</b> {$ticketWord}."))
+            ->lineif(! empty($ticketNote), new HtmlString("With Note: <i>{$ticketNote}</i>"))
             ->action("View your {$ticketWord}", $url)
             ->line('If you already have an account, click the link and login to view your ticket.')
             ->line("Otherwise, you'll be prompted to create an account before continuing.  Be sure to use this email address to create your account.")
