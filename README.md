@@ -1,14 +1,15 @@
 # Setting up a development environment
 
-## 1. Install PHP 8.3
+## 1. Install PHP 8.4
 
 https://www.php.net/manual/en/install.php
 
 ## 2. Enable PHP extensions
-- curl
-- fileinfo
-- openssl
-- zip
+
+-   curl
+-   fileinfo
+-   openssl
+-   zip
 
 ## 3. Install Composer
 
@@ -23,9 +24,9 @@ https://git-scm.com/
     $ git clone https://github.com/Flashpoint-Artists-Initiative/app-api.git
 
 ## 6. Install dependencies
-    
+
     $ cd app-api
-    
+
     $ composer install
 
 ## 7. Generate an encryption key
@@ -63,6 +64,7 @@ https://git-scm.com/
 https://docs.docker.com/
 
 ## 13. Run the app in docker
+
 If you are on an ARM based system, set `APP_IMAGE_PREFIX="arm-"` in `.env`
 
     $ docker-compose up
@@ -70,4 +72,3 @@ If you are on an ARM based system, set `APP_IMAGE_PREFIX="arm-"` in `.env`
 # Developer info
 
 See https://laravel.com/docs and https://filamentphp.com/
-
