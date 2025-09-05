@@ -1,6 +1,6 @@
 # Setting up a development environment
 
-## 1. Install PHP 8.4
+## 1. Install PHP 8.3
 
 https://www.php.net/manual/en/install.php
 

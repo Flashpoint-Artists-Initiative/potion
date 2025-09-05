@@ -1,65 +1,65 @@
 services:
-  app:
-    build:
-      context: .
-      dockerfile: dockerfiles/bref.dockerfile
-      args:
-        - PHP_VERSION=84
-        - BREF_VERSION=2
-        - PREFIX=${APP_IMAGE_PREFIX}
-    ports: [ '8000:8000' ]
-    user: nobody
-    volumes:
-      - .:/var/task:ro
-      - ./storage:/var/task/storage
-      - ./bootstrap/cache:/var/task/bootstrap/cache
-    environment:
-      HANDLER: public/index.php
-      DOCUMENT_ROOT: public
-      DB_HOST: mysql
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      XDG_CONFIG_HOME: /tmp
-      MYSQL_ATTR_SSL_CA: ''
-      MAIL_HOST: mailpit
-  mysql:
-    image: mysql:8.1
-    command: --tls-version='TLSv1.2'
-    ports: [ '${DB_PORT}:3306' ]
-    volumes:
-      - mysql-data:/var/lib/mysql
-      - ./.docker:/docker-entrypoint-initdb.d
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-  mailpit:
-    image: axllent/mailpit
-    container_name: mailpit
-    restart: always
-    volumes:
-      - mailpit-data:/data
-    ports:
-      - 8025:8025
-      - 1025:1025
-    environment:
-      MP_MAX_MESSAGES: 500
-      MP_DATA_FILE: /data/mailpit.db
-      MP_SMTP_AUTH_ACCEPT_ANY: 1
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1
-  nginx:
-    image: nginx:latest
-    user: root
-    ports:
-      - 443:443
-    restart: always
-    volumes:
-      - ./nginx/conf/:/etc/nginx/conf.d/:ro
-      - ./nginx/certs:/etc/nginx/ssl # Create certs with https://github.com/FiloSottile/mkcert
+    app:
+        build:
+            context: .
+            dockerfile: dockerfiles/bref.dockerfile
+            args:
+                - PHP_VERSION=83
+                - BREF_VERSION=2
+                - PREFIX=${APP_IMAGE_PREFIX}
+        ports: ["8000:8000"]
+        user: nobody
+        volumes:
+            - .:/var/task:ro
+            - ./storage:/var/task/storage
+            - ./bootstrap/cache:/var/task/bootstrap/cache
+        environment:
+            HANDLER: public/index.php
+            DOCUMENT_ROOT: public
+            DB_HOST: mysql
+            DB_USERNAME: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}
+            DB_DATABASE: ${DB_DATABASE}
+            AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+            AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+            XDG_CONFIG_HOME: /tmp
+            MYSQL_ATTR_SSL_CA: ""
+            MAIL_HOST: mailpit
+    mysql:
+        image: mysql:8.1
+        command: --tls-version='TLSv1.2'
+        ports: ["${DB_PORT}:3306"]
+        volumes:
+            - mysql-data:/var/lib/mysql
+            - ./.docker:/docker-entrypoint-initdb.d
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    mailpit:
+        image: axllent/mailpit
+        container_name: mailpit
+        restart: always
+        volumes:
+            - mailpit-data:/data
+        ports:
+            - 8025:8025
+            - 1025:1025
+        environment:
+            MP_MAX_MESSAGES: 500
+            MP_DATA_FILE: /data/mailpit.db
+            MP_SMTP_AUTH_ACCEPT_ANY: 1
+            MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    nginx:
+        image: nginx:latest
+        user: root
+        ports:
+            - 443:443
+        restart: always
+        volumes:
+            - ./nginx/conf/:/etc/nginx/conf.d/:ro
+            - ./nginx/certs:/etc/nginx/ssl # Create certs with https://github.com/FiloSottile/mkcert
 volumes:
-  mysql-data:
-  mailpit-data:
+    mysql-data:
+    mailpit-data:
