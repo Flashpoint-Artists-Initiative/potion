@@ -1,45 +1,14 @@
 #!/bin/bash
 
 #------------------------------------
-# Prerequisites
-#------------------------------------
-
-# Add php repos
-curl -sSL https://packages.sury.org/php/apt.gpg | sudo tee /usr/share/keyrings/suryphp-archive-keyring.gpg > /dev/null
-echo "deb [signed-by=/usr/share/keyrings/suryphp-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/sury-php.list
-
-# Update system
-sudo apt update && sudo apt upgrade -y
-
-# Install PHP 8.3
-sudo apt install php8.3 php8.3-cli php8.3-fpm php8.3-mysql php8.3-xml php8.3-curl php8.3-zip php8.3-mbstring php8.3-gd php8.3-bcmath -y
-
-# Install Composer
-curl -sS https://getcomposer.org/installer | php
-sudo mv composer.phar /usr/local/bin/composer
-
-# Install Node.js (use NodeSource for latest version)
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install nodejs -y
-
-# Install Git if not already installed
-sudo apt install git -y
-
-#------------------------------------
-# Setup Application
-#------------------------------------
-
-# Clone the repository
-git clone https://github.com/Flashpoint-Artists-Initiative/app-api.git
-cd app-api
-
 # Configure Environment
-cp .env.example .env
+#------------------------------------
 # The .env file must exist and be filled out
 # ! IMPORTANT ! Go edit the .env file now as this will be used for the rest of the procedure to build stuff
 source .env
 
 # Install PHP dependencies
+composer update
 composer install
 
 # Install Node.js dependencies
@@ -62,7 +31,6 @@ sudo chmod -R 775 bootstrap/cache
 
 sudo chown -R alchemy:alchemy storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
-
 
 #------------------------------------
 # Database Setup
@@ -95,7 +63,7 @@ sudo usermod -aG docker $USER
 npm run build
 
 # Start the development server
-php artisan serve --host=0.0.0.0 --port=80
+php artisan serve --host=0.0.0.0 --port=8000
 
 # RPi-Specific Notes
 # -   Performance: The RPi5 should handle this well, but composer install and npm install may take longer than on a desktop
