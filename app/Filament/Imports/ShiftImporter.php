@@ -20,16 +20,9 @@ class ShiftImporter extends Importer
     public static function getColumns(): array
     {
         return [
-            ImportColumn::make('team')
-                ->label('Team')
-                ->requiredMapping()
-                ->rules(['required', 'string'])
-                ->helperText('The name of the volunteer team')
-                ->fillRecordUsing(function (Shift $record, string $state): void {
-                    // Ignore this value in the shift itself, it's used to create the team
-                }),
             ImportColumn::make('shift_type')
                 ->label('Shift Type')
+                ->guess(['task', 'shift_type', 'name'])
                 ->requiredMapping()
                 ->rules(['required', 'string'])
                 ->helperText('The name of the shift type')
@@ -71,11 +64,12 @@ class ShiftImporter extends Importer
                 }),
             ImportColumn::make('num_spots')
                 ->label('Number of Spots')
+                ->guess(['quantity', 'num_spots', 'number_of_spots', 'spots'])
                 ->requiredMapping()
                 ->rules(['integer']),
             ImportColumn::make('multiplier')
                 ->label('Multiplier')
-                ->rules(['float'])
+                ->rules(['numeric', 'between:0,2'])
                 ->fillRecordUsing(function (Shift $record, ?float $state): void {
                     // Ignore this value in the shift itself, it's handled in beforeCreate
                 }),
@@ -91,19 +85,11 @@ class ShiftImporter extends Importer
     {
         $data = $this->getData();
         $eventId = $this->options['eventId'] ?? Event::getCurrentEventId();
-
-        // Create the team and shift type if they don't exist
-        $team = Team::firstOrCreate([
-            'name' => $data['team'],
-            'event_id' => $eventId,
-        ],
-        [
-            'description' => 'Created during shift import',
-        ]);
+        $teamId = $this->options['teamId'];
 
         $shiftType = ShiftType::firstOrCreate([
             'title' => $data['shift_type'],
-            'team_id' => $team->id,
+            'team_id' => $teamId,
         ],
         [
             'description' => $data['description'],
