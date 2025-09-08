@@ -78,7 +78,7 @@ class ShiftImporter extends Importer
 
     public function resolveRecord(): ?Shift
     {
-        return new Shift;
+        return null;
     }
 
     protected function beforeCreate(): void
