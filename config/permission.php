@@ -194,6 +194,7 @@ return [
         'roles' => [
             RolesEnum::Admin->value => [
                 'panelAccess.admin',
+                'panelAccess.gate',
                 'users.*',
                 'events.*',
                 'roles.*',
@@ -281,6 +282,7 @@ return [
         'permissions' => [
             // Special permission to allow access to the admin panel
             'panelAccess.admin',
+            'panelAccess.gate',
 
             'users.viewAny',
             'users.view',

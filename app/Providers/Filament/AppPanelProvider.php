@@ -52,6 +52,11 @@ class AppPanelProvider extends CommonPanelProvider
                     ->icon('heroicon-o-wrench-screwdriver')
                     ->visible(fn (): bool => filament()->auth()->user()?->can('panelAccess.admin') ?? false)
                     ->sort(999),
+                NavigationItem::make('Gate Site')
+                    ->url(fn () => route('filament.gate.pages.dashboard'))
+                    ->icon('heroicon-o-identification')
+                    ->visible(fn (): bool => filament()->auth()->user()?->can('panelAccess.gate') ?? false)
+                    ->sort(999),
             ])
             ->userMenuItems([
                 'profile' => MenuItem::make()
