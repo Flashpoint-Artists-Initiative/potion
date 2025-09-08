@@ -29,14 +29,6 @@ class ListTeams extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
-            ImportAction::make()
-                ->label('Import Teams')
-                ->importer(ShiftImporter::class)
-                ->options([
-                    'eventId' => Event::getCurrentEventId(),
-                ])
-                ->chunkSize(30)
-                ->visible(fn () => Auth::user()?->can('teams.create') && ! LockdownEnum::Volunteers->isLocked()),
         ];
     }
 }

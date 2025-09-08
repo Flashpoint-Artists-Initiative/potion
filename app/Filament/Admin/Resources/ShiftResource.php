@@ -90,6 +90,7 @@ class ShiftResource extends Resource
                     ->default('1')
                     ->selectablePlaceholder(false)
                     ->options([
+                        '0' => 'No credit',
                         '1' => '1x',
                         '1.5' => '1.5x',
                         '2' => '2x',
