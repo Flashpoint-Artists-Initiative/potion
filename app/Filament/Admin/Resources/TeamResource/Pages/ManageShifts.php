@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
+use App\Enums\LockdownEnum;
 use App\Filament\Admin\Resources\ShiftResource;
 use App\Filament\Admin\Resources\TeamResource;
+use App\Filament\Imports\ShiftImporter;
+use App\Models\Event;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\Team;
 use Filament\Actions\CreateAction as ActionsCreateAction;
+use Filament\Actions\ImportAction;
 use Filament\Facades\Filament;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -19,6 +23,8 @@ use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ManageShifts extends ManageRelatedRecords
 {
@@ -33,6 +39,8 @@ class ManageShifts extends ManageRelatedRecords
 
     protected function getHeaderActions(): array
     {
+        $recordId = $this->record instanceof Model ? $this->record->getKey() : $this->record;
+
         return [
             ActionsCreateAction::make()
                 ->label('Add Shift')
@@ -41,6 +49,15 @@ class ManageShifts extends ManageRelatedRecords
                 ]))
                 ->icon('heroicon-o-plus')
                 ->color('primary'),
+            ImportAction::make()
+                ->label('Import Shifts')
+                ->importer(ShiftImporter::class)
+                ->options([
+                    'eventId' => Event::getCurrentEventId(),
+                    'teamId' => $recordId,
+                ])
+                ->chunkSize(30)
+                ->visible(fn () => Auth::user()?->can('teams.create') && ! LockdownEnum::Volunteers->isLocked()),
         ];
     }
 
