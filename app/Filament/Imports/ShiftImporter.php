@@ -84,7 +84,6 @@ class ShiftImporter extends Importer
     protected function beforeCreate(): void
     {
         $data = $this->getData();
-        $eventId = $this->options['eventId'] ?? Event::getCurrentEventId();
         $teamId = $this->options['teamId'];
 
         $shiftType = ShiftType::firstOrCreate([
