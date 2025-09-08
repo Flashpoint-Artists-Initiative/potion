@@ -78,7 +78,9 @@ class ShiftImporter extends Importer
 
     public function resolveRecord(): ?Shift
     {
-        return null;
+        // TODO: Figure out a way to match existing shifts
+        // Tricky part is matching shift_type_id
+        return new Shift;
     }
 
     protected function beforeCreate(): void
@@ -120,6 +122,11 @@ class ShiftImporter extends Importer
     {
         $start = Carbon::parse($data['start_time']);
         $end = Carbon::parse($data['end_time']);
+
+        if ($start > $end) {
+            // If the end time is before the start time, assume it goes to the next day
+            $end->addDay();
+        }
 
         return (int) $start->diffInMinutes($end);
     }
