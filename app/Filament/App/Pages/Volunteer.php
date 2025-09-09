@@ -7,6 +7,7 @@ namespace App\Filament\App\Pages;
 use App\Filament\App\Widgets\UserShifts;
 use App\Models\Event;
 use App\Models\Volunteering\Shift;
+use App\Models\Volunteering\ShiftType;
 use App\Models\Volunteering\Team;
 use App\Services\VolunteerService;
 use Carbon\Carbon;
@@ -18,6 +19,11 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Infolists\Components\Actions\Action as InfolistAction;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\Action;
@@ -25,8 +31,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 
 /**
  * @property Form $form
@@ -41,7 +49,7 @@ class Volunteer extends Page implements HasTable
 
     protected static string $view = 'filament.app.pages.volunteer';
 
-    protected static ?string $slug = 'volunteer';
+    protected static ?string $slug = 'volunteer/{id?}';
 
     public bool $signupsEnabled;
 
@@ -52,8 +60,22 @@ class Volunteer extends Page implements HasTable
     /** @var array<mixed> $data */
     public array $data = [];
 
-    public function mount(): void
+    public int $teamId;
+
+    public function getTitle(): string|Htmlable
     {
+        if ($this->teamId) {
+            $team = Team::find($this->teamId);
+            if ($team) {
+                return 'Volunteer Signups - '.$team->name;
+            }
+        }
+        return 'Volunteer Signups';
+    }
+
+    public function mount(?int $id = null): void
+    {
+        $this->teamId = $id ?? 0;
         $this->signupsEnabled = Event::getCurrentEvent()->volunteerSignupsOpen ?? false;
         $this->signupStartDate = Event::getCurrentEvent()->volunteerSignupsStart ?? now();
         $this->signupEndDate = Event::getCurrentEvent()->volunteerSignupsEnd ?? now();
@@ -61,12 +83,12 @@ class Volunteer extends Page implements HasTable
         $this->form->fill();
     }
 
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            UserShifts::class,
-        ];
-    }
+    // protected function getHeaderWidgets(): array
+    // {
+    //     return [
+    //         UserShifts::class,
+    //     ];
+    // }
 
     public function form(Form $form): Form
     {
@@ -82,36 +104,73 @@ class Volunteer extends Page implements HasTable
 
         return $form
             ->schema([
-                Select::make('teams')
-                    ->options($teams)
+                ToggleButtons::make('start_date')
+                    ->options($dateRange)
+                    ->required()
+                    ->default($earliestDate->toDateString())
+                    ->grouped()
                     ->live()
-                    ->afterStateUpdated(fn() => $this->resetTable())
-                    ->placeholder('Select a Team'),
-                Grid::make()
-                    ->schema([
-                        ToggleButtons::make('start_date')
-                            ->options($dateRange)
-                            ->required()
-                            ->default($earliestDate->toDateString())
-                            ->grouped()
-                            ->live()
-                            ->disableOptionWhen(function (string $value, Get $get) {
-                                return Carbon::parse($value)->isAfter(Carbon::parse($get('end_date')));
-                            })
-                            ->afterStateUpdated(fn() => $this->resetTable()),
-                        ToggleButtons::make('end_date')
-                            ->options($dateRange)
-                            ->required()
-                            ->grouped()
-                            ->default($latestDate->toDateString())
-                            ->live()
-                            ->disableOptionWhen(function (string $value, Get $get) {
-                                return Carbon::parse($value)->isBefore(Carbon::parse($get('start_date')));
-                            })
-                            ->afterStateUpdated(fn() => $this->resetTable()),
-                    ]),
+                    ->disableOptionWhen(function (string $value, Get $get) {
+                        return Carbon::parse($value)->isAfter(Carbon::parse($get('end_date')));
+                    })
+                    ->afterStateUpdated(fn() => $this->resetTable()),
+                ToggleButtons::make('end_date')
+                    ->options($dateRange)
+                    ->required()
+                    ->grouped()
+                    ->default($latestDate->toDateString())
+                    ->live()
+                    ->disableOptionWhen(function (string $value, Get $get) {
+                        return Carbon::parse($value)->isBefore(Carbon::parse($get('start_date')));
+                    })
+                    ->afterStateUpdated(fn() => $this->resetTable()),
             ])
             ->statePath('data');
+    }
+
+    public function teamsInfolist(Infolist $infolist): Infolist
+    {
+        $teams = Team::query()->currentEvent()->active()->orderBy('name')->get();
+
+        return $infolist
+            ->state(['teams' => $teams])
+            ->schema([
+                RepeatableEntry::make('teams')
+                    ->label(new HtmlString('<h1 class="text-2xl">Teams</h1>'))
+                    ->schema([
+                        Section::make(fn (Team $state) => $state->name)
+                            ->headerActions([
+                                InfolistAction::make('shifts')
+                                    ->label('View Shifts')
+                                    ->url(fn (Team $record) => self::getUrl(['id' => $record->id])),
+                            ])
+                            ->schema([
+                                TextEntry::make('description')
+                                    ->label(''),
+                            ]),
+                    ]),
+            ]);
+    }
+
+    public function shiftTypesInfolist(Infolist $infolist): Infolist
+    {
+        $shiftTypes = ShiftType::query()
+            ->whereHas('team', function (Builder $query) {
+                $query->where('teams.id', $this->teamId);
+            })
+            ->orderBy('title')
+            ->get();
+
+        return $infolist
+            ->state(['shiftTypes' => $shiftTypes])
+            ->schema([
+                RepeatableEntry::make('shiftTypes')
+                    ->label('Available Positions')
+                    ->schema([
+                        TextEntry::make('description')
+                            ->label(fn (ShiftType $record) => $record->title),
+                    ]),
+            ]);
     }
 
     public function table(Table $table): Table
@@ -129,15 +188,14 @@ class Volunteer extends Page implements HasTable
                 ['start_offset', '>', $startOffset],
                 ['start_offset', '<', $endOffset],
             ])
-            ->whereHas('team', function (Builder $query) use ($data) {
+            ->whereHas('team', function (Builder $query) {
                 // Hide all teams when none are selected
-                $query->where('teams.id', $data['teams'] ?? 0);
+                $query->where('teams.id', $this->teamId);
             });
 
         return $table
             ->query($query)
             ->defaultSort('startCarbon', 'asc')
-            ->emptyStateDescription(fn() => $data['teams'] ? null : 'Select a team')
             ->columns([
                 TextColumn::make('shiftType.title')
                     ->label('Position')

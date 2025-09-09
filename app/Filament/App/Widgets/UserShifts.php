@@ -9,10 +9,12 @@ use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 
 class UserShifts extends BaseWidget
 {
@@ -38,15 +40,18 @@ class UserShifts extends BaseWidget
                 TextColumn::make('shiftType.title')
                     ->label('Position')
                     ->sortable(),
+                TextColumn::make('shiftType.location')
+                    ->label(new HtmlString('Starting<br>Location'))
+                    ->sortable(),
                 TextColumn::make('startCarbon')
                     ->label('Start Time')
-                    ->dateTime('D, m/j g:ia T', 'America/New_York')
+                    ->dateTime('D, m/j g:ia', 'America/New_York')
                     ->sortable(query: fn(Builder $query, string $direction) => $query->orderBy('start_offset', $direction)),
                 TextColumn::make('endCarbon')
                     ->label('End Time')
-                    ->dateTime('D, m/j g:ia T', 'America/New_York'),
+                    ->dateTime('D, m/j g:ia', 'America/New_York'),
                 TextColumn::make('lengthInHours')
-                    ->label('Duration (Hours)')
+                    ->label(new HtmlString('Duration<br>(Hours)'))
                     ->sortable(),
                 TextColumn::make('volunteers_count')
                     ->label('Signed Up')
@@ -56,6 +61,9 @@ class UserShifts extends BaseWidget
             ->actions([
                 Action::make('cancel')
                     ->button()
+                    ->requiresConfirmation()
+                    ->modalHeading('Cancel Shift')
+                    ->modalDescription('This will remove the shift from your schedule, allowing someone else to sign up for it.')
                     ->action(function (Shift $record) {
                         $user = Auth::user();
                         if (! $user) {
@@ -69,7 +77,7 @@ class UserShifts extends BaseWidget
                             ->send();
                     })
                     ->label('Cancel')
-            ]);
+            ], position: ActionsPosition::BeforeColumns);
     }
 
     public static function canView(): bool

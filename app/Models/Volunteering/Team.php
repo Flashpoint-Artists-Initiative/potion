@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
+use Illuminate\Support\Str;
 
 /**
  * @property int $total_num_spots
@@ -82,6 +83,18 @@ class Team extends Model implements ContractsAuditable
     public function scopeCurrentEvent(Builder $query): Builder
     {
         return $query->where('event_id', Event::getCurrentEventId());
+    }
+
+    /**
+     * @return Attribute<string,never>
+     */
+    protected function slug(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->name
+                ? Str::slug($this->name)
+                : null
+        );
     }
 
     /**

@@ -7,9 +7,17 @@
         @endif
     </div>
     @else
-        <x-filament-panels::form>
-            {{ $this->form }}
-        </x-filament-panels::form>
-        {{ $this->table }}
+        @if ($teamId)
+            {{ $this->shiftTypesInfolist }}
+
+            <x-filament-panels::form>
+                {{ $this->form }}
+            </x-filament-panels::form>
+
+            {{ $this->table }}
+        @else
+            @livewire(\App\Filament\App\Widgets\UserShifts::class)
+            {{ $this->teamsInfolist }}
+        @endif
     @endif
 </x-filament-panels::page>
