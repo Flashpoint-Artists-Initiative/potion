@@ -9,6 +9,7 @@ use App\Models\User;
 use Filament\Support\Colors\Color;
 use Guava\Calendar\Contracts\Resourceable;
 use Guava\Calendar\ValueObjects\CalendarResource;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 use Spatie\Color\Rgb;
@@ -38,6 +40,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
         'location',
         'length',
         'num_spots',
+        'details', // JSON field for predefined details
     ];
 
     protected $withCount = [
@@ -46,6 +49,17 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
 
     protected $with = [
         'requirements',
+    ];
+
+    protected $casts = [
+        'details' => AsArrayObject::class,
+    ];
+
+    // This is the easiest way to set a default value for a JSON column
+    // Don't add default key => values here, instead always check if they exist
+    // That way there's never an issue of backwards incompatibility when adding new settings
+    protected $attributes = [
+        'details' => '{}',
     ];
 
     /**
@@ -134,5 +148,56 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
             ->title($this->title)
             ->eventBackgroundColor((string) Rgb::fromString('rgb(' . $colors[$offset]['700'] . ')')->toHex());
         // ->eventBackgroundColor($this->hsv2rgb($offset, 100, 50));
+    }
+
+    /**
+     * A simple way to access nested settings attributes
+     *
+     * @param  string  $key  The key to access in the settings array, in dot notation
+     * @param  mixed  $default  The default value to return if the key does not exist.  If null, it will check the config file for a default value.
+     */
+    protected function getSetting(string $key, mixed $default = null): mixed
+    {
+        return Arr::dot($this->details ?? [])[$key] ?? $default;
+    }
+
+    /**
+     * @return Attribute<bool|string,never>
+     */
+    protected function shadeProvided(): Attribute
+    {
+        return Attribute::get(fn () => $this->getSetting('shade_provided.state', false));
+    }
+
+    /**
+     * @return Attribute<string,never>
+     */
+    protected function shadeProvidedNote(): Attribute
+    {
+        return Attribute::get(fn () => (string) $this->getSetting('shade_provided.note', ''));
+    }
+
+    /**
+     * @return Attribute<bool|string,never>
+     */
+    protected function longStanding(): Attribute
+    {
+        return Attribute::get(fn () => $this->getSetting('long_standing.state', false));
+    }
+
+    /**
+     * @return Attribute<string,never>
+     */
+    protected function longStandingNote(): Attribute
+    {
+        return Attribute::get(fn () => (string) $this->getSetting('long_standing.note', ''));
+    }
+
+    /**
+     * @return Attribute<string,never>
+     */
+    protected function physicalRequirementsNote(): Attribute
+    {
+        return Attribute::get(fn () => (string) $this->getSetting('physical_requirements.note', ''));
     }
 }

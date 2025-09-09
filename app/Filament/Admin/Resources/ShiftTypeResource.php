@@ -7,7 +7,10 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\ShiftTypeResource\Pages;
 use App\Models\Volunteering\ShiftType;
 use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -47,12 +50,58 @@ class ShiftTypeResource extends Resource
                     ->step(.25)
                     ->default(120)
                     ->formatStateUsing(fn ($state) => $state / 60)
-                    ->dehydrateStateUsing(fn ($state) => $state * 60),
+                    ->dehydrateStateUsing(fn ($state) => $state * 60)
+                    ->required(),
                 Forms\Components\TextInput::make('num_spots')
                     ->label('Default Number of People')
                     ->numeric()
                     ->default(1)
-                    ->minValue(1),
+                    ->minValue(1)
+                    ->required(),
+                Fieldset::make('Shift Details')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                Forms\Components\Select::make('shade_provided.state')
+                                    ->label('Shade Provided')
+                                    ->options([
+                                        false => 'No',
+                                        true => 'Yes',
+                                        'note' => 'Other - see details',
+                                    ])
+                                    ->selectablePlaceholder(false)
+                                    ->default(false)
+                                    ->live(),
+                                Forms\Components\TextInput::make('shade_provided.note')
+                                    ->label('Shade Provided Details')
+                                    ->helperText('This will show up as a tooltip.')
+                                    ->hidden(fn (Get $get) => $get('shade_provided.state') !== 'note')
+                                    ->required(fn (Get $get) => $get('shade_provided.state') === 'note'),
+                        ]),
+                        Grid::make(2)
+                            ->schema([
+                                Forms\Components\Select::make('long_standing.state')
+                                    ->label('Long Periods of Standing')
+                                    ->options([
+                                        false => 'No',
+                                        true => 'Yes',
+                                        'note' => 'Other - see details',
+                                    ])
+                                    ->selectablePlaceholder(false)
+                                    ->default(false)
+                                    ->live(),
+                                Forms\Components\TextInput::make('long_standing.note')
+                                    ->label('Long Periods of Standing Details')
+                                    ->helperText('This will show up as a tooltip.')
+                                    ->hidden(fn (Get $get) => $get('long_standing.state') !== 'note')
+                                    ->required(fn (Get $get) => $get('long_standing.state') === 'note'),
+                        ]),
+                        Forms\Components\TextInput::make('physical_requirements.note')
+                            ->label('Physical Requirements Details')
+                            ->helperText('Enter any physical requirements for this shift. This will show up as a tooltip.')
+                            ->columnSpanFull(),
+                    ])
+                    ->statePath('details'),
             ]);
     }
 

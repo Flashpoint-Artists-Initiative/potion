@@ -82,6 +82,7 @@ class ManageShifts extends ManageRelatedRecords
     {
         return $table
             ->recordTitleAttribute('title')
+            ->defaultSort('start_offset', 'asc')
             ->modifyQueryUsing(function (Builder $query) {
                 $query->withCount('volunteers');
             })
