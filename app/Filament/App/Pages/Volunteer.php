@@ -60,7 +60,7 @@ class Volunteer extends Page implements HasTable
 
     public int $teamId;
 
-    /** @var array<mixed> */
+    /** @var array<mixed> $data */
     public array $data = [];
 
     public function getTitle(): string|Htmlable

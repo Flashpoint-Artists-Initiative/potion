@@ -26,7 +26,6 @@
             @endif
 
             {{ $this->teamsInfolist }}
-
         @endif
     @endif
 </x-filament-panels::page>
