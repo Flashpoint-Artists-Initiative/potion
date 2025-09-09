@@ -14,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class ShiftTypeResource extends Resource
 {
@@ -99,7 +100,7 @@ class ShiftTypeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 

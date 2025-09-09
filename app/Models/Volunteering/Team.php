@@ -32,6 +32,7 @@ class Team extends Model implements ContractsAuditable
         'event_id',
         'name',
         'description',
+        'signup_note',
         'email',
         'active',
     ];
