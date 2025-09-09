@@ -270,6 +270,14 @@ return [
                 'orders.viewAny',
                 'orders.view',
             ],
+            RolesEnum::VolunteerCoordinator->value => [
+                'panelAccess.admin',
+                'teams.*',
+                'shiftTypes.*',
+                'shifts.*',
+                'requirements.*',
+                'shiftSignups.*',
+            ],
         ],
         // List of permissions every user can do, to pass to the front end
         'defaultPermissions' => [
