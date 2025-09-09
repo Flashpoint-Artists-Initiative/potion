@@ -91,7 +91,31 @@ class Team extends Model implements ContractsAuditable
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                return $this->shifts->sum('num_spots');
+                return $this->shifts->sum(function (Shift $shift) {
+                    if ($shift->multiplier == 0.0) {
+                        return 0;
+                    }
+
+                    return $shift->num_spots;
+                });
+            }
+        );
+    }
+    
+    /**
+     * @return Attribute<int,never>
+     */
+    protected function totalFilledSpots(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $this->shifts->sum(function (Shift $shift) {
+                    if ($shift->multiplier == 0.0) {
+                        return 0;
+                    }
+
+                    return $shift->volunteers_count;
+                });
             }
         );
     }
@@ -103,7 +127,7 @@ class Team extends Model implements ContractsAuditable
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                $total = 100 * ($this->volunteers_count / max(1, $this->total_num_spots));
+                $total = 100 * ($this->totalFilledSpots / max(1, $this->total_num_spots));
 
                 return sprintf('%.1f', $total);
             }
