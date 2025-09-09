@@ -109,27 +109,47 @@ class Volunteer extends Page implements HasTable
 
         return $form
             ->schema([
-                ToggleButtons::make('start_date')
+                Select::make('start_date')
                     ->options($dateRange)
                     ->required()
                     ->default($earliestDate->toDateString())
-                    ->grouped()
                     ->live()
                     ->disableOptionWhen(function (string $value, Get $get) {
                         return Carbon::parse($value)->isAfter(Carbon::parse($get('end_date')));
                     })
                     ->afterStateUpdated(fn() => $this->resetTable()),
-                ToggleButtons::make('end_date')
+                Select::make('end_date')
                     ->options($dateRange)
                     ->required()
-                    ->grouped()
                     ->default($latestDate->toDateString())
                     ->live()
                     ->disableOptionWhen(function (string $value, Get $get) {
                         return Carbon::parse($value)->isBefore(Carbon::parse($get('start_date')));
                     })
                     ->afterStateUpdated(fn() => $this->resetTable()),
+                // TODO: Get these to work on responsive layouts
+                // ToggleButtons::make('start_date')
+                //     ->options($dateRange)
+                //     ->required()
+                //     ->default($earliestDate->toDateString())
+                //     ->grouped()
+                //     ->live()
+                //     ->disableOptionWhen(function (string $value, Get $get) {
+                //         return Carbon::parse($value)->isAfter(Carbon::parse($get('end_date')));
+                //     })
+                //     ->afterStateUpdated(fn() => $this->resetTable()),
+                // ToggleButtons::make('end_date')
+                //     ->options($dateRange)
+                //     ->required()
+                //     ->grouped()
+                //     ->default($latestDate->toDateString())
+                //     ->live()
+                //     ->disableOptionWhen(function (string $value, Get $get) {
+                //         return Carbon::parse($value)->isBefore(Carbon::parse($get('start_date')));
+                //     })
+                //     ->afterStateUpdated(fn() => $this->resetTable()),
             ])
+            ->columns(2)
             ->statePath('data');
     }
 
