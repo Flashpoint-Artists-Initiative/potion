@@ -88,16 +88,6 @@ class ShiftCalendarWidget extends CalendarWidget
             'durationEditable' => false,
             'classNames' => ['cursor-default'],
         ]);
-        $events->push([
-            'title' => 'Event Start',
-            // 'start' => '2025-10-26 01:00:00 -04:00',
-            // 'end' => '2025-10-26 03:00:00 -04:00',
-            'start' => Carbon::parse('2025-10-26 01:00:00', 'America/New_York'),
-            'end' => Carbon::parse('2025-10-26 03:00:00', 'America/New_York'),
-            'startEditable' => false,
-            'durationEditable' => false,
-            'classNames' => ['cursor-default'],
-        ]);
 
         return $events;
     }

@@ -1,4 +1,9 @@
 <x-filament-panels::page>
+    @if ( ! $hasTicket )
+        <x-notification-banner color="warning" class="mb-2 grow">
+            You do not have a ticket for this event, so you cannot sign up to volunteer. Please purchase a ticket first.
+        </x-notification-banner>
+    @endif
     @if (! $signupsEnabled)
     <div>
         <h1 class="text-2xl text-center">Volunteer signups are closed</h1>
@@ -16,8 +21,12 @@
 
             {{ $this->table }}
         @else
-            @livewire(\App\Filament\App\Widgets\UserShifts::class)
+            @if (\App\Filament\App\Widgets\UserShifts::canView())
+                @livewire(\App\Filament\App\Widgets\UserShifts::class)
+            @endif
+
             {{ $this->teamsInfolist }}
+            
         @endif
     @endif
 </x-filament-panels::page>

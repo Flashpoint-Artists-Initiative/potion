@@ -30,6 +30,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -57,10 +58,12 @@ class Volunteer extends Page implements HasTable
 
     public Carbon $signupEndDate;
 
-    /** @var array<mixed> $data */
-    public array $data = [];
+    public bool $hasTicket = false;
 
     public int $teamId;
+
+    /** @var array<mixed> $data */
+    public array $data = [];
 
     public function getTitle(): string|Htmlable
     {
@@ -79,6 +82,8 @@ class Volunteer extends Page implements HasTable
         $this->signupsEnabled = Event::getCurrentEvent()->volunteerSignupsOpen ?? false;
         $this->signupStartDate = Event::getCurrentEvent()->volunteerSignupsStart ?? now();
         $this->signupEndDate = Event::getCurrentEvent()->volunteerSignupsEnd ?? now();
+
+        $this->hasTicket = Auth::user() && Auth::user()->getValidTicketsForEvent()->isNotEmpty();
 
         $this->form->fill();
     }
@@ -269,7 +274,7 @@ class Volunteer extends Page implements HasTable
                     })
                     ->disabled(function (Shift $record, VolunteerService $volunteerService) {
                         $user = Auth::user();
-                        if (! $this->signupsEnabled || ! $user) {
+                        if (! $this->signupsEnabled || ! $user || ! $this->hasTicket) {
                             return true;
                         }
 
@@ -287,6 +292,6 @@ class Volunteer extends Page implements HasTable
 
                         return false;
                     })
-            ]);
+            ], position: ActionsPosition::BeforeColumns);
     }
 }
