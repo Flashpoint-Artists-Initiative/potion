@@ -73,8 +73,14 @@ class TeamResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('stats')
+                    ->label('Filled Shifts')
+                    ->getStateUsing(fn (Team $record): string => sprintf(
+                        '%d/%d (%.1f%%)',
+                        $record->totalFilledSpots,
+                        $record->totalNumSpots,
+                        $record->percentFilled,
+                    )),
                 Tables\Columns\IconColumn::make('active')
                     ->boolean(),
             ])
