@@ -16,6 +16,7 @@ use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class ShiftResource extends Resource
 {
@@ -103,6 +104,7 @@ class ShiftResource extends Resource
     {
         return [
             RelationManagers\VolunteersRelationManager::class,
+            AuditsRelationManager::class,
         ];
     }
 

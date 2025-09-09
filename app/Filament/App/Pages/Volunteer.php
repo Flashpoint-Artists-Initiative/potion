@@ -58,7 +58,7 @@ class Volunteer extends Page implements HasTable
 
     public Carbon $signupEndDate;
 
-    public bool $hasTicket = false;
+    public bool $hasTicket;
 
     public int $teamId;
 
@@ -151,7 +151,8 @@ class Volunteer extends Page implements HasTable
                             ])
                             ->schema([
                                 TextEntry::make('description')
-                                    ->label(''),
+                                    ->label('')
+                                    ->html(),
                             ]),
                     ]),
             ]);
@@ -165,15 +166,36 @@ class Volunteer extends Page implements HasTable
             })
             ->orderBy('title')
             ->get();
+        
+        $signupNote = Team::find($this->teamId)->signup_note ?? null;
+
+        $state = ['shiftTypes' => $shiftTypes];
+
+        if ($signupNote) {
+            $state['signupNote'] = $signupNote;
+        }
 
         return $infolist
-            ->state(['shiftTypes' => $shiftTypes])
+            ->state($state)
             ->schema([
-                RepeatableEntry::make('shiftTypes')
-                    ->label('Available Positions')
+                Section::make()
                     ->schema([
-                        TextEntry::make('description')
-                            ->label(fn (ShiftType $record) => $record->title),
+                        TextEntry::make('signupNote')
+                            ->label('')
+                            ->html()
+                    ])
+                ->visible(fn () => ! empty($signupNote)),
+                Section::make('Available Positions')
+                    ->description('These are the different types of volunteer positions available for this team. You can sign up for any position when signing up for shifts.')
+                    ->collapsible()
+                    ->persistCollapsed()
+                    ->schema([
+                        RepeatableEntry::make('shiftTypes')
+                            ->label('')
+                            ->schema([
+                                TextEntry::make('description')
+                                    ->label(fn (ShiftType $record) => $record->title),
+                            ]),
                     ]),
             ]);
     }

@@ -17,6 +17,7 @@ use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class TeamResource extends Resource
 {
@@ -44,14 +45,19 @@ class TeamResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->maxLength(255),
                 Forms\Components\Toggle::make('active')
                     ->required(),
+                Forms\Components\RichEditor::make('description')
+                    ->required()
+                    ->columnSpanFull()
+                    ->helperText('Shown when selecting a team to volunteer for.'),
+                Forms\Components\RichEditor::make('signup_note')
+                    ->required()
+                    ->columnSpanFull()
+                    ->helperText('Shown at the top of the page when viewing this team\'s shifts.'),
             ]);
     }
 
@@ -103,7 +109,7 @@ class TeamResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 
