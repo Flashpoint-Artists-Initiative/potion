@@ -185,6 +185,14 @@ class Volunteer extends Page implements HasTable
             })
             ->orderBy('title')
             ->get();
+        
+        $signupNote = Team::find($this->teamId)->signup_note ?? null;
+
+        $state = ['shiftTypes' => $shiftTypes];
+
+        if ($signupNote) {
+            $state['signupNote'] = $signupNote;
+        }
 
         $signupNote = Team::find($this->teamId)->signup_note ?? null;
 
