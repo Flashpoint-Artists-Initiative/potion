@@ -41,4 +41,9 @@ class ShiftExporter extends Exporter
 
         return $body;
     }
+
+    public function getFileDisk(): string
+    {
+        return 's3';
+    }
 }
