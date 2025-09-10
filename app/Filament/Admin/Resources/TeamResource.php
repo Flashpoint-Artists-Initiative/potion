@@ -55,7 +55,6 @@ class TeamResource extends Resource
                     ->columnSpanFull()
                     ->helperText('Shown when selecting a team to volunteer for.'),
                 Forms\Components\RichEditor::make('signup_note')
-                    ->required()
                     ->columnSpanFull()
                     ->helperText('Shown at the top of the page when viewing this team\'s shifts.'),
             ]);
