@@ -162,11 +162,11 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
     }
 
     /**
-     * @return Attribute<bool|string,never>
+     * @return Attribute<bool|string|null,never>
      */
     protected function shadeProvided(): Attribute
     {
-        return Attribute::get(fn () => $this->getSetting('shade_provided.state', false));
+        return Attribute::get(fn () => $this->getSetting('shade_provided.state'));
     }
 
     /**
@@ -178,11 +178,11 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
     }
 
     /**
-     * @return Attribute<bool|string,never>
+     * @return Attribute<bool|string|null,never>
      */
     protected function longStanding(): Attribute
     {
-        return Attribute::get(fn () => $this->getSetting('long_standing.state', false));
+        return Attribute::get(fn () => $this->getSetting('long_standing.state'));
     }
 
     /**
