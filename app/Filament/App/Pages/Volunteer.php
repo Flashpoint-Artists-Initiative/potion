@@ -20,6 +20,8 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Infolists\Components\Actions\Action as InfolistAction;
+use Filament\Infolists\Components\Grid as InfolistGrid;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
@@ -36,6 +38,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
+use Nette\Utils\Html;
 
 /**
  * @property Form $form
@@ -70,7 +73,7 @@ class Volunteer extends Page implements HasTable
         if ($this->teamId) {
             $team = Team::find($this->teamId);
             if ($team) {
-                return 'Volunteer Signups - '.$team->name;
+                return 'Volunteer Signups - ' . $team->name;
             }
         }
         return 'Volunteer Signups';
@@ -163,11 +166,11 @@ class Volunteer extends Page implements HasTable
                 RepeatableEntry::make('teams')
                     ->label(new HtmlString('<h1 class="text-2xl">Teams</h1>'))
                     ->schema([
-                        Section::make(fn (Team $state) => $state->name)
+                        Section::make(fn(Team $state) => $state->name)
                             ->headerActions([
                                 InfolistAction::make('shifts')
                                     ->label('View Shifts')
-                                    ->url(fn (Team $record) => self::getUrl(['id' => $record->id])),
+                                    ->url(fn(Team $record) => self::getUrl(['id' => $record->id])),
                             ])
                             ->schema([
                                 TextEntry::make('description')
@@ -186,7 +189,7 @@ class Volunteer extends Page implements HasTable
             })
             ->orderBy('title')
             ->get();
-        
+
         $signupNote = Team::find($this->teamId)->signup_note ?? null;
 
         $state = ['shiftTypes' => $shiftTypes];
@@ -204,7 +207,7 @@ class Volunteer extends Page implements HasTable
                             ->label('')
                             ->html()
                     ])
-                ->visible(fn () => ! empty($signupNote)),
+                    ->visible(fn() => ! empty($signupNote)),
                 Section::make('Available Positions')
                     ->description('These are the different types of volunteer positions available for this team. You can sign up for any position when signing up for shifts.')
                     ->collapsible()
@@ -214,7 +217,65 @@ class Volunteer extends Page implements HasTable
                             ->label('')
                             ->schema([
                                 TextEntry::make('description')
-                                    ->label(fn (ShiftType $record) => $record->title),
+                                    ->label(fn(ShiftType $record) => $record->title),
+                                InfolistGrid::make(6)
+                                    ->schema([
+                                        TextEntry::make('shadeProvided')
+                                            ->label('Shade Provided')
+                                            ->icon(function (ShiftType $record) {
+                                                return match ($record->shadeProvided) {
+                                                    'note' => 'heroicon-o-exclamation-circle',
+                                                    true => 'heroicon-o-check-circle',
+                                                    false => 'heroicon-o-x-circle',
+                                                    default => 'heroicon-o-question-mark-circle',
+                                                };
+                                            })
+                                            ->iconColor(function (ShiftType $record) {
+                                                return match ($record->shadeProvided) {
+                                                    'note' => 'warning',
+                                                    true => 'success',
+                                                    false => 'danger',
+                                                    default => 'warning',
+                                                };
+                                            })
+                                            ->getStateUsing(function (ShiftType $record) {
+                                                return match ($record->shadeProvided) {
+                                                    'note' => $record->shadeProvidedNote,
+                                                    true => 'Yes',
+                                                    false => 'No',
+                                                    default => 'Unknown',
+                                                };
+                                            }),
+                                        TextEntry::make('longStanding')
+                                            ->label('Long Periods of Standing')
+                                            ->icon(function (ShiftType $record) {
+                                                return match ($record->longStanding) {
+                                                    'note' => 'heroicon-o-exclamation-circle',
+                                                    true => 'heroicon-o-check-circle',
+                                                    false => 'heroicon-o-x-circle',
+                                                    default => 'heroicon-o-question-mark-circle',
+                                                };
+                                            })
+                                            ->iconColor(function (ShiftType $record) {
+                                                return match ($record->longStanding) {
+                                                    'note' => 'warning',
+                                                    true => 'success',
+                                                    false => 'danger',
+                                                    default => 'warning',
+                                                };
+                                            })
+                                            ->getStateUsing(function (ShiftType $record) {
+                                                return match ($record->longStanding) {
+                                                    'note' => $record->longStandingNote,
+                                                    true => 'Yes',
+                                                    false => 'No',
+                                                    default => 'Unknown',
+                                                };
+                                            }),
+                                        TextEntry::make('physicalRequirementsNote')
+                                            ->label('Physical Requirements')
+                                            ->hidden(fn(ShiftType $record) => empty($record->physicalRequirementsNote)),
+                                    ]),
                             ]),
                     ]),
             ]);
