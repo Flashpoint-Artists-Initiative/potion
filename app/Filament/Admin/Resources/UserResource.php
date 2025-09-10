@@ -120,7 +120,10 @@ class UserResource extends Resource
                     ->constraints([
                         RelationshipConstraint::make('orders')
                             ->icon('heroicon-o-shopping-bag')
-                            ->multiple()
+                            ->multiple(),
+                        RelationshipConstraint::make('purchasedTickets')
+                            ->icon('heroicon-o-ticket')
+                            ->multiple(),
                     ])
             ])
             ->actions([
