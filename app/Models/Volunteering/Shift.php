@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
@@ -220,6 +221,18 @@ class Shift extends Model implements ContractsAuditable, Eventable
                 $total = 100 * ($this->volunteers_count / max(1, $this->num_spots));
 
                 return sprintf('%.1f', $total);
+            }
+        );
+    }
+
+    /**
+     * @return Attribute<Collection,never>
+     */
+    protected function printableVolunteers(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->volunteers->map(fn (User $user) => $user->nameAndEmail);
             }
         );
     }
