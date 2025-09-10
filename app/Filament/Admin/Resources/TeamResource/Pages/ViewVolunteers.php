@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
 use App\Filament\Admin\Resources\TeamResource;
 use App\Models\User;
+use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\Team;
 use Filament\Actions;
 use Filament\Forms;
@@ -73,6 +74,11 @@ class ViewVolunteers extends ManageRelatedRecords
                 TextColumn::make('endCarbon')
                     ->label('End Time')
                     ->dateTime('D, m/j g:ia', 'America/New_York')
+                    ->sortable(),
+                TextColumn::make('num_spots')
+                    ->label('Filled')
+                    ->formatStateUsing(fn(Shift $record) => sprintf('%d/%d', $record->volunteers_count, $record->num_spots))
+                    ->counts('volunteers')
                     ->sortable(),
                 TextColumn::make('printableVolunteers')
                     ->label('Volunteers')
