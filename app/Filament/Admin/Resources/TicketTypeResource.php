@@ -110,13 +110,15 @@ class TicketTypeResource extends Resource
                 Tables\Columns\TextColumn::make('sale_end_date')
                     ->dateTime('F jS, Y g:i A T', 'America/New_York')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->money()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')
                     ->numeric()
                     ->formatStateUsing(fn ($state) => $state === 0 ? '∞' : $state)
                     ->sortable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->money()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('purchased_tickets_count')
+                    ->label('Sold'),
                 Tables\Columns\TextColumn::make('remainingTicketCount')
                     ->numeric()
                     ->formatStateUsing(fn ($state, TicketType $record) => ($record->quantity === 0 && $state === 0) ? '∞' : $state)
