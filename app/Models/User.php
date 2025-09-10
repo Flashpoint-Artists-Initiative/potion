@@ -279,4 +279,16 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
             get: fn (mixed $value, array $attributes) => $attributes['display_name'],
         );
     }
+
+    /**
+     * Used when exporting volunteer shifts
+     * 
+     * @return Attribute<string,never>
+     */
+    protected function nameAndEmail(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => $attributes['display_name'] . ' <' . $attributes['email'] . '>',
+        );
+    }
 }

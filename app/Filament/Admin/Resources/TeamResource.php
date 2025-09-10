@@ -80,7 +80,7 @@ class TeamResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('stats')
                     ->label('Filled Shifts')
-                    ->getStateUsing(fn (Team $record): string => sprintf(
+                    ->getStateUsing(fn(Team $record): string => sprintf(
                         '%d/%d (%.1f%%)',
                         $record->totalFilledSpots,
                         $record->totalNumSpots,
@@ -126,7 +126,7 @@ class TeamResource extends Resource
             'calendar' => Pages\ShiftCalendar::route('/{record}/calendar'),
             'shifts' => Pages\ManageShifts::route('/{record}/shifts'),
             'shifts.create' => Pages\CreateShift::route('/{record}/shifts/create'),
-            'reports' => Pages\Reports::route('/{record}/reports'),
+            'reports' => Pages\ViewVolunteers::route('/{record}/volunteers'),
         ];
     }
 
@@ -142,7 +142,6 @@ class TeamResource extends Resource
 
         return parent::getEloquentQuery()
             ->where('event_id', Event::getCurrentEventId());
-
     }
 
     // This is the root resource
@@ -164,7 +163,7 @@ class TeamResource extends Resource
             Pages\ShiftCalendar::class,
             Pages\ManageShiftTypes::class,
             Pages\ManageShifts::class,
-            Pages\Reports::class,
+            Pages\ViewVolunteers::class,
         ]);
     }
 }
