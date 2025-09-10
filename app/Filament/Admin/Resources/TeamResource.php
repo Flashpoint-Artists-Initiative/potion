@@ -126,6 +126,7 @@ class TeamResource extends Resource
             'calendar' => Pages\ShiftCalendar::route('/{record}/calendar'),
             'shifts' => Pages\ManageShifts::route('/{record}/shifts'),
             'shifts.create' => Pages\CreateShift::route('/{record}/shifts/create'),
+            'reports' => Pages\Reports::route('/{record}/reports'),
         ];
     }
 
@@ -163,6 +164,7 @@ class TeamResource extends Resource
             Pages\ShiftCalendar::class,
             Pages\ManageShiftTypes::class,
             Pages\ManageShifts::class,
+            Pages\Reports::class,
         ]);
     }
 }
