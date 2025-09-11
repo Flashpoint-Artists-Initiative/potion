@@ -225,24 +225,24 @@ class Volunteer extends Page implements HasTable
                                             ->icon(function (ShiftType $record) {
                                                 return match ($record->shadeProvided) {
                                                     'note' => 'heroicon-o-exclamation-circle',
-                                                    true => 'heroicon-o-check-circle',
-                                                    false => 'heroicon-o-x-circle',
+                                                    "1" => 'heroicon-o-check-circle',
+                                                    "0" => 'heroicon-o-x-circle',
                                                     default => 'heroicon-o-question-mark-circle',
                                                 };
                                             })
                                             ->iconColor(function (ShiftType $record) {
                                                 return match ($record->shadeProvided) {
                                                     'note' => 'warning',
-                                                    true => 'success',
-                                                    false => 'danger',
+                                                    "1" => 'success',
+                                                    "0" => 'danger',
                                                     default => 'warning',
                                                 };
                                             })
                                             ->getStateUsing(function (ShiftType $record) {
                                                 return match ($record->shadeProvided) {
                                                     'note' => $record->shadeProvidedNote,
-                                                    true => 'Yes',
-                                                    false => 'No',
+                                                    "1" => 'Yes',
+                                                    "0" => 'No',
                                                     default => 'Unknown',
                                                 };
                                             }),
@@ -251,24 +251,24 @@ class Volunteer extends Page implements HasTable
                                             ->icon(function (ShiftType $record) {
                                                 return match ($record->longStanding) {
                                                     'note' => 'heroicon-o-exclamation-circle',
-                                                    true => 'heroicon-o-check-circle',
-                                                    false => 'heroicon-o-x-circle',
+                                                    "1" => 'heroicon-o-check-circle',
+                                                    "0" => 'heroicon-o-x-circle',
                                                     default => 'heroicon-o-question-mark-circle',
                                                 };
                                             })
                                             ->iconColor(function (ShiftType $record) {
                                                 return match ($record->longStanding) {
                                                     'note' => 'warning',
-                                                    true => 'success',
-                                                    false => 'danger',
+                                                    "1" => 'success',
+                                                    "0" => 'danger',
                                                     default => 'warning',
                                                 };
                                             })
                                             ->getStateUsing(function (ShiftType $record) {
                                                 return match ($record->longStanding) {
                                                     'note' => $record->longStandingNote,
-                                                    true => 'Yes',
-                                                    false => 'No',
+                                                    "1" => 'Yes',
+                                                    "0" => 'No',
                                                     default => 'Unknown',
                                                 };
                                             }),
