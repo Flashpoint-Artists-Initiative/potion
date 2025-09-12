@@ -317,10 +317,9 @@ class Volunteer extends Page implements HasTable
                     ->dateTime('D, m/j g:ia T', 'America/New_York'),
                 TextColumn::make('lengthInHours')
                     ->label('Duration (Hours)')
-                    ->sortable(),
+                    ->sortable(query: fn(Builder $query, string $direction) => $query->orderBy('length', $direction)),
                 TextColumn::make('multiplier')
                     ->label('Hours Value')
-                    ->sortable()
                     ->formatStateUsing(fn(string $state, Shift $record) => sprintf('%s (%sx)', $record->lengthInHours * $record->multiplier, $state)),
                 TextColumn::make('volunteers_count')
                     ->label('Signed Up')
