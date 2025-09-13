@@ -174,14 +174,28 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
         return $this->belongsToMany(Shift::class, 'shift_signups')->as('signup')->withTimestamps();
     }
 
+    /**
+     * @return BelongsToMany<ArtProject, $this, Pivot, 'vote'>
+     */
     public function votes(): BelongsToMany
     {
-        return $this->belongsToMany(ArtProject::class, 'project_user_votes')->withTimestamps()->withPivot('votes');
+        return $this->belongsToMany(ArtProject::class, 'project_user_votes')->as('vote')->withTimestamps()->withPivot('votes');
     }
 
+    /**
+     * @return HasMany<AdditionalHours, $this>
+     */
     public function additionalHours(): HasMany
     {
         return $this->hasMany(AdditionalHours::class);
+    }
+
+    /**
+     * @return HasMany<Ticketing\GateScan, $this>
+     */
+    public function gateScans(): HasMany
+    {
+        return $this->hasMany(Ticketing\GateScan::class);
     }
 
     /**

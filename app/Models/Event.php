@@ -122,6 +122,14 @@ class Event extends Model implements ContractsAuditable
     }
 
     /**
+     * @return HasMany<Ticketing\GateScan, $this>
+     */
+    public function gateScans(): HasMany
+    {
+        return $this->hasMany(Ticketing\GateScan::class);
+    }
+
+    /**
      * @return HasOne<PageContent, $this>
      */
     public function appDashboardContent(): HasOne
