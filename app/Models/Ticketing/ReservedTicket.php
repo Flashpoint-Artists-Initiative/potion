@@ -23,7 +23,7 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 #[ObservedBy(ReservedTicketObserver::class)]
 class ReservedTicket extends Model implements ContractsAuditable, TicketInterface
 {
-    // Used when importing to create multiple tickets from a single row
+    // Virtual property used when importing or creating to create multiple tickets while only sending a single email
     public ?int $count = 1; // nullable for when import file doesn't have a count column
 
     use Auditable, HasFactory, HasTicketType;
@@ -34,6 +34,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
         'email',
         'expiration_date',
         'note',
+        'count',
     ];
 
     protected $casts = [
@@ -128,6 +129,24 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
                 return new Carbon($this->expiration_date ?? $this->ticketType->sale_end_date);
+            }
+        );
+    }
+
+    /**
+     * Used so $count can be set via mass assignment, but not saved to the database
+     * 
+     * @return Attribute<int,never>
+     */
+    protected function count(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => $this->count ?? 1,
+            set: function (mixed $value, array $attributes) {
+                $this->count = (int) $value;
+                // If we return anything other than an empty array, it will try to set a count column in the database
+                // because of trait HasAttributes->normalizeCastClassResponse()
+                return [];
             }
         );
     }
