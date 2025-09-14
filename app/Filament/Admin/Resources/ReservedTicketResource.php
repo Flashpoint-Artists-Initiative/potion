@@ -16,6 +16,7 @@ use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Split;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -72,7 +73,23 @@ class ReservedTicketResource extends Resource
                         modifyQueryUsing: fn (Builder $query) => $query->where('event_id', Event::getCurrentEventId()),
                     )
                     ->required()
-                    ->reactive(),
+                    ->reactive()
+                    ->afterStateUpdated(function(Get $get, Set $set, ?int $state) {
+                        $currentExpiration = $get('expiration_date');
+                        if (!is_null($currentExpiration)) {
+                            return;
+                        }
+
+                        /** @var ?TicketType $ticketType */
+                        $ticketType = TicketType::find($state);
+                        if (is_null($ticketType)) {
+                            return;
+                        }
+                        
+                        if ($ticketType->sale_end_date < now('America/New_York')) {
+                            $set('expiration_date', now('America/New_York')->addWeek()->endOfDay()->format('Y-m-d H:i'));
+                        }
+                    }),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->maxLength(255)
@@ -112,6 +129,12 @@ class ReservedTicketResource extends Resource
                     ->helperText('Use this for the name of the art project, theme camp, or other special note. User will see this.')
                     ->maxLength(255)
                     ->disabled(fn (?ReservedTicket $record) => $record?->is_purchased),
+                Forms\Components\TextInput::make('count')
+                    ->label('Number of Tickets')
+                    ->default(1)
+                    ->numeric()
+                    ->minValue(1)
+                    ->required(),
             ])
                 ->columns(2),
         ];
