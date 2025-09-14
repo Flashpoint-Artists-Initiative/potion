@@ -14,6 +14,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Assets\Js;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -59,6 +60,10 @@ class CommonPanelProvider extends PanelProvider
             ->plugins([
                 // FilamentInactivityGuardPlugin::make()
                 //     ->enabled(! app()->isLocal()),
+            ])
+            ->assets([
+                // TODO: Have this only load on the gate panel, without needing to refresh
+                Js::make('html5-qrcode', resource_path('js/html5-qrcode.min.js')),
             ]);
 
         return $this->addDevPlugins($panel);

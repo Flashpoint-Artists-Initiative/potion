@@ -13,7 +13,6 @@ use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Assets\Js;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Gerenuk\FilamentBanhammer\FilamentBanhammerPlugin;
@@ -60,9 +59,6 @@ class GatePanelProvider extends CommonPanelProvider
                 // FilamentBanhammerPlugin::make(),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->databaseNotifications()
-            ->assets([
-                Js::make('html5-qrcode', resource_path('js/html5-qrcode.min.js')),
-            ]);
+            ->databaseNotifications();
     }
 }
