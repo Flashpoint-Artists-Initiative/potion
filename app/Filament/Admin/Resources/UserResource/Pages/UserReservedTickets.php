@@ -97,6 +97,10 @@ class UserReservedTickets extends ManageRelatedRecords
                                 ->numeric()
                                 ->minValue(1)
                                 ->required(),
+                            
+                            Forms\Components\TextInput::make('note')
+                                ->label('Note')
+                                ->columnSpanFull(),
                     ])
                     ->columns(2)
                 ])
@@ -107,6 +111,7 @@ class UserReservedTickets extends ManageRelatedRecords
                         'ticket_type_id' => $data['ticket_type_id'],
                         'expiration_date' => $data['expiration_date'],
                         'count' => $data['count'],
+                        'note' => $data['note'] ?? null,
                     ]);
                     
                     Notification::make()
