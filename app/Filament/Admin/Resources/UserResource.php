@@ -169,6 +169,7 @@ class UserResource extends Resource
             'transfers' => Pages\UserTransfers::route('/{record}/transfers'),
             'tickets' => Pages\UserPurchasedTickets::route('/{record}/tickets'),
             'reserved' => Pages\UserReservedTickets::route('/{record}/reserved'),
+            'shifts' => Pages\UserVolunteerShifts::route('/{record}/shifts'),
             'stripe' => Pages\UserStripeData::route('/{record}/stripe'),
             'audits' => Pages\UserAudits::route('/{record}/audits'),
         ];
@@ -193,6 +194,7 @@ class UserResource extends Resource
             Pages\UserTransfers::class,
             Pages\UserPurchasedTickets::class,
             Pages\UserReservedTickets::class,
+            Pages\UserVolunteerShifts::class,
             Pages\UserStripeData::class,
             Pages\UserAudits::class,
         ]);

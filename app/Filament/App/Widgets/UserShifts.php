@@ -52,7 +52,7 @@ class UserShifts extends BaseWidget
                     ->dateTime('D, m/j g:ia', 'America/New_York'),
                 TextColumn::make('lengthInHours')
                     ->label(new HtmlString('Duration<br>(Hours)'))
-                    ->sortable(),
+                    ->sortable(query: fn(Builder $query, string $direction) => $query->orderBy('length', $direction)),
                 TextColumn::make('volunteers_count')
                     ->label('Signed Up')
                     ->counts('volunteers')
