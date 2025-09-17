@@ -134,7 +134,8 @@ class ReservedTicketResource extends Resource
                     ->default(1)
                     ->numeric()
                     ->minValue(1)
-                    ->required(),
+                    ->required(fn ($operation) => $operation !== 'create')
+                    ->hidden(fn ($operation) => $operation !== 'create'),
             ])
                 ->columns(2),
         ];

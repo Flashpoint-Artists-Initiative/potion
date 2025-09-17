@@ -56,6 +56,15 @@ class ReservedTicketObserver
             return false;
         }
 
+        // Check submitted email for a matching user, and if found assign to user_id
+        if ($reservedTicket->isDirty('email')) {
+            $user_id = User::where('email', $reservedTicket->email)->value('id');
+
+            if ($user_id) {
+                $reservedTicket->user_id = $user_id;
+            }
+        }
+
         return true;
     }
 
