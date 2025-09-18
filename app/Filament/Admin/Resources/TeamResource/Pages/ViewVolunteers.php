@@ -20,6 +20,7 @@ use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class ViewVolunteers extends ManageRelatedRecords
 {
@@ -33,6 +34,11 @@ class ViewVolunteers extends ManageRelatedRecords
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     // protected static string $layout = 'layouts.custom'; // Use the simple layout
+
+    public static function canAccess(array $parameters = []): bool
+    {
+        return Auth::user() && Auth::user()->can('teams.volunteers');
+    }
 
     public static function getNavigationLabel(): string
     {

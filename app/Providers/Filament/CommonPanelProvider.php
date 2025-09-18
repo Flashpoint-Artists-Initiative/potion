@@ -104,6 +104,7 @@ class CommonPanelProvider extends PanelProvider
                     'Event Manager' => 'eventmanager@example.com',
                     'Box Office' => 'boxoffice@example.com',
                     'Art Grant Reviewer' => 'artgrants@example.com',
+                    'Volunteer Coordinator' => 'volunteer@example.com',
                 ]);
         }
 
