@@ -64,6 +64,11 @@ class Volunteer extends Page implements HasTable
     /** @var array<mixed> $data */
     public array $data = [];
 
+    public static function canAccess(): bool
+    {
+        return Auth::user() && Auth::user()->can('teams.volunteers');
+    }
+
     public function getTitle(): string|Htmlable
     {
         if ($this->teamId) {
