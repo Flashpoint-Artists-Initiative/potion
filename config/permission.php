@@ -393,6 +393,7 @@ return [
             'teams.create',
             'teams.update',
             'teams.delete',
+            'teams.volunteers',
             'teams.*',
 
             'shiftTypes.viewAny',
