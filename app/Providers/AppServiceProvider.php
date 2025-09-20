@@ -73,6 +73,7 @@ class AppServiceProvider extends ServiceProvider
             'ticketTransfer' => \App\Models\Ticketing\TicketTransfer::class,
             'ticketType' => \App\Models\Ticketing\TicketType::class,
             'waiver' => \App\Models\Ticketing\Waiver::class,
+            'gateScan' => \App\Models\Ticketing\GateScan::class,
 
             'requirement' => \App\Models\Volunteering\Requirement::class,
             'shift' => \App\Models\Volunteering\Shift::class,

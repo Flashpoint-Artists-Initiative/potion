@@ -6,12 +6,14 @@ namespace App\Models\Ticketing;
 
 use App\Models\Event;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
-class GateScan extends Model
+class GateScan extends Model implements ContractsAuditable
 {
     use Auditable, HasFactory;
 
@@ -35,5 +37,10 @@ class GateScan extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeCurrentEvent(Builder $query): void
+    {
+        $query->where('event_id', Event::getCurrentEventId());
     }
 }

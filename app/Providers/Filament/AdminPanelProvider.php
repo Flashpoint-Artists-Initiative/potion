@@ -44,6 +44,11 @@ class AdminPanelProvider extends CommonPanelProvider
                 Authenticate::class,
             ])
             ->navigationItems([
+                NavigationItem::make('Gate Site')
+                    ->url(fn () => route('filament.gate.pages.dashboard'))
+                    ->icon('heroicon-o-identification')
+                    ->visible(fn (): bool => filament()->auth()->user()?->can('panelAccess.gate') ?? false)
+                    ->sort(998),
                 NavigationItem::make('Return to Main Site')
                     ->url(fn () => route('filament.app.pages.dashboard'))
                     ->icon('heroicon-o-arrow-left-start-on-rectangle')
