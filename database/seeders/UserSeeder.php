@@ -59,6 +59,12 @@ class UserSeeder extends Seeder
                     'email' => 'volunteer@example.com',
                     'password' => 'volunteer',
                 ])->assignRole(RolesEnum::VolunteerCoordinator);
+
+                User::factory()->create([
+                    'legal_name' => 'Gate Staff User',
+                    'email' => 'gatestaff@example.com',
+                    'password' => 'gatestaff',
+                ])->assignRole(RolesEnum::GateStaff);
             } catch (UniqueConstraintViolationException $e) {
                 // Catch this exception so we can seed data locally as much as we want
             }

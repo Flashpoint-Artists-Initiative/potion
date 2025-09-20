@@ -278,6 +278,9 @@ return [
                 'requirements.*',
                 'shiftSignups.*',
             ],
+            RolesEnum::GateStaff->value => [
+                'panelAccess.gate',
+            ],
         ],
         // List of permissions every user can do, to pass to the front end
         'defaultPermissions' => [
@@ -288,7 +291,7 @@ return [
         ],
         // All permissions that will be checked need to be defined here
         'permissions' => [
-            // Special permission to allow access to the admin panel
+            // Special permissions to allow access to the different panels
             'panelAccess.admin',
             'panelAccess.gate',
 
