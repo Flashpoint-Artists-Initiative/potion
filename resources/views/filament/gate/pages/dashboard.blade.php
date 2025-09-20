@@ -3,8 +3,6 @@
 @script
 <script>
 const onScanSuccess = (decodedText, decodedResult) => {
-  // handle the scanned code as you like, for example:
-  //alert(`Code matched = ${decodedText}`, decodedResult);
   $wire.processScan(decodedText);
 }
 
