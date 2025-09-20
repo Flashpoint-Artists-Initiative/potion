@@ -54,7 +54,7 @@ class AppPanelProvider extends CommonPanelProvider
                     ->sort(999),
                 NavigationItem::make('Gate Site')
                     ->url(fn () => route('filament.gate.pages.dashboard'))
-                    ->icon('heroicon-o-identification')
+                    ->icon('heroicon-o-qr-code')
                     ->visible(fn (): bool => filament()->auth()->user()?->can('panelAccess.gate') ?? false)
                     ->sort(999),
             ])
