@@ -4,13 +4,31 @@ declare(strict_types=1);
 
 namespace App\Filament\Gate\Pages;
 
+use App\Models\Event;
+use App\Models\User;
 use App\Services\QRCodeService;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\DB;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.gate.pages.dashboard';
+
+    protected static ?string $navigationLabel = 'Scan';
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('search')
+                ->label('Search for Attendee')
+                ->icon('heroicon-o-magnifying-glass')
+                ->color('primary')
+                ->url(Search::getUrl()),
+        ];
+    }
 
     /**
      * @param non-empty-string $code

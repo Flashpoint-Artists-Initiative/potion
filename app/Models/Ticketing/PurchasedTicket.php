@@ -53,6 +53,11 @@ class PurchasedTicket extends Model implements ContractsAuditable, TicketInterfa
         $query->where('user_id', Auth::id());
     }
 
+    public function scopeTransferable(Builder $query): void
+    {
+        $query->whereRelation('ticketType', 'transferable', true);
+    }
+
     public static function createFromCartItem(CartItem $item, ?int $userId = null, ?int $orderId = null): void
     {
         for ($i = 0; $i < $item->quantity; $i++) {

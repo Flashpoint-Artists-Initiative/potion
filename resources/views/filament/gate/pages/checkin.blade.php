@@ -6,7 +6,7 @@
     {{ $this->checklist['ticket']['message'] }}
 </x-notification-banner>
 
-@if ($this->checklist['multiple_tickets'])
+@if (isset($this->checklist['multiple_tickets']))
 <x-notification-banner color="{{$this->checklist['multiple_tickets']['color']}}" class="mb-2 grow">
     {{ $this->checklist['multiple_tickets']['message'] }}
 </x-notification-banner>
@@ -16,7 +16,9 @@
     {{ $this->checklist['waiver']['message'] }}
 </x-notification-banner>
 
-{{ $this->viewTicketsAction }}
+@if ($this->transferTicketsAction->isVisible())
+{{ $this->transferTicketsAction }}
+@endif
 {{ $this->checkInAction }}
 
 </x-filament-panels::page>
