@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-qr-code';
 
     protected static string $view = 'filament.gate.pages.dashboard';
 
