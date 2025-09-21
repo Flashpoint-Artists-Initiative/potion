@@ -40,12 +40,12 @@ class UserResource extends Resource
                 Infolists\Components\Section::make([
                     Infolists\Components\TextEntry::make('legal_name')
                         ->label('Legal Name')
-                        ->visible(fn () => Auth::authenticate()->can('users.viewPrivate')),
+                        ->visible(fn() => Auth::authenticate()->can('users.viewPrivate')),
                     Infolists\Components\TextEntry::make('display_name')
                         ->label('Display Name'),
                     Infolists\Components\TextEntry::make('email'),
                     Infolists\Components\TextEntry::make('birthday')
-                        ->visible(fn () => Auth::authenticate()->can('users.viewPrivate')),
+                        ->visible(fn() => Auth::authenticate()->can('users.viewPrivate')),
                 ])->columns(2),
             ]);
     }
@@ -83,10 +83,10 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('legal_name')
                     ->searchable()
-                    ->visible(fn () => Auth::authenticate()->can('users.viewPrivate'))
+                    ->visible(fn() => Auth::authenticate()->can('users.viewPrivate'))
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('display_name')
-                    ->label(fn () => Auth::authenticate()->can('users.viewPrivate') ? 'Display Name' : 'Name')
+                    ->label(fn() => Auth::authenticate()->can('users.viewPrivate') ? 'Display Name' : 'Name')
                     ->searchable(['preferred_name'])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('birthday')
@@ -116,6 +116,26 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->options(RolesEnum::class)
                     ->preload(),
+                Tables\Filters\SelectFilter::make('ticketType')
+                    ->label('Has Ticket Type')
+                    ->relationship('purchasedTickets.ticketType', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->placeholder('All Ticket Types'),
+                Tables\Filters\SelectFilter::make('negTicketType')
+                    ->label('Does not have Ticket Type')
+                    ->options(fn () => \App\Models\Ticketing\TicketType::pluck('name', 'id')->toArray())
+                    ->multiple()
+                    ->preload()
+                    ->placeholder('All Ticket Types')
+                    ->query(function (Builder $query, array $data) {
+                        if (!empty($data['values'])) {
+                            $query->whereDoesntHave('purchasedTickets.ticketType', function ($q) use ($data) {
+                                $q->whereIn('id', $data['values']);
+                            });
+                        }
+                        return $query;
+                    }),
                 QueryBuilder::make()
                     ->constraints([
                         RelationshipConstraint::make('orders')
@@ -131,16 +151,16 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ActionGroup::make([
                     BanAction::make()
-                        ->hidden(fn ($record) => $record->isBanned()),
+                        ->hidden(fn($record) => $record->isBanned()),
                     UnbanAction::make()
-                        ->hidden(fn ($record) => ! $record->isBanned()),
+                        ->hidden(fn($record) => ! $record->isBanned()),
                 ])
-                    ->visible(fn () => Auth::authenticate()->can('users.ban')),
+                    ->visible(fn() => Auth::authenticate()->can('users.ban')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     SendEmailBulkAction::make()
-                        ->hidden(fn () => ! Auth::authenticate()->hasRole(RolesEnum::Admin)),
+                        ->hidden(fn() => ! Auth::authenticate()->hasRole(RolesEnum::Admin)),
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),

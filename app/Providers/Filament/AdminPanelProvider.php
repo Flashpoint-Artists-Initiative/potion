@@ -8,6 +8,7 @@ use App\Enums\LockdownEnum;
 use App\Http\Middleware\RedirectIfNotFilamentAdmin;
 use App\Services\WebLockdownService;
 use Filament\Http\Middleware\Authenticate;
+use Filament\Livewire\DatabaseNotifications;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
@@ -57,7 +58,8 @@ class AdminPanelProvider extends CommonPanelProvider
                 FilamentBanhammerPlugin::make(),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->databaseNotifications();
+            ->databaseNotifications()
+            ->databaseNotificationsPolling(fn() => config('app.debug') === true ? null : 30);
     }
 
     public function register(): void
