@@ -20,6 +20,8 @@ class History extends Page implements HasTable
 
     protected static string $view = 'filament.gate.pages.history';
 
+    protected static ?int $navigationSort = 3;
+
     public function table(Table $table): Table
     {
         return $table

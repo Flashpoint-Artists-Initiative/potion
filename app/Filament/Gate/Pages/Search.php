@@ -21,6 +21,8 @@ class Search extends Page
 
     protected static string $view = 'filament.gate.pages.search';
 
+    protected static ?int $navigationSort = 2;
+
     public ?int $userId;
 
     protected function getHeaderActions(): array
