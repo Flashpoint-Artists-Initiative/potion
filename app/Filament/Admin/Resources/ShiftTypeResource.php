@@ -77,7 +77,7 @@ class ShiftTypeResource extends Resource
                                     ->helperText('This will show up as a tooltip.')
                                     ->hidden(fn (Get $get) => $get('shade_provided.state') !== 'note')
                                     ->required(fn (Get $get) => $get('shade_provided.state') === 'note'),
-                        ]),
+                            ]),
                         Grid::make(2)
                             ->schema([
                                 Forms\Components\Select::make('long_standing.state')
@@ -95,7 +95,7 @@ class ShiftTypeResource extends Resource
                                     ->helperText('This will show up as a tooltip.')
                                     ->hidden(fn (Get $get) => $get('long_standing.state') !== 'note')
                                     ->required(fn (Get $get) => $get('long_standing.state') === 'note'),
-                        ]),
+                            ]),
                         Forms\Components\TextInput::make('physical_requirements.note')
                             ->label('Physical Requirements Details')
                             ->helperText('Enter any physical requirements for this shift. This will show up as a tooltip.')

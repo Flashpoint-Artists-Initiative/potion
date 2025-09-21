@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Gate\Widgets;
 
-use App\Models\Event;
 use App\Models\Ticketing\GateScan;
 use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
@@ -16,7 +15,7 @@ class GateScansOverTimeChart extends ChartWidget
     protected static ?string $heading = 'Chart';
 
     protected static ?string $maxHeight = '300px';
-    
+
     protected function getData(): array
     {
         $dateFormat = 'g:i a';
@@ -25,6 +24,7 @@ class GateScansOverTimeChart extends ChartWidget
             ->between(now()->subHours(24), now()->addMinute())
             ->perHour()
             ->count();
+
         return [
             'datasets' => [
                 [

@@ -62,7 +62,8 @@ class AdminPanelProvider extends CommonPanelProvider
                 FilamentBanhammerPlugin::make(),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->databaseNotifications();
+            ->databaseNotifications()
+            ->databaseNotificationsPolling(fn () => config('app.debug') === true ? null : 30);
     }
 
     public function register(): void

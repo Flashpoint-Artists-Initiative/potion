@@ -7,7 +7,6 @@ namespace App\Filament\Imports;
 use App\Models\Event;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\ShiftType;
-use App\Models\Volunteering\Team;
 use Carbon\Carbon;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
@@ -92,12 +91,12 @@ class ShiftImporter extends Importer
             'title' => $data['shift_type'],
             'team_id' => $teamId,
         ],
-        [
-            'description' => $data['description'],
-            'location' => $data['location'] ?? 'TBD',
-            'length' => $this->calculateDuration($data),
-            'num_spots' => $data['num_spots'],
-        ]);
+            [
+                'description' => $data['description'],
+                'location' => $data['location'] ?? 'TBD',
+                'length' => $this->calculateDuration($data),
+                'num_spots' => $data['num_spots'],
+            ]);
 
         /** @var Shift $record */
         $record = $this->record;
@@ -116,7 +115,7 @@ class ShiftImporter extends Importer
     }
 
     /**
-     * @param array<mixed> $data
+     * @param  array<mixed>  $data
      */
     protected function calculateDuration(array $data): int
     {
@@ -132,7 +131,7 @@ class ShiftImporter extends Importer
     }
 
     /**
-     * @param array<mixed> $data
+     * @param  array<mixed>  $data
      */
     protected function calculateOffset(array $data): int
     {

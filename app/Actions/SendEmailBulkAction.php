@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Actions;
@@ -9,7 +10,6 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 class SendEmailBulkAction extends BulkAction
 {
@@ -50,7 +50,7 @@ class SendEmailBulkAction extends BulkAction
 
         $this->deselectRecordsAfterCompletion();
 
-        $this->modalSubmitActionLabel(fn(Collection $records): string => __('Send Email to :count Users', ['count' => $records->count()]));
+        $this->modalSubmitActionLabel(fn (Collection $records): string => __('Send Email to :count Users', ['count' => $records->count()]));
     }
 
     /**

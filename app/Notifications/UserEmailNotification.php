@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Notifications;
@@ -39,10 +40,10 @@ class UserEmailNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->greeting(' ')
-                    ->salutation(' ')
-                    ->subject($this->subject)
-                    ->line($this->content);
+            ->greeting(' ')
+            ->salutation(' ')
+            ->subject($this->subject)
+            ->line($this->content);
     }
 
     /**

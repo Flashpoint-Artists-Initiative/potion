@@ -74,9 +74,9 @@ class ReservedTicketResource extends Resource
                     )
                     ->required()
                     ->reactive()
-                    ->afterStateUpdated(function(Get $get, Set $set, ?int $state) {
+                    ->afterStateUpdated(function (Get $get, Set $set, ?int $state) {
                         $currentExpiration = $get('expiration_date');
-                        if (!is_null($currentExpiration)) {
+                        if (! is_null($currentExpiration)) {
                             return;
                         }
 
@@ -85,7 +85,7 @@ class ReservedTicketResource extends Resource
                         if (is_null($ticketType)) {
                             return;
                         }
-                        
+
                         if ($ticketType->sale_end_date < now('America/New_York')) {
                             $set('expiration_date', now('America/New_York')->addWeek()->endOfDay()->format('Y-m-d H:i'));
                         }

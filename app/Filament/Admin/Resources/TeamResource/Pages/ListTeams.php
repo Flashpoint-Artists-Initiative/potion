@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
-use App\Enums\LockdownEnum;
 use App\Filament\Admin\Resources\TeamResource;
-use App\Filament\Imports\ShiftImporter;
-use App\Models\Event;
 use Filament\Actions;
-use Filament\Actions\ImportAction;
 use Filament\Resources\Pages\ListRecords;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
-use Illuminate\Support\Facades\Auth;
 
 class ListTeams extends ListRecords
 {

@@ -154,11 +154,11 @@ class UserStripeData extends Page implements HasForms, HasInfolists
             $refunds = $this->stripeService->getRefundsFromPaymentIntent($paymentIntent);
 
             $status = $paymentIntent->status;
-            
+
             if (! empty($disputes)) {
                 $status = 'dispute ' . $disputes[0]->status;
-            } 
-            
+            }
+
             if (! empty($refunds)) {
                 $status = 'refund ' . $refunds[0]->status;
             }

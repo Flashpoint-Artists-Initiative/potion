@@ -116,6 +116,27 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->options(RolesEnum::class)
                     ->preload(),
+                Tables\Filters\SelectFilter::make('ticketType')
+                    ->label('Has Ticket Type')
+                    ->relationship('purchasedTickets.ticketType', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->placeholder('All Ticket Types'),
+                Tables\Filters\SelectFilter::make('negTicketType')
+                    ->label('Does not have Ticket Type')
+                    ->options(fn () => \App\Models\Ticketing\TicketType::pluck('name', 'id')->toArray())
+                    ->multiple()
+                    ->preload()
+                    ->placeholder('All Ticket Types')
+                    ->query(function (Builder $query, array $data) {
+                        if (! empty($data['values'])) {
+                            $query->whereDoesntHave('purchasedTickets.ticketType', function ($q) use ($data) {
+                                $q->whereIn('id', $data['values']);
+                            });
+                        }
+
+                        return $query;
+                    }),
                 QueryBuilder::make()
                     ->constraints([
                         RelationshipConstraint::make('orders')
@@ -124,7 +145,7 @@ class UserResource extends Resource
                         RelationshipConstraint::make('purchasedTickets')
                             ->icon('heroicon-o-ticket')
                             ->multiple(),
-                    ])
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
