@@ -20,7 +20,9 @@
     {{ $this->transferTicketsAction }}
 @endif
 
+@if ($this->checkInAction->isVisible())
 {{ $this->checkInAction }}
+@endif
 
 @if  ($this->wristbandNumber)
     {{ $this->updateWristbandAction }}
