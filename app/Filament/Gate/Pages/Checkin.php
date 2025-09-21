@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Set;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Password;
 
@@ -49,14 +50,24 @@ class Checkin extends Page
     /** @var array<string,array<string,string>> */
     public array $checklist;
 
+    public ?int $wristbandNumber = null;
+
     protected Event $event;
 
     protected User $user;
+
+    protected ?GateScan $latestScan;
 
     public function boot(): void
     {
         $this->event = Event::findOrFail($this->eventId);
         $this->user = User::findOrFail($this->userId);
+        $this->latestScan = GateScan::where('user_id', $this->userId)
+            ->where('event_id', $this->eventId)
+            ->latest()
+            ->first();
+
+        $this->wristbandNumber = $this->latestScan?->wristband_number;
     }
 
     public function mount(): void
@@ -94,18 +105,22 @@ class Checkin extends Page
         $hasTransferableTickets = $transferableTickets->isNotEmpty();
 
         // Check if user has already checked in
-        $gateScans = GateScan::where('user_id', $this->userId)->where('event_id', $this->eventId)->get();
-        $alreadyCheckedIn = $gateScans->isNotEmpty();
+        /** @var GateScan|null $latestGateScan */
+        $latestGateScan = GateScan::where('user_id', $this->userId)->where('event_id', $this->eventId)->latest()->first();
 
         // Check if the user has signed the waiver
         $requiresWaiver = $this->event->waiver()->exists();
         $hasSignedWaiver = $this->user->hasSignedWaiverForEvent($this->eventId);
 
         if ($correctEvent && $hasValidTicket) {
-            if ($alreadyCheckedIn) {
+            if ($latestGateScan) {
                 $this->checklist['ticket'] = [
                     'color' => 'danger',
-                    'message' => 'Participant has already checked in.',
+                    'message' => sprintf(
+                        'Participant has already checked in. Wristband #%s issued at %s.',
+                        $latestGateScan->wristband_number,
+                        $latestGateScan->created_at?->setTimezone('America/New_York')->format('n/j/Y g:i a') ?? 'Unknown time'
+                    ),
                 ];
             } else {
                 $this->checklist['ticket'] = [
@@ -186,7 +201,7 @@ class Checkin extends Page
                 TextInput::make('wristband_number')
                     ->label('Wristband Number')
                     ->required()
-                    ->helperText('Put the wristband on the participant then enter the number here.'),
+                    ->helperText('Put the new wristband on the participant then enter the number here.'),
             ])
             ->action(function (array $data) {
                 GateScan::create([
@@ -203,6 +218,33 @@ class Checkin extends Page
             })
             ->color(fn() => $canCheckIn ? 'success' : 'danger')
             ->disabled(!$canCheckIn);
+    }
+
+    public function updateWristbandAction(): Action
+    {
+        return Action::make('updateWristband')
+            ->label('Update Wristband Number')
+            ->icon('heroicon-o-pencil-square')
+            ->color('warning')
+            ->form([
+                TextInput::make('wristband_number')
+                    ->label('Wristband Number')
+                    ->required()
+                    ->helperText('Put the wristband on the participant then enter the number here.'),
+            ])
+            ->action(function (array $data) {
+                GateScan::create([
+                    'user_id' => $this->userId,
+                    'event_id' => $this->eventId,
+                    'wristband_number' => $data['wristband_number'],
+                ]);
+
+                Notification::make()
+                    ->title('Wristband Updated Successfully')
+                    ->success()
+                    ->body('Participant\'s wristband number has been updated successfully.')
+                    ->send();
+            });
     }
 
     protected function transferForm(Form $form): Form
@@ -320,7 +362,7 @@ class Checkin extends Page
         // Must have at least one transferable ticket, and if checked in must have more than one ticket
         if ($tickets->isEmpty() ||
             $transferableTickets->isEmpty() ||
-            ($checkedIn && $tickets->count() <= 2)
+            ($checkedIn && $tickets->count() < 2)
         ) {
             $canTransfer = false;
         }
