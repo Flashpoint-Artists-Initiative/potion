@@ -9,18 +9,17 @@ use App\Filament\Admin\Resources\UserResource;
 use App\Models\Event;
 use App\Models\Ticketing\ReservedTicket;
 use App\Models\Ticketing\TicketType;
-use Filament\Actions\Action;
-use Filament\Resources\Pages\ManageRelatedRecords;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Forms;
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Forms;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\ManageRelatedRecords;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Support\Str;
 
 class UserReservedTickets extends ManageRelatedRecords
@@ -56,9 +55,9 @@ class UserReservedTickets extends ManageRelatedRecords
                                 ->options(fn () => Event::getCurrentEvent()?->ticketTypes->pluck('name', 'id')->toArray() ?? [])
                                 ->required()
                                 ->live()
-                                ->afterStateUpdated(function(Get $get, Set $set, ?int $state) {
+                                ->afterStateUpdated(function (Get $get, Set $set, ?int $state) {
                                     $currentExpiration = $get('expiration_date');
-                                    if (!is_null($currentExpiration)) {
+                                    if (! is_null($currentExpiration)) {
                                         return;
                                     }
 
@@ -67,7 +66,7 @@ class UserReservedTickets extends ManageRelatedRecords
                                     if (is_null($ticketType)) {
                                         return;
                                     }
-                                    
+
                                     if ($ticketType->sale_end_date < now('America/New_York')) {
                                         $set('expiration_date', now('America/New_York')->addWeek()->endOfDay()->format('Y-m-d H:i'));
                                     }
@@ -97,12 +96,12 @@ class UserReservedTickets extends ManageRelatedRecords
                                 ->numeric()
                                 ->minValue(1)
                                 ->required(),
-                            
+
                             Forms\Components\TextInput::make('note')
                                 ->label('Note')
                                 ->columnSpanFull(),
-                    ])
-                    ->columns(2)
+                        ])
+                        ->columns(2),
                 ])
                 ->action(function (array $data) use ($user) {
                     ReservedTicket::create([
@@ -113,12 +112,12 @@ class UserReservedTickets extends ManageRelatedRecords
                         'count' => $data['count'],
                         'note' => $data['note'] ?? null,
                     ]);
-                    
+
                     Notification::make()
                         ->title(sprintf('%d Reserved %s Created', $data['count'], Str::plural('Ticket', $data['count'])))
                         ->success()
                         ->send();
-                })
+                }),
         ];
     }
 
@@ -139,18 +138,21 @@ class UserReservedTickets extends ManageRelatedRecords
                         if ($record->expiration_date < now()) {
                             return 'heroicon-o-clock';
                         }
+
                         return $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle';
                     })
                     ->color(function (bool $state, ReservedTicket $record) {
                         if ($record->expiration_date < now()) {
                             return null;
                         }
+
                         return $state ? 'success' : 'danger';
                     })
                     ->tooltip(function (bool $state, ReservedTicket $record) {
                         if ($record->expiration_date < now()) {
                             return 'Expired';
                         }
+
                         return $record->purchasedTicket?->created_at?->timezone('America/New_York')?->format('F jS, Y g:i A T') ?? 'Not Purchased';
                     }),
             ])

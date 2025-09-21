@@ -6,13 +6,12 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 
 use App\Filament\Admin\Resources\ShiftResource;
 use App\Filament\Admin\Resources\UserResource;
-use Filament\Resources\Pages\ManageRecords;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Filament\Tables\Table;
+use Filament\Tables\Actions;
 use Filament\Tables\Columns;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
-use Filament\Tables\Actions;
 
 class UserVolunteerShifts extends ManageRelatedRecords
 {
@@ -42,10 +41,10 @@ class UserVolunteerShifts extends ManageRelatedRecords
                 Columns\TextColumn::make('startCarbon')
                     ->label('Start Time')
                     ->dateTime('D, m/j g:ia', 'America/New_York')
-                    ->sortable(query: fn(Builder $query, string $direction) => $query->orderBy('start_offset', $direction)),
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('start_offset', $direction)),
                 Columns\TextColumn::make('lengthInHours')
                     ->label(new HtmlString('Duration<br>(Hours)'))
-                    ->sortable(query: fn(Builder $query, string $direction) => $query->orderBy('length', $direction)),
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('length', $direction)),
             ])
             ->actions([
                 Actions\ViewAction::make()

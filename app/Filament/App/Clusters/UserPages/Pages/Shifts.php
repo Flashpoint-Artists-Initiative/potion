@@ -14,7 +14,7 @@ class Shifts extends Page
 
     protected static ?int $navigationSort = 5;
 
-    protected static string|null $title = 'Volunteer Shifts';
+    protected static ?string $title = 'Volunteer Shifts';
 
     protected static string $view = 'filament.app.clusters.user-pages.pages.shifts';
 

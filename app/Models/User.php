@@ -282,7 +282,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
 
     /**
      * Used when exporting volunteer shifts
-     * 
+     *
      * @return Attribute<string,never>
      */
     protected function nameAndEmail(): Attribute

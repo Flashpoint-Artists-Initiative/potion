@@ -6,7 +6,6 @@ namespace App\Filament\App\Widgets;
 
 use App\Models\Volunteering\Shift;
 use Filament\Notifications\Notification;
-use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\ActionsPosition;
@@ -18,7 +17,7 @@ use Illuminate\Support\HtmlString;
 
 class UserShifts extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     public function table(Table $table): Table
     {
@@ -46,17 +45,17 @@ class UserShifts extends BaseWidget
                 TextColumn::make('startCarbon')
                     ->label('Start Time')
                     ->dateTime('D, m/j g:ia', 'America/New_York')
-                    ->sortable(query: fn(Builder $query, string $direction) => $query->orderBy('start_offset', $direction)),
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('start_offset', $direction)),
                 TextColumn::make('endCarbon')
                     ->label('End Time')
                     ->dateTime('D, m/j g:ia', 'America/New_York'),
                 TextColumn::make('lengthInHours')
                     ->label(new HtmlString('Duration<br>(Hours)'))
-                    ->sortable(query: fn(Builder $query, string $direction) => $query->orderBy('length', $direction)),
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('length', $direction)),
                 TextColumn::make('volunteers_count')
                     ->label('Signed Up')
                     ->counts('volunteers')
-                    ->formatStateUsing(fn(int $state, ?Shift $record) => sprintf('%d/%d', $state, $record->num_spots ?? 0)),
+                    ->formatStateUsing(fn (int $state, ?Shift $record) => sprintf('%d/%d', $state, $record->num_spots ?? 0)),
             ])
             ->actions([
                 Action::make('cancel')
@@ -76,7 +75,7 @@ class UserShifts extends BaseWidget
                             ->success()
                             ->send();
                     })
-                    ->label('Cancel')
+                    ->label('Cancel'),
             ], position: ActionsPosition::BeforeColumns);
     }
 

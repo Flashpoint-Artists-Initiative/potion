@@ -47,7 +47,7 @@ class CheckoutComplete extends Page
                 ->body('This cart is no longer valid. Please try again.')
                 ->danger()
                 ->send();
-            
+
             return;
         }
 
@@ -61,7 +61,7 @@ class CheckoutComplete extends Page
                 ->body('Your order has already been processed. Thank you for your purchase!')
                 ->warning()
                 ->send();
-            
+
             return;
         }
 

@@ -135,7 +135,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
 
     /**
      * Used so $count can be set via mass assignment, but not saved to the database
-     * 
+     *
      * @return Attribute<int,never>
      */
     protected function count(): Attribute
@@ -144,6 +144,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
             get: fn (mixed $value, array $attributes) => $this->count ?? 1,
             set: function (mixed $value, array $attributes) {
                 $this->count = (int) $value;
+
                 // If we return anything other than an empty array, it will try to set a count column in the database
                 // because of trait HasAttributes->normalizeCastClassResponse()
                 return [];

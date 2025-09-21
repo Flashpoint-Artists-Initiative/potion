@@ -12,16 +12,12 @@ use App\Models\Volunteering\Team;
 use App\Services\VolunteerService;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Infolists\Components\Actions\Action as InfolistAction;
 use Filament\Infolists\Components\Grid as InfolistGrid;
-use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
@@ -38,7 +34,6 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
-use Nette\Utils\Html;
 
 /**
  * @property Form $form
@@ -65,7 +60,7 @@ class Volunteer extends Page implements HasTable
 
     public int $teamId;
 
-    /** @var array<mixed> $data */
+    /** @var array<mixed> */
     public array $data = [];
 
     public function getTitle(): string|Htmlable
@@ -76,6 +71,7 @@ class Volunteer extends Page implements HasTable
                 return 'Volunteer Signups - ' . $team->name;
             }
         }
+
         return 'Volunteer Signups';
     }
 
@@ -120,7 +116,7 @@ class Volunteer extends Page implements HasTable
                     ->disableOptionWhen(function (string $value, Get $get) {
                         return Carbon::parse($value)->isAfter(Carbon::parse($get('end_date')));
                     })
-                    ->afterStateUpdated(fn() => $this->resetTable()),
+                    ->afterStateUpdated(fn () => $this->resetTable()),
                 Select::make('end_date')
                     ->options($dateRange)
                     ->required()
@@ -129,7 +125,7 @@ class Volunteer extends Page implements HasTable
                     ->disableOptionWhen(function (string $value, Get $get) {
                         return Carbon::parse($value)->isBefore(Carbon::parse($get('start_date')));
                     })
-                    ->afterStateUpdated(fn() => $this->resetTable()),
+                    ->afterStateUpdated(fn () => $this->resetTable()),
                 // TODO: Get these to work on responsive layouts
                 // ToggleButtons::make('start_date')
                 //     ->options($dateRange)
@@ -166,11 +162,11 @@ class Volunteer extends Page implements HasTable
                 RepeatableEntry::make('teams')
                     ->label(new HtmlString('<h1 class="text-2xl">Teams</h1>'))
                     ->schema([
-                        Section::make(fn(Team $state) => $state->name)
+                        Section::make(fn (Team $state) => $state->name)
                             ->headerActions([
                                 InfolistAction::make('shifts')
                                     ->label('View Shifts')
-                                    ->url(fn(Team $record) => self::getUrl(['id' => $record->id])),
+                                    ->url(fn (Team $record) => self::getUrl(['id' => $record->id])),
                             ])
                             ->schema([
                                 TextEntry::make('description')
@@ -205,9 +201,9 @@ class Volunteer extends Page implements HasTable
                     ->schema([
                         TextEntry::make('signupNote')
                             ->label('')
-                            ->html()
+                            ->html(),
                     ])
-                    ->visible(fn() => ! empty($signupNote)),
+                    ->visible(fn () => ! empty($signupNote)),
                 Section::make('Available Positions')
                     ->description('These are the different types of volunteer positions available for this team. You can sign up for any position when signing up for shifts.')
                     ->collapsible()
@@ -217,7 +213,7 @@ class Volunteer extends Page implements HasTable
                             ->label('')
                             ->schema([
                                 TextEntry::make('description')
-                                    ->label(fn(ShiftType $record) => $record->title),
+                                    ->label(fn (ShiftType $record) => $record->title),
                                 InfolistGrid::make(6)
                                     ->schema([
                                         TextEntry::make('shadeProvided')
@@ -225,24 +221,24 @@ class Volunteer extends Page implements HasTable
                                             ->icon(function (ShiftType $record) {
                                                 return match ($record->shadeProvided) {
                                                     'note' => 'heroicon-o-exclamation-circle',
-                                                    "1" => 'heroicon-o-check-circle',
-                                                    "0" => 'heroicon-o-x-circle',
+                                                    '1' => 'heroicon-o-check-circle',
+                                                    '0' => 'heroicon-o-x-circle',
                                                     default => 'heroicon-o-question-mark-circle',
                                                 };
                                             })
                                             ->iconColor(function (ShiftType $record) {
                                                 return match ($record->shadeProvided) {
                                                     'note' => 'warning',
-                                                    "1" => 'success',
-                                                    "0" => 'danger',
+                                                    '1' => 'success',
+                                                    '0' => 'danger',
                                                     default => 'warning',
                                                 };
                                             })
                                             ->getStateUsing(function (ShiftType $record) {
                                                 return match ($record->shadeProvided) {
                                                     'note' => $record->shadeProvidedNote,
-                                                    "1" => 'Yes',
-                                                    "0" => 'No',
+                                                    '1' => 'Yes',
+                                                    '0' => 'No',
                                                     default => 'Unknown',
                                                 };
                                             }),
@@ -251,30 +247,30 @@ class Volunteer extends Page implements HasTable
                                             ->icon(function (ShiftType $record) {
                                                 return match ($record->longStanding) {
                                                     'note' => 'heroicon-o-exclamation-circle',
-                                                    "1" => 'heroicon-o-check-circle',
-                                                    "0" => 'heroicon-o-x-circle',
+                                                    '1' => 'heroicon-o-check-circle',
+                                                    '0' => 'heroicon-o-x-circle',
                                                     default => 'heroicon-o-question-mark-circle',
                                                 };
                                             })
                                             ->iconColor(function (ShiftType $record) {
                                                 return match ($record->longStanding) {
                                                     'note' => 'warning',
-                                                    "1" => 'success',
-                                                    "0" => 'danger',
+                                                    '1' => 'success',
+                                                    '0' => 'danger',
                                                     default => 'warning',
                                                 };
                                             })
                                             ->getStateUsing(function (ShiftType $record) {
                                                 return match ($record->longStanding) {
                                                     'note' => $record->longStandingNote,
-                                                    "1" => 'Yes',
-                                                    "0" => 'No',
+                                                    '1' => 'Yes',
+                                                    '0' => 'No',
                                                     default => 'Unknown',
                                                 };
                                             }),
                                         TextEntry::make('physicalRequirementsNote')
                                             ->label('Physical Requirements')
-                                            ->hidden(fn(ShiftType $record) => empty($record->physicalRequirementsNote)),
+                                            ->hidden(fn (ShiftType $record) => empty($record->physicalRequirementsNote)),
                                     ]),
                             ]),
                     ]),
@@ -311,20 +307,20 @@ class Volunteer extends Page implements HasTable
                 TextColumn::make('startCarbon')
                     ->label('Start Time')
                     ->dateTime('D, m/j g:ia T', 'America/New_York')
-                    ->sortable(query: fn(Builder $query, string $direction) => $query->orderBy('start_offset', $direction)),
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('start_offset', $direction)),
                 TextColumn::make('endCarbon')
                     ->label('End Time')
                     ->dateTime('D, m/j g:ia T', 'America/New_York'),
                 TextColumn::make('lengthInHours')
                     ->label('Duration (Hours)')
-                    ->sortable(query: fn(Builder $query, string $direction) => $query->orderBy('length', $direction)),
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('length', $direction)),
                 TextColumn::make('multiplier')
                     ->label('Hours Value')
-                    ->formatStateUsing(fn(string $state, Shift $record) => sprintf('%s (%sx)', $record->lengthInHours * $record->multiplier, $state)),
+                    ->formatStateUsing(fn (string $state, Shift $record) => sprintf('%s (%sx)', $record->lengthInHours * $record->multiplier, $state)),
                 TextColumn::make('volunteers_count')
                     ->label('Signed Up')
                     ->counts('volunteers')
-                    ->formatStateUsing(fn(int $state, ?Shift $record) => sprintf('%d/%d', $state, $record->num_spots ?? 0)),
+                    ->formatStateUsing(fn (int $state, ?Shift $record) => sprintf('%d/%d', $state, $record->num_spots ?? 0)),
             ])
             ->actions([
                 Action::make('signup')
@@ -336,7 +332,7 @@ class Volunteer extends Page implements HasTable
                         }
 
                         // Signing up
-                        if (!$user->shifts->contains($record->id)) {
+                        if (! $user->shifts->contains($record->id)) {
                             $user->shifts()->attach($record->id);
                             Notification::make()
                                 ->title('You have signed up for this shift.')
@@ -393,7 +389,7 @@ class Volunteer extends Page implements HasTable
                         }
 
                         return false;
-                    })
+                    }),
             ], position: ActionsPosition::BeforeColumns);
     }
 }

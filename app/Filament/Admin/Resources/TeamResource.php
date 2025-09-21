@@ -80,7 +80,7 @@ class TeamResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('stats')
                     ->label('Filled Shifts')
-                    ->getStateUsing(fn(Team $record): string => sprintf(
+                    ->getStateUsing(fn (Team $record): string => sprintf(
                         '%d/%d (%.1f%%)',
                         $record->totalFilledSpots,
                         $record->totalNumSpots,

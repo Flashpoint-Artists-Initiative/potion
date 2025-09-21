@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
 use App\Filament\Admin\Resources\TeamResource;
-use App\Models\User;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\Team;
-use Filament\Actions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -18,8 +16,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
 class ViewVolunteers extends ManageRelatedRecords
@@ -83,12 +79,12 @@ class ViewVolunteers extends ManageRelatedRecords
                     ->sortable(),
                 TextColumn::make('num_spots')
                     ->label('Filled')
-                    ->formatStateUsing(fn(Shift $record) => sprintf('%d/%d', $record->volunteers_count, $record->num_spots))
+                    ->formatStateUsing(fn (Shift $record) => sprintf('%d/%d', $record->volunteers_count, $record->num_spots))
                     ->counts('volunteers')
                     ->sortable(),
                 TextColumn::make('printableVolunteers')
                     ->label('Volunteers')
-                    ->listWithLineBreaks()
+                    ->listWithLineBreaks(),
             ])
             ->filters([
                 //
@@ -99,7 +95,7 @@ class ViewVolunteers extends ManageRelatedRecords
                     ->label('Export Volunteers')
                     ->color('primary')
                     ->exporter(\App\Filament\Exports\ShiftExporter::class)
-                    ->fileName(fn(): string => str($team->name)->slug() . '-shifts-' . now()->format('Y-m-d')),
+                    ->fileName(fn (): string => str($team->name)->slug() . '-shifts-' . now()->format('Y-m-d')),
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),

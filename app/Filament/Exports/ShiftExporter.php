@@ -17,19 +17,19 @@ class ShiftExporter extends Exporter
     {
         return [
             ExportColumn::make('shiftType.title')
-            ->label('Position'),
+                ->label('Position'),
             ExportColumn::make('startCarbon')
                 ->label('Start Time')
-                ->state(fn(Shift $record) => $record->startCarbon->setTimezone('America/New_York')->format('D, m/j g:ia')),
+                ->state(fn (Shift $record) => $record->startCarbon->setTimezone('America/New_York')->format('D, m/j g:ia')),
             ExportColumn::make('endCarbon')
                 ->label('End Time')
-                ->state(fn(Shift $record) => $record->endCarbon->setTimezone('America/New_York')->format('D, m/j g:ia')),
+                ->state(fn (Shift $record) => $record->endCarbon->setTimezone('America/New_York')->format('D, m/j g:ia')),
             ExportColumn::make('num_spots')
                 ->label('Filled')
-                ->state(fn(Shift $record) => sprintf('%d/%d', $record->volunteers_count, $record->num_spots)),
+                ->state(fn (Shift $record) => sprintf('%d/%d', $record->volunteers_count, $record->num_spots)),
             ExportColumn::make('printableVolunteers')
                 ->label('Volunteers')
-                ->state(fn(Shift $record) => $record->printableVolunteers->implode("\n")),
+                ->state(fn (Shift $record) => $record->printableVolunteers->implode("\n")),
         ];
     }
 
