@@ -17,8 +17,13 @@
 </x-notification-banner>
 
 @if ($this->transferTicketsAction->isVisible())
-{{ $this->transferTicketsAction }}
+    {{ $this->transferTicketsAction }}
 @endif
+
 {{ $this->checkInAction }}
+
+@if  ($this->wristbandNumber)
+    {{ $this->updateWristbandAction }}
+@endif
 
 </x-filament-panels::page>
