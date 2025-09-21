@@ -217,7 +217,7 @@ class Checkin extends Page
                     ->send();
             })
             ->color(fn() => $canCheckIn ? 'success' : 'danger')
-            ->disabled(!$canCheckIn);
+            ->hidden(!$canCheckIn);
     }
 
     public function updateWristbandAction(): Action
