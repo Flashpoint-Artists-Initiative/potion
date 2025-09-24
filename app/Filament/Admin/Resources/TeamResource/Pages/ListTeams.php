@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
 use App\Filament\Admin\Resources\TeamResource;
+use App\Filament\Admin\Widgets\VolunteerStats;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
@@ -24,6 +25,13 @@ class ListTeams extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            VolunteerStats::class,
         ];
     }
 }
