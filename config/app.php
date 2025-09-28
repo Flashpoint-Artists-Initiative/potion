@@ -173,6 +173,7 @@ return [
         App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\Filament\GatePanelProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Overrides\Calendar\CalendarServiceProvider::class,
     ])->toArray(),
 
     /*
