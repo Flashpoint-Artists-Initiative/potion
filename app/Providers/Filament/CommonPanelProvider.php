@@ -38,7 +38,7 @@ class CommonPanelProvider extends PanelProvider
             //     '*/admin',
             //     '*/admin/*',
             // ])
-            ->brandLogo(fn () => asset('images/logo-text.svg'))
+            ->brandLogo(fn () => $this->setBrandLogo())
             ->favicon(fn () => asset('images/logo.svg'))
             ->brandLogoHeight('revert-layer')
             ->defaultAvatarProvider($this->setAvatarProvider())
@@ -128,5 +128,14 @@ class CommonPanelProvider extends PanelProvider
         }
 
         return DiceBearProvider::class;
+    }
+
+    protected function setBrandLogo(): string
+    {
+        $env = app()->environment();
+        if (in_array($env, ['gate'], true)) {
+            return asset('images/logo-offline.svg');
+        }
+        return asset('images/logo-text.svg');
     }
 }

@@ -71,3 +71,6 @@ If you are on an ARM based system, set `APP_IMAGE_PREFIX="arm-"` in `.env`
 
 See https://laravel.com/docs and https://filamentphp.com/
 
+# Other Info
+
+Font used for logo: Amarante Regular
