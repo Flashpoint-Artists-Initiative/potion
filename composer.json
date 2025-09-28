@@ -86,7 +86,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "guava/calendar"
+            ]
         },
         "aws/aws-sdk-php": [
             "Sqs",
