@@ -39,8 +39,8 @@ class CalendarServiceProvider extends OriginalServiceProvider
                     'calendar-context-menu',
                     __DIR__ . '/../../../vendor/guava/calendar/dist/js/calendar-context-menu.js',
                 ),
-                Css::make('calendar-styles', resource_path('css/guava/calendar/event-calendar.min.css')),
-                Js::make('calendar-script', resource_path('js/guava/calendar/event-calendar.min.js')),
+                Css::make('calendar-styles', resource_path('vendor/guava/calendar/event-calendar.min.css')),
+                Js::make('calendar-script', resource_path('vendor/guava/calendar/event-calendar.min.js')),
             ],
             package: 'guava/calendar'
         );
