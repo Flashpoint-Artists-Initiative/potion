@@ -6,6 +6,7 @@ namespace App\Providers\Filament;
 
 use Agencetwogether\HooksHelper\HooksHelperPlugin;
 use App\Filament\AvatarProviders\DiceBearProvider;
+use App\Filament\AvatarProviders\OfflineProvider;
 use CodeWithDennis\FilamentThemeInspector\FilamentThemeInspectorPlugin;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
 use EightCedars\FilamentInactivityGuard\FilamentInactivityGuardPlugin;
@@ -39,7 +40,7 @@ class CommonPanelProvider extends PanelProvider
             ->brandLogo(fn () => asset('images/logo-text.svg'))
             ->favicon(fn () => asset('images/logo.svg'))
             ->brandLogoHeight('revert-layer')
-            ->defaultAvatarProvider(DiceBearProvider::class)
+            ->defaultAvatarProvider($this->setAvatarProvider())
             ->authGuard('web')
             ->middleware([
                 EncryptCookies::class,
@@ -115,5 +116,15 @@ class CommonPanelProvider extends PanelProvider
         }
 
         return $panel->plugins($plugins);
+    }
+
+    protected function setAvatarProvider(): string
+    {
+        $env = app()->environment();
+        if (in_array($env, ['gate'], true)) {
+            return OfflineProvider::class;
+        }
+
+        return DiceBearProvider::class;
     }
 }
