@@ -10,6 +10,7 @@ use App\Filament\AvatarProviders\OfflineProvider;
 use CodeWithDennis\FilamentThemeInspector\FilamentThemeInspectorPlugin;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
 use EightCedars\FilamentInactivityGuard\FilamentInactivityGuardPlugin;
+use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -41,6 +42,7 @@ class CommonPanelProvider extends PanelProvider
             ->favicon(fn () => asset('images/logo.svg'))
             ->brandLogoHeight('revert-layer')
             ->defaultAvatarProvider($this->setAvatarProvider())
+            ->font('Inter', asset('/css/fonts.css'), LocalFontProvider::class)
             ->authGuard('web')
             ->middleware([
                 EncryptCookies::class,
