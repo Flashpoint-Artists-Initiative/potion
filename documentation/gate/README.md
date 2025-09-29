@@ -91,9 +91,9 @@ Ensure that your scanning devices can connect to the rPi5 after it has finished 
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 source ~/.bashrc
-npm install
-npm run build
 
+# Download and install Node.js:
+nvm install 22
 ```
 
 ## Configure PHP
@@ -111,8 +111,13 @@ sudo mv composer.phar /usr/local/bin/composer
 git clone https://github.com/Flashpoint-Artists-Initiative/potion.git potion-app
 cd potion-app
 
+npm install
+
 # Install PHP dependencies
 composer install --no-dev
+
+npm run build
+
 ```
 
 ## Add your Organizations dependencies
@@ -226,6 +231,7 @@ mysql -u root -p -e "CREATE USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASSW
 
 # Run migrations for app
 exit
+
 cd /home/gate/potion-app
 php artisan migrate
 php artisan permission:populate
@@ -287,7 +293,7 @@ After=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/home/gate/potion/documentation/gate/scripts/startup.sh
+ExecStart=/home/gate/potion-app/documentation/gate/scripts/startup.sh
 Restart=always
 
 [Install]
@@ -295,4 +301,6 @@ WantedBy=multi-user.target
 EOF
 
 systemctl enable potion
+
+sudo reboot
 ```
