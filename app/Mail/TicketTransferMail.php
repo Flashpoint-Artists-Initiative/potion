@@ -50,7 +50,7 @@ class TicketTransferMail extends Mailable implements ShouldQueue
     {
         $eventName = $this->ticketTransfer->event->name;
         $ticketString = Str::plural('Ticket', $this->ticketTransfer->ticketCount);
-        $url = TicketTransfers::getUrl(panel: 'admin');
+        $url = TicketTransfers::getUrl(panel: 'app');
 
         $message = (new MailMessage)
             ->line('You have a pending ticket transfer for ' . $eventName)
