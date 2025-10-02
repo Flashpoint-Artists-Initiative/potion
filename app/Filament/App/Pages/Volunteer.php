@@ -279,6 +279,7 @@ class Volunteer extends Page implements HasTable
                                             }),
                                         TextEntry::make('physicalRequirementsNote')
                                             ->label('Physical Requirements')
+                                            ->columnSpan(4)
                                             ->hidden(fn (ShiftType $record) => empty($record->physicalRequirementsNote)),
                                     ]),
                             ]),
