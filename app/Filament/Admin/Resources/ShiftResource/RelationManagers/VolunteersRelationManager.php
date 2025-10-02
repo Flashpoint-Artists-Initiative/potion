@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class VolunteersRelationManager extends RelationManager
 {
     protected static string $relationship = 'volunteers';
+    protected static bool $shouldSkipAuthorization = true;
 
     public function form(Form $form): Form
     {

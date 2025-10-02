@@ -114,6 +114,7 @@ class CommonPanelProvider extends PanelProvider
                     'Art Grant Reviewer' => 'artgrants@example.com',
                     'Volunteer Coordinator' => 'volunteer@example.com',
                     'Gate Staff' => 'gatestaff@example.com',
+                    'Team Lead' => 'teamlead@example.com',
                 ]);
         }
 

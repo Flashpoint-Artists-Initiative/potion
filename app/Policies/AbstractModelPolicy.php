@@ -54,6 +54,11 @@ abstract class AbstractModelPolicy
         return $this->isNotLocked() && $user->can("{$this->prefix}.delete");
     }
 
+    public function deleteAny(User $user): bool
+    {
+        return $this->isNotLocked() && $user->can("{$this->prefix}.delete");
+    }
+
     /**
      * Determine whether the user can restore the model.
      */

@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\RolesEnum;
+use Spatie\Permission\Contracts\Role;
 
 return [
 
@@ -277,6 +278,15 @@ return [
                 'shifts.*',
                 'requirements.*',
                 'shiftSignups.*',
+            ],
+            RolesEnum::TeamLead->value => [
+                'panelAccess.admin',
+                'teams.viewAny',
+                'teams.view',
+                'teams.volunteers',
+                'shifts.viewAny',
+                'shifts.view',
+                'shiftSignups.viewAny',
             ],
             RolesEnum::GateStaff->value => [
                 'panelAccess.gate',

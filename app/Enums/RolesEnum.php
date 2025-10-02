@@ -16,6 +16,7 @@ enum RolesEnum: string implements HasLabel
     case Accountant = 'accountant';
     case VolunteerCoordinator = 'volunteer-coordinator';
     case GateStaff = 'gate-staff';
+    case TeamLead = 'team-lead';
 
     public function getLabel(): string
     {
@@ -27,6 +28,7 @@ enum RolesEnum: string implements HasLabel
             self::Accountant => 'Accountant',
             self::VolunteerCoordinator => 'Volunteer Coordinator',
             self::GateStaff => 'Gate Staff',
+            self::TeamLead => 'Team Lead',
         };
     }
 
