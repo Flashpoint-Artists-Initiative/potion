@@ -201,6 +201,7 @@ class UserReservedTickets extends ManageRelatedRecords
                         ->deselectRecordsAfterCompletion(),
                 ])
                 ->visible(fn () => Auth::user() && Auth::user()->can('reservedTickets.update'))
-            ]);
+            ])
+            ->checkIfRecordIsSelectableUsing(fn (ReservedTicket $record) => ! $record->is_purchased);
     }
 }
