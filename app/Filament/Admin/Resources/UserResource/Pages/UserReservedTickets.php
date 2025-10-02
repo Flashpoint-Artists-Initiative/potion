@@ -19,7 +19,10 @@ use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class UserReservedTickets extends ManageRelatedRecords
@@ -135,21 +138,21 @@ class UserReservedTickets extends ManageRelatedRecords
                 Tables\Columns\IconColumn::make('isPurchased')
                     ->label('Purchased')
                     ->icon(function (bool $state, ReservedTicket $record) {
-                        if ($record->expiration_date < now()) {
+                        if (! $state && $record->expiration_date < now()) {
                             return 'heroicon-o-clock';
                         }
 
                         return $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle';
                     })
                     ->color(function (bool $state, ReservedTicket $record) {
-                        if ($record->expiration_date < now()) {
+                        if (! $state && $record->expiration_date < now()) {
                             return null;
                         }
 
                         return $state ? 'success' : 'danger';
                     })
                     ->tooltip(function (bool $state, ReservedTicket $record) {
-                        if ($record->expiration_date < now()) {
+                        if (! $state && $record->expiration_date < now()) {
                             return 'Expired';
                         }
 
@@ -166,6 +169,38 @@ class UserReservedTickets extends ManageRelatedRecords
                 Tables\Actions\ForceDeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
             ])
-            ->bulkActions([]);
+            ->bulkActions([
+                BulkActionGroup::make([
+                    BulkAction::make('modifyExpirationDate')
+                        ->label('Modify Expiration Date')
+                        ->form([
+                            Forms\Components\DateTimePicker::make('new_expiration_date')
+                                ->label('New Expiration Date')
+                                ->timezone('America/New_York')
+                                ->required()
+                                ->format('Y-m-d H:i:s')
+                                ->seconds(false)
+                                ->closeOnDateSelection(),
+                        ])
+                        ->action(function (array $data, $records) {
+                            /** @var \Illuminate\Database\Eloquent\Collection<int, ReservedTicket> $records */
+                            $updatedCount = 0;
+                            foreach ($records as $record) {
+                                $record->expiration_date = $data['new_expiration_date'];
+                                if ($record->isDirty()) {
+                                    $record->save();
+                                    $updatedCount++;
+                                }
+                            }
+
+                            Notification::make()
+                                ->title(sprintf('Updated %d Reserved Tickets', $updatedCount))
+                                ->success()
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
+                ])
+                ->visible(fn () => Auth::user() && Auth::user()->can('reservedTickets.update'))
+            ]);
     }
 }
