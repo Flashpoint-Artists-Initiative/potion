@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace App\Filament\Gate\Pages;
 
 use App\Models\Event;
+use App\Models\Ticketing\GateScan;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -40,6 +43,32 @@ class Search extends Page
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('search-by-wristband')
+                ->label('Search by Wristband')
+                ->icon('heroicon-o-hashtag')
+                ->color('info')
+                ->form([
+                    TextInput::make('number')
+                        ->label('Wristband Number')
+                        ->numeric()
+                        ->required()
+                        ->autofocus(),
+                ])
+                ->action(function (array $data) {
+                    $scan = GateScan::where('wristband_number', $data['number'])->first();
+
+                    if ($scan) {
+                        $this->redirect(Checkin::getUrl([
+                            'userId' => $scan->user_id,
+                            'eventId' => Event::getCurrentEventId(),
+                        ]));
+                    } else {
+                        Notification::make()
+                            ->title('Wristband number not found.')
+                            ->danger()
+                            ->send();
+                    }
+                }),
             Action::make('search')
                 ->label('Scan QR Code')
                 ->icon('heroicon-o-qr-code')
