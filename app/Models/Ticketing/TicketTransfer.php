@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Observers\TicketTransferObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -36,11 +37,16 @@ class TicketTransfer extends Model implements ContractsAuditable
         'recipient_email',
         'recipient_user_id',
         'completed',
+        'data',
     ];
 
     protected $with = [
         'purchasedTickets.ticketType',
         'reservedTickets.ticketType',
+    ];
+
+    protected $casts = [
+        'data' => AsArrayObject::class,
     ];
 
     /**
@@ -164,7 +170,7 @@ class TicketTransfer extends Model implements ContractsAuditable
      * @param  int[]  $purchasedTicketIds
      * @param  int[]  $reservedTicketIds
      */
-    public static function createTransfer(int $userId, string $email, array $purchasedTicketIds = [], array $reservedTicketIds = []): TicketTransfer
+    public static function createTransfer(int $userId, string $email, array $purchasedTicketIds = [], array $reservedTicketIds = [], bool $quietly = false): TicketTransfer
     {
 
         $validPurchasedIds = PurchasedTicket::whereIn('id', $purchasedTicketIds)
@@ -197,8 +203,10 @@ class TicketTransfer extends Model implements ContractsAuditable
 
         $transfer->load(['reservedTickets', 'purchasedTickets']);
 
-        Mail::to($email)
-            ->send(new TicketTransferMail($transfer));
+        if (! $quietly) {
+            Mail::to($email)
+                ->send(new TicketTransferMail($transfer));
+        }
 
         return $transfer;
     }

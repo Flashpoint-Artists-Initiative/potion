@@ -7,6 +7,7 @@ namespace App\Models\Ticketing;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,11 @@ class GateScan extends Model implements ContractsAuditable
         'event_id',
         'user_id',
         'wristband_number',
+        'data',
+    ];
+
+    protected $casts = [
+        'data' => AsArrayObject::class,
     ];
 
     /**
