@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Gate\Pages;
 
+use App\Forms\Components\WaiverSignatureInput;
 use App\Models\Event;
 use App\Models\Ticketing\GateScan;
 use App\Models\Ticketing\PurchasedTicket;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Set;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Password;
@@ -57,6 +59,12 @@ class Checkin extends Page
     protected User $user;
 
     protected ?GateScan $latestScan;
+
+    // since the original code does not have a type
+    // @phpstan-ignore missingType.property
+    protected $listeners = [
+        'waiver-signed' => '$refresh'
+    ];
 
     public function boot(): void
     {
@@ -157,7 +165,11 @@ class Checkin extends Page
         if ($hasMultipleTickets) {
             $this->checklist['multiple_tickets'] = [
                 'color' => $hasTransferableTickets ? 'info' : 'warning',
-                'message' => sprintf('Participant has %d valid tickets. %d are transferable.', $userTickets->count(), $transferableTickets->count()),
+                'message' => sprintf('Participant has %d valid tickets. %d %s transferable.', 
+                    $userTickets->count(), 
+                    $transferableTickets->count(), 
+                    $transferableTickets->count() === 1 ? 'is' : 'are'
+                ),
             ];
         }
     }
@@ -185,7 +197,11 @@ class Checkin extends Page
                 /** @var User $receivingUser */
                 $receivingUser = User::findOrFail($data['user_id']);
                 /** @var PurchasedTicket $nextTicket */
-                TicketTransfer::createTransfer($this->user->id, $receivingUser->email, [$nextTicket->id])->complete();
+                TicketTransfer::createTransfer($this->user->id, $receivingUser->email, [$nextTicket->id], quietly: true)->complete();
+                $this->redirect(self::getUrl([
+                    'userId' => $receivingUser->id,
+                    'eventId' => $this->eventId,
+                ]));
             });
     }
 
@@ -270,7 +286,6 @@ class Checkin extends Page
                     ->searchable()
                     ->live()
                     ->required()
-                    ->helperText(fn($state) => $state)
                     ->getSearchResultsUsing(function (string $search) {
                         return User::where('legal_name', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%")
@@ -349,6 +364,51 @@ class Checkin extends Page
                     ->default(fn() => str()->random(12))
                     ->helperText('A random 12 character password has been generated. You may change it if you wish.'),
             ]);
+    }
+
+    public function signWaiverAction(): Action
+    {
+
+        $requiresWaiver = $this->event->waiver()->exists();
+        $hasSignedWaiver = $this->user->hasSignedWaiverForEvent($this->eventId);
+        $waiver = $this->event->waiver;
+
+        return Action::make('signWaiver')
+            ->label('Have User Sign Waiver')
+            ->color('warning')
+            ->visible($requiresWaiver && ! $hasSignedWaiver)
+            ->action(fn (array $data) => $this->createCompletedWaiver($data))
+            ->modalHeading('Sign Waiver')
+            ->modalWidth(MaxWidth::FiveExtraLarge)
+            ->form([
+                Placeholder::make('title')
+                    ->content(new HtmlString('<h1 class="text-2xl">' . ($waiver->title ?? '') . '</h1>'))
+                    ->label('')
+                    ->dehydrated(false),
+                Placeholder::make('waiver')
+                    ->content(new HtmlString($waiver->content ?? ''))
+                    ->label('')
+                    ->dehydrated(false),
+                WaiverSignatureInput::makeWithUser('signature', $this->userId),
+            ]);
+    }
+
+    /**
+     * @param  array<string, string>  $data
+     */
+    protected function createCompletedWaiver(array $data): void
+    {
+        if ($waiver = Event::getCurrentEvent()?->waiver) {
+            $waiver->completedWaivers()->create([
+                'user_id' => $this->userId,
+                'form_data' => [
+                    'signature' => $data['signature'],
+                ],
+            ]);
+        }
+
+        // TODO: replace this hack with a proper way to update the component
+        $this->js('window.location.reload()'); 
     }
 
     protected function getNextTransferableTicket(): ?PurchasedTicket

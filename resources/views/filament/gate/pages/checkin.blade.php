@@ -16,6 +16,10 @@
     {{ $this->checklist['waiver']['message'] }}
 </x-notification-banner>
 
+@if ($this->signWaiverAction->isVisible())
+    {{ $this->signWaiverAction }}
+@endif
+
 @if ($this->transferTicketsAction->isVisible())
     {{ $this->transferTicketsAction }}
 @endif
