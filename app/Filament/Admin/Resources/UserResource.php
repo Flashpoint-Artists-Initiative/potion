@@ -7,14 +7,17 @@ namespace App\Filament\Admin\Resources;
 use App\Actions\SendEmailBulkAction;
 use App\Enums\RolesEnum;
 use App\Filament\Admin\Resources\UserResource\Pages;
+use App\Models\Event;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\QueryBuilder;
 use Filament\Tables\Filters\QueryBuilder\Constraints\RelationshipConstraint;
 use Filament\Tables\Table;
@@ -124,7 +127,7 @@ class UserResource extends Resource
                     ->placeholder('All Ticket Types'),
                 Tables\Filters\SelectFilter::make('negTicketType')
                     ->label('Does not have Ticket Type')
-                    ->options(fn () => \App\Models\Ticketing\TicketType::pluck('name', 'id')->toArray())
+                    ->options(fn () => \App\Models\Ticketing\TicketType::where('event_id', Event::getCurrentEventId())->pluck('name', 'id')->toArray())
                     ->multiple()
                     ->preload()
                     ->placeholder('All Ticket Types')
@@ -136,6 +139,17 @@ class UserResource extends Resource
                         }
 
                         return $query;
+                    }),
+                Filter::make('multipleTransferableTickets')
+                    ->indicator('Multiple transferable tickets')
+                    ->query(function (Builder $query) {
+                        return $query->whereHas('purchasedTickets', function (Builder $ptQuery) {
+                            $ptQuery->whereHas('ticketType', function (Builder $q) {
+                                $q->where('transferable', true);
+                                $q->where('addon', false);
+                                $q->where('event_id', Event::getCurrentEventId());
+                            });
+                        }, '>', 1);
                     }),
                 QueryBuilder::make()
                     ->constraints([
