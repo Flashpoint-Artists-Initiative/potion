@@ -8,6 +8,7 @@ use App\Enums\LockdownEnum;
 use App\Filament\App\Clusters\UserPages;
 use App\Filament\Traits\HasAuthComponents;
 use App\Models\User;
+use App\Rules\ValidEmail;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Placeholder;
@@ -110,7 +111,7 @@ class Account extends Page
                     ->helperText(new HtmlString('Your legal name and birthday cannot be changed.  If you need to change it, please contact <a class="text-primary-400" href="mailto:' . config('mail.from.address') . '?subject=Legal Name Change">' . config('mail.from.address') . '</a>.')),
                 $this->getPreferredNameFormComponent(),
                 TextInput::make('email')
-                    ->email()
+                    ->rule(new ValidEmail)
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)

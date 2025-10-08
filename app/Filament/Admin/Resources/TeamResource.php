@@ -7,6 +7,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\TeamResource\Pages;
 use App\Models\Event;
 use App\Models\Volunteering\Team;
+use App\Rules\ValidEmail;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\Page;
@@ -46,7 +47,7 @@ class TeamResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
-                    ->email()
+                    ->rule(new ValidEmail)
                     ->maxLength(255),
                 Forms\Components\Toggle::make('active')
                     ->required(),

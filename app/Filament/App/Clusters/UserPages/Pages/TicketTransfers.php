@@ -12,6 +12,7 @@ use App\Models\Ticketing\PurchasedTicket;
 use App\Models\Ticketing\ReservedTicket;
 use App\Models\Ticketing\TicketTransfer;
 use App\Models\User;
+use App\Rules\ValidEmail;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
@@ -107,7 +108,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
             ->form([
                 Section::make([
                     TextInput::make('recipient_email')
-                        ->email()
+                        ->rule(new ValidEmail)
                         ->required()
                         ->columnSpan('full'),
                     Select::make('purchased_tickets')

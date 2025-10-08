@@ -10,6 +10,7 @@ use App\Models\Ticketing\GateScan;
 use App\Models\Ticketing\PurchasedTicket;
 use App\Models\Ticketing\TicketTransfer;
 use App\Models\User;
+use App\Rules\ValidEmail;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Placeholder;
@@ -32,6 +33,7 @@ use Filament\Support\Enums\MaxWidth;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Password;
+use Filament\Notifications\Actions\Action as NotificationAction;
 
 class Checkin extends Page
 {
@@ -197,11 +199,16 @@ class Checkin extends Page
                 /** @var User $receivingUser */
                 $receivingUser = User::findOrFail($data['user_id']);
                 /** @var PurchasedTicket $nextTicket */
-                TicketTransfer::createTransfer($this->user->id, $receivingUser->email, [$nextTicket->id], quietly: true)->complete();
+                TicketTransfer::createTransfer($this->user->id, $receivingUser->email, [$nextTicket->id], quietly: true)->complete('Transferred to existing user at check-in.');
                 $this->redirect(self::getUrl([
                     'userId' => $receivingUser->id,
                     'eventId' => $this->eventId,
                 ]));
+                Notification::make()
+                    ->title('Ticket Transferred Successfully')
+                    ->success()
+                    ->body("A ticket has been transferred to {$receivingUser->legal_name}.")
+                    ->send();
             });
     }
 
@@ -307,13 +314,24 @@ class Checkin extends Page
             ->color('primary')
             ->form(fn(Form $form) => $this->createNewUserForm($form))
             ->action(function (array $data, Set $set) {
-                $user = User::create($data);
+                if ($user = User::where('email', $data['email'])->first()) {
 
-                Notification::make()
-                    ->title('User Created Successfully')
-                    ->success()
-                    ->body("User {$user->legal_name} has been created successfully.")
-                    ->send();
+                    Notification::make()
+                        ->title('User Created Successfully')
+                        ->success()
+                        ->body("User {$user->legal_name} was found and will be used for the transfer.")
+                        ->send();
+                    $note = 'Transferred to existing user created at check-in.';
+                } else {
+                    $user = User::create($data);
+
+                    Notification::make()
+                        ->title('User Created Successfully')
+                        ->success()
+                        ->body("User {$user->legal_name} has been created successfully.")
+                        ->send();
+                    $note = 'Transferred to new user created at check-in.';
+                }
 
                 $nextTicket = $this->getNextTransferableTicket();
                 if ($nextTicket === null) {
@@ -325,7 +343,7 @@ class Checkin extends Page
                     return; 
                 }
 
-                TicketTransfer::createTransfer($this->user->id, $user->email, [$nextTicket->id])->complete();
+                TicketTransfer::createTransfer($this->user->id, $user->email, [$nextTicket->id], quietly: true)->complete($note);
 
                 Notification::make()
                     ->title('Ticket Transferred Successfully')
@@ -335,7 +353,7 @@ class Checkin extends Page
 
                 $this->redirect(self::getUrl([
                     'userId' => $user->id,
-                    'eventId' => Event::getCurrentEventId(),
+                    'eventId' => $this->eventId,
                 ]));
             });
     }
@@ -354,7 +372,7 @@ class Checkin extends Page
                     ->required(),
                 TextInput::make('email')
                     ->label('Email Address')
-                    ->email()
+                    ->rule(new ValidEmail)
                     ->required(),
                 TextInput::make('password')
                     ->label('Password')
@@ -368,7 +386,6 @@ class Checkin extends Page
 
     public function signWaiverAction(): Action
     {
-
         $requiresWaiver = $this->event->waiver()->exists();
         $hasSignedWaiver = $this->user->hasSignedWaiverForEvent($this->eventId);
         $waiver = $this->event->waiver;

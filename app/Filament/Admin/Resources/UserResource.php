@@ -9,6 +9,7 @@ use App\Enums\RolesEnum;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Models\Event;
 use App\Models\User;
+use App\Rules\ValidEmail;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Form;
@@ -65,7 +66,7 @@ class UserResource extends Resource
                 Forms\Components\DatePicker::make('birthday')
                     ->closeOnDateSelection(),
                 Forms\Components\TextInput::make('email')
-                    ->email()
+                    ->rule(new ValidEmail)
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DateTimePicker::make('email_verified_at')

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Traits;
 
 use App\Models\User;
+use App\Rules\ValidEmail;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
@@ -54,7 +55,7 @@ trait HasAuthComponents
     {
         return TextInput::make('email')
             ->label('Email address')
-            ->email()
+            ->rule(new ValidEmail)
             ->required()
             ->default($this->email)
             ->maxLength(255)

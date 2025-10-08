@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\BanResource\Pages;
 use App\Models\User;
+use App\Rules\ValidEmail;
 use Filament\Forms;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Form;
@@ -19,7 +20,7 @@ class BanResource extends BanhammerResource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('email')
-                    ->email()
+                    ->rule(new ValidEmail)
                     ->maxLength(255)
                     ->required(fn ($operation) => $operation == 'create')
                     ->hintAction(

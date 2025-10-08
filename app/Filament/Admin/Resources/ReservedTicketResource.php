@@ -10,6 +10,7 @@ use App\Models\Event;
 use App\Models\Ticketing\ReservedTicket;
 use App\Models\Ticketing\TicketType;
 use App\Models\User;
+use App\Rules\ValidEmail;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Actions;
@@ -91,7 +92,7 @@ class ReservedTicketResource extends Resource
                         }
                     }),
                 Forms\Components\TextInput::make('email')
-                    ->email()
+                    ->rule(new ValidEmail)
                     ->maxLength(255)
                     ->required(fn ($operation) => $operation == 'create')
                     ->disabled(fn (?ReservedTicket $record) => $record?->user_id !== null)
