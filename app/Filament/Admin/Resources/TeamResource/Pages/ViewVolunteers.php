@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class ViewVolunteers extends ManageRelatedRecords
@@ -72,11 +73,11 @@ class ViewVolunteers extends ManageRelatedRecords
                 TextColumn::make('startCarbon')
                     ->label('Start Time')
                     ->dateTime('D, m/j g:ia', 'America/New_York')
-                    ->sortable(),
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('start_offset', $direction)),
                 TextColumn::make('endCarbon')
                     ->label('End Time')
                     ->dateTime('D, m/j g:ia', 'America/New_York')
-                    ->sortable(),
+                    ->sortable(query: fn (Builder $query, string $direction) => $query->orderByRaw('(start_offset + CAST(`shifts`.length AS SIGNED)) ' . $direction)),
                 TextColumn::make('num_spots')
                     ->label('Filled')
                     ->formatStateUsing(fn (Shift $record) => sprintf('%d/%d', $record->volunteers_count, $record->num_spots))
