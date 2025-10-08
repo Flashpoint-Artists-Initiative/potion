@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 
@@ -295,6 +296,9 @@ class PurchaseTickets extends Page
 
     public function checkout(): void
     {
+        // Validate before the try/catch so they show they aren't passed to the log
+        $this->form->validate();
+
         try {
             App::call([$this, 'createCart']);
             $this->redirect(Checkout::getUrl());
@@ -321,5 +325,13 @@ class PurchaseTickets extends Page
 
         $this->form->fill();
         $this->refreshProperties();
+    }
+
+    protected function onValidationError(ValidationException $exception): void
+    {
+        Notification::make()
+            ->title($exception->getMessage())
+            ->danger()
+            ->send();
     }
 }
