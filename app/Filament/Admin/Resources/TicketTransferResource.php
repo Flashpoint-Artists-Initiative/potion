@@ -110,6 +110,7 @@ class TicketTransferResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->select('ticket_transfers.*')->without(['purchasedTickets', 'reservedTickets', 'purchasedTickets.ticketType', 'reservedTickets.ticketType']))
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -166,8 +167,10 @@ class TicketTransferResource extends Resource
             return parent::getEloquentQuery();
         }
 
-        return parent::getEloquentQuery()
-            ->whereRelation('purchasedTickets.ticketType', 'event_id', Event::getCurrentEventId())
-            ->orWhereRelation('reservedTickets.ticketType', 'event_id', Event::getCurrentEventId());
+        /** @var Builder<TicketTransfer> $query */
+        $query = parent::getEloquentQuery();
+
+        // scope in TicketTransfer model
+        return $query->specificEvent();
     }
 }
