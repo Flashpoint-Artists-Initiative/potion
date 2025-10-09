@@ -21,7 +21,6 @@ class UserColumn extends TextColumn
                         ->orWhere('email', 'like', "%{$search}%");
                 });
             })
-            // ['users.display_name', 'users.email'])
             ->sortable();
     }
 }

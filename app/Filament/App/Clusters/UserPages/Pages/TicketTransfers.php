@@ -32,6 +32,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
@@ -85,22 +86,48 @@ class TicketTransfers extends Page implements HasForms, HasTable
         ];
     }
 
-    public function newTransferAction(): Action
+    protected function getTransferablePurchasedTickets(): Collection
     {
-        $purchasedTickets = PurchasedTicket::query()->currentUser()->currentEvent()->canBeTransferred()->get();
-        $reservedTickets = ReservedTicket::query()->currentUser()->currentEvent()->canBePurchased()->canBeTransferred()->get();
-
+        $purchasedTickets = PurchasedTicket::query()->currentUser()->with('ticketType')->get()
+            ->filter(fn (PurchasedTicket $ticket) => $ticket->ticketType->event_id === Event::getCurrentEventId() && $ticket->ticketType->transferable);
         $purchasedItems = $purchasedTickets->mapWithKeys(function (PurchasedTicket $ticket, int $key) {
             $label = sprintf('%s (#%d)', $ticket->ticketType->name, $ticket->id);
 
             return [$ticket->id => $label];
         });
 
+        return $purchasedItems;
+    }
+
+    protected function getTransferableReservedTickets(): Collection
+    {
+        $reservedTickets = ReservedTicket::query()->currentUser()->with(['ticketType.event'])->get()
+            ->filter(fn (ReservedTicket $ticket) => $ticket->ticketType->event_id === Event::getCurrentEventId() && $ticket->can_be_purchased && $ticket->ticketType->transferable);
         $reservedItems = $reservedTickets->mapWithKeys(function (ReservedTicket $ticket, int $key) {
             $label = sprintf('%s (#%d)', $ticket->ticketType->name, $ticket->id);
 
             return [$ticket->id => $label];
         });
+
+        return $reservedItems;
+    }
+
+    public function newTransferAction(): Action
+    {
+        $defaultPurchased = null;
+        $defaultReserved = null;
+        $purchasedItems = null;
+        $reservedItems = null;
+
+        if ($this->purchased) {
+            $purchasedItems = $this->getTransferablePurchasedTickets();
+            $defaultPurchased = $purchasedItems->has($this->purchased) ? [$this->purchased] : null;
+        }
+
+        if ($this->reserved) {
+            $reservedItems = $this->getTransferableReservedTickets();
+            $defaultReserved = $reservedItems->has($this->reserved) ? [$this->reserved] : null;
+        }
 
         return Action::make('newTransfer')
             ->label('Start a new Ticket Transfer')
@@ -124,8 +151,8 @@ class TicketTransfers extends Page implements HasForms, HasTable
                         ->multiple()
                         ->searchable(false)
                         ->placeholder("Select which purchased ticket(s) you'd like to transfer")
-                        ->default($this->purchased && $purchasedItems->has($this->purchased) ? [$this->purchased] : null)
-                        ->options($purchasedItems)
+                        ->default($defaultPurchased)
+                        ->options(fn () => $purchasedItems ?? $this->getTransferablePurchasedTickets())
                         ->columnSpan(1),
                     Select::make('reserved_tickets')
                         ->requiredWithout('purchased_tickets')
@@ -140,8 +167,8 @@ class TicketTransfers extends Page implements HasForms, HasTable
                         ->multiple()
                         ->searchable(false)
                         ->placeholder("Select which reserved ticket(s) you'd like to transfer")
-                        ->default($this->reserved && $reservedItems->has($this->reserved) ? [$this->reserved] : null)
-                        ->options($reservedItems)
+                        ->default($defaultReserved)
+                        ->options(fn () => $reservedItems ?? $this->getTransferableReservedTickets())
                         ->columnSpan(1),
                 ])
                     ->columns(2),
@@ -178,7 +205,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
         $eventIsFuture = Event::getCurrentEvent()?->endDateCarbon->isFuture();
 
         return $table
-            ->query(TicketTransfer::query()->specificEvent()->involvesUser())
+            ->query(TicketTransfer::query()->select('ticket_transfers.*')->involvesUser()->specificEvent())
             ->columns([
                 TextColumn::make('completed')
                     ->badge()
