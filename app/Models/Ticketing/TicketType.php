@@ -38,7 +38,6 @@ class TicketType extends Model implements ContractsAuditable
         'active',
         'transferable',
         'addon',
-        'voided',
     ];
 
     protected $casts = [
@@ -47,7 +46,6 @@ class TicketType extends Model implements ContractsAuditable
         'active' => 'boolean',
         'transferable' => 'boolean',
         'addon' => 'boolean',
-        'voided' => 'boolean',
     ];
 
     protected $withCount = [

@@ -147,7 +147,7 @@ class TicketTransfer extends Model implements ContractsAuditable
     /**
      * Finish the transfer and mark it as completed
      */
-    public function complete(): static
+    public function complete(?string $note = null): static
     {
         if ($this->completed) {
             return $this;
@@ -158,6 +158,10 @@ class TicketTransfer extends Model implements ContractsAuditable
         $tickets = $this->purchasedTickets->concat($this->reservedTickets);
 
         $tickets->each(fn ($ticket) => $ticket->update(['user_id' => $user->id]));
+
+        if ($note) {
+            $this->data['note'] = $note;
+        }
 
         $this->updateQuietly(['completed' => true, 'recipient_user_id' => $user->id]);
 

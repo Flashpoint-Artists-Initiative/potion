@@ -199,6 +199,8 @@ return [
     'default_event_id' => env('DEFAULT_EVENT_ID', 0),
     'use_single_lockdown' => env('USE_SINGLE_LOCKDOWN', true),
 
+    'gate_admin_password' => env('GATE_ADMIN_PASSWORD', '111111'),
+
     // Default values for event settings
     'defaults' => [
         'art' => [
