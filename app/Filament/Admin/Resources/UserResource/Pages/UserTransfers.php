@@ -12,6 +12,7 @@ use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\User;
 
 class UserTransfers extends ManageRelatedRecords
 {
@@ -33,10 +34,12 @@ class UserTransfers extends ManageRelatedRecords
         return $table
             ->recordTitleAttribute('id')
             ->modifyQueryUsing(function (Builder $query) {
-                /** @var TicketTransfer $record */
+                /** @var User $record */
                 $record = $this->record;
 
-                return $query->orWhere('ticket_transfers.recipient_user_id', $record->id);
+                return $query
+                    ->orWhere('ticket_transfers.recipient_user_id', $record->id)
+                    ->orWhere('ticket_transfers.recipient_email', $record->email);
             })
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
