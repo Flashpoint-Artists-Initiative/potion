@@ -127,6 +127,33 @@ class Checkin extends Page
         // Check if the user has signed the waiver
         $requiresWaiver = $this->event->waiver()->exists();
         $hasSignedWaiver = $this->user->hasSignedWaiverForEvent($this->eventId);
+        
+        // Check ban list
+        $isBanned = $this->user->isBanned();
+        $banList = User::banned()->pluck('legal_name', 'id')->toArray();
+        $highestBanMatch = 0;
+        $highestBanId = null;
+        
+        foreach ($banList as $id => $name) {
+            similar_text(strtolower($this->user->legal_name), strtolower($name), $percent);
+            if ($percent > $highestBanMatch) {
+                $highestBanMatch = $percent;
+                $highestBanId = $id;
+            }
+        }
+
+        if ($isBanned) {
+            $this->checklist['ban'] = [
+                'color' => 'danger',
+                'message' => "Participant is banned from this event. Contact an event lead for assistance.",
+            ];
+        } elseif ($highestBanMatch >= 90) {
+            $bannedUser = User::findOrFail($highestBanId);
+            $this->checklist['ban'] = [
+                'color' => 'warning',
+                'message' => sprintf('Participant name is similar to banned user %s (%.2f%% match).', $bannedUser->legal_name, $highestBanMatch),
+            ];
+        }
 
         if ($correctEvent && $hasValidTicket) {
             if ($latestGateScan) {
