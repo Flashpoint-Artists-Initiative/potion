@@ -34,6 +34,7 @@ use Illuminate\Auth\Access\Gate;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Password;
 use Filament\Notifications\Actions\Action as NotificationAction;
+use Filament\Support\Enums\IconPosition;
 
 class Checkin extends Page
 {
@@ -96,7 +97,12 @@ class Checkin extends Page
                     ->label('Birthday')
                     ->date('n/j/Y'),
                 TextEntry::make('email')
-                    ->label('Email Address'),
+                    ->icon('heroicon-o-clipboard')
+                    ->iconPosition(IconPosition::After)
+                    ->label('Email Address')
+                    ->copyable()
+                    ->copyMessage('Email address copied to clipboard')
+                    ->copyMessageDuration(1500),
             ])
             ->columns(['sm' => 3]);
     }
@@ -317,7 +323,7 @@ class Checkin extends Page
                 if ($user = User::where('email', $data['email'])->first()) {
 
                     Notification::make()
-                        ->title('User Created Successfully')
+                        ->title('User Found')
                         ->success()
                         ->body("User {$user->legal_name} was found and will be used for the transfer.")
                         ->send();
