@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\App\Widgets;
 
+use App\Enums\LockdownEnum;
 use App\Models\Volunteering\Shift;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
@@ -75,6 +76,7 @@ class UserShifts extends BaseWidget
                             ->success()
                             ->send();
                     })
+                    ->hidden(LockdownEnum::Volunteers->isLocked())
                     ->label('Cancel'),
             ], position: ActionsPosition::BeforeColumns);
     }
