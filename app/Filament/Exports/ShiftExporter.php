@@ -24,9 +24,10 @@ class ShiftExporter extends Exporter
             ExportColumn::make('endCarbon')
                 ->label('End Time')
                 ->state(fn (Shift $record) => $record->endCarbon->setTimezone('America/New_York')->format('D, m/j g:ia')),
+            ExportColumn::make('volunteers_count')
+                ->label('Spots Filled'),
             ExportColumn::make('num_spots')
-                ->label('Filled')
-                ->state(fn (Shift $record) => sprintf('%d/%d', $record->volunteers_count, $record->num_spots)),
+                ->label('Spots Needed'),
             ExportColumn::make('printableVolunteers')
                 ->label('Volunteers')
                 ->state(fn (Shift $record) => $record->printableVolunteers->implode("\n")),
