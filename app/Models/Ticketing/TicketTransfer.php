@@ -49,6 +49,10 @@ class TicketTransfer extends Model implements ContractsAuditable
         'data' => AsArrayObject::class,
     ];
 
+    protected $attributes = [
+        'data' => '{}',
+    ];
+
     /**
      * @return MorphToMany<PurchasedTicket, $this>
      */
@@ -180,9 +184,9 @@ class TicketTransfer extends Model implements ContractsAuditable
         $validPurchasedIds = PurchasedTicket::whereIn('id', $purchasedTicketIds)
             ->where('user_id', $userId)
             ->canBeTransferred()
-            ->whereHas('event', function (Builder $query) {
-                $query->where('end_date', '>', DB::raw('NOW()'));
-            })
+            // ->whereHas('event', function (Builder $query) {
+            //     $query->where('end_date', '>', DB::raw('NOW()'));
+            // })
             ->pluck('id');
 
         $validReservedIds = ReservedTicket::whereIn('id', $reservedTicketIds)
