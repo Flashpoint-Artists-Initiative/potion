@@ -142,8 +142,7 @@ class ShiftCalendarWidget extends CalendarWidget
                         'multiplier' => 1,
                     ]);
                 })
-                ->after(fn (self $livewire) => $livewire->refreshRecords());
-
+                ->after(fn(self $livewire) => $livewire->refreshRecords());
         })->all();
     }
 
@@ -252,7 +251,7 @@ class ShiftCalendarWidget extends CalendarWidget
 
         /** @var Shift $shift */
         $shift = $this->eventRecord;
-        $shift->length += ($info['endDelta']['seconds'] / 60);
+        $shift->length += max(0, (int) ($info['endDelta']['seconds'] / 60));
 
         try {
             $shift->save();
@@ -289,7 +288,7 @@ class ShiftCalendarWidget extends CalendarWidget
     {
         return CreateAction::make('createShift')
             ->model(Shift::class)
-            ->mountUsing(fn ($arguments, $form) => $form->fill([
+            ->mountUsing(fn($arguments, $form) => $form->fill([
                 'start_datetime' => data_get($arguments, 'startStr'),
                 'length_in_hours' => Carbon::parse(data_get($arguments, 'startStr'))
                     ->diffInMinutes(Carbon::parse(data_get($arguments, 'endStr'))) / 60,
@@ -311,7 +310,7 @@ class ShiftCalendarWidget extends CalendarWidget
             ->action(function ($arguments) {
                 $this->{$arguments['action']}($arguments);
             })
-            ->after(fn (self $livewire) => $livewire->refreshRecords());
+            ->after(fn(self $livewire) => $livewire->refreshRecords());
     }
 
     /**
@@ -323,13 +322,13 @@ class ShiftCalendarWidget extends CalendarWidget
         // Then use makeModalSubmitAction to submit.  Creating a new action
         // like in deleteAction() does not work.
         return parent::editAction()
-            ->modalHeading(fn (Shift $record) => sprintf(
+            ->modalHeading(fn(Shift $record) => sprintf(
                 'Edit Shift #%d (%d %s)',
                 $record->id,
                 $record->volunteers_count,
                 str('signup')->plural($record->volunteers_count)
             ))
-            ->modalSubmitActionLabel(fn ($record) => $record->volunteers_count > 0 ? 'Save and Notify' : 'Save')
+            ->modalSubmitActionLabel(fn($record) => $record->volunteers_count > 0 ? 'Save and Notify' : 'Save')
             ->mutateFormDataUsing(function (array $data, array $arguments, Shift $record) {
                 if ($arguments['quietly'] ?? false) {
                     $record->dontNotifyVolunteers();
@@ -337,7 +336,7 @@ class ShiftCalendarWidget extends CalendarWidget
 
                 return $data;
             })
-            ->extraModalFooterActions(fn (EditAction $action, $record) => $record->volunteers_count > 0 ? [
+            ->extraModalFooterActions(fn(EditAction $action, $record) => $record->volunteers_count > 0 ? [
                 $action->makeModalSubmitAction('saveQuietly', ['quietly' => true])
                     ->color('primary')
                     ->label('Save Quietly'),
@@ -363,13 +362,13 @@ class ShiftCalendarWidget extends CalendarWidget
 
                 return new HtmlString($str);
             })
-            ->modalSubmitActionLabel(fn ($record) => $record->volunteers_count > 0 ? 'Delete and Notify' : 'Delete')
-            ->extraModalFooterActions(fn ($record) => $record->volunteers_count > 0 ? [
+            ->modalSubmitActionLabel(fn($record) => $record->volunteers_count > 0 ? 'Delete and Notify' : 'Delete')
+            ->extraModalFooterActions(fn($record) => $record->volunteers_count > 0 ? [
                 DeleteAction::make('deleteQuietly')
                     ->label('Delete Quietly')
                     ->modalHeading(null)
                     ->successNotificationTitle('Deleted quietly')
-                    ->using(fn (Shift $record) => $record->dontNotifyVolunteers()->delete())
+                    ->using(fn(Shift $record) => $record->dontNotifyVolunteers()->delete())
                     ->requiresConfirmation(false),
             ] : []);
     }
@@ -389,15 +388,17 @@ class ShiftCalendarWidget extends CalendarWidget
                 ->schema([
                     Components\Select::make('shift_type_id')
                         ->label('Shift Type')
-                        ->relationship('team.shiftTypes', 'title',
-                            fn ($query) => $query->where('team_id', $this->record->id)
+                        ->relationship(
+                            'team.shiftTypes',
+                            'title',
+                            fn($query) => $query->where('team_id', $this->record->id)
                                 ->orderBy('title')
                         )
                         ->required()
                         ->searchable()
                         ->preload()
                         // ->default($shift->shift_type_id)
-                        ->live(condition: fn ($operation) => $operation == 'createShift')
+                        ->live(condition: fn($operation) => $operation == 'createShift')
                         ->afterStateUpdated(function ($state, $set, $operation) {
                             $shiftType = ShiftType::where('id', $state)->firstOrFail();
                             if ($operation == 'createShift') {
@@ -437,17 +438,18 @@ class ShiftCalendarWidget extends CalendarWidget
                 ]),
             Components\Placeholder::make('warning')
                 ->label('')
-                ->content(new HtmlString(Blade::render('<x-notification-banner type="warning">{{$text}}</x-notification-banner>',
+                ->content(new HtmlString(Blade::render(
+                    '<x-notification-banner type="warning">{{$text}}</x-notification-banner>',
                     ['text' => 'WARNING: Volunteers have signed up for this shift. Any changes to this shift will affect their schedule. Click "Save Quietly" to save changes without notifying volunteers.']
                 )))
-                ->visible(fn ($record) => ($record->volunteers_count ?? 0) > 0)
+                ->visible(fn($record) => ($record->volunteers_count ?? 0) > 0)
                 ->columnSpanFull(),
             Components\TextInput::make('changeReason')
                 ->label('Reason for Change')
                 ->placeholder('Optional')
                 ->helperText('This will be included in the notification to volunteers')
                 ->columnSpanFull()
-                ->visible(fn ($record) => ($record->volunteers_count ?? 0) > 0),
+                ->visible(fn($record) => ($record->volunteers_count ?? 0) > 0),
         ];
     }
 
@@ -477,19 +479,19 @@ class ShiftCalendarWidget extends CalendarWidget
                         ->minValue(.25)
                         ->step(.25)
                         ->default(120)
-                        ->formatStateUsing(fn ($state) => $state / 60)
-                        ->dehydrateStateUsing(fn ($state) => $state * 60),
+                        ->formatStateUsing(fn($state) => $state / 60)
+                        ->dehydrateStateUsing(fn($state) => $state * 60),
                     Components\TextInput::make('num_spots')
                         ->label('Default Number of People')
                         ->numeric()
                         ->default(1)
                         ->minValue(1),
                 ])
-                ->mutateFormDataUsing(fn ($data) => array_merge($data, [
+                ->mutateFormDataUsing(fn($data) => array_merge($data, [
                     'team_id' => $this->record->id,
                 ]))
                 // Have to reload after otherwise it doesn't show up in the on-click menu
-                ->after(fn () => $this->js('window.location.reload()')),
+                ->after(fn() => $this->js('window.location.reload()')),
         ];
     }
 }

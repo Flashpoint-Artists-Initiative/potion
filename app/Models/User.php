@@ -38,6 +38,7 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
+ * @property positive-int $id
  * @property-read string $display_name
  * @property-read string $name
  */
@@ -113,7 +114,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     public function availableReservedTickets(): HasMany
     {
         return $this->hasMany(ReservedTicket::class)
-            ->where(fn ($query) => $query->canBePurchased()->noActiveTransfer());
+            ->where(fn($query) => $query->canBePurchased()->noActiveTransfer());
     }
 
     /**
@@ -138,7 +139,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     public function activeCart(): HasOne
     {
         return $this->hasOne(Cart::class)
-            ->where(fn ($query) => $query->notExpired());
+            ->where(fn($query) => $query->notExpired());
     }
 
     /**
@@ -270,7 +271,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     public function getValidTicketsForEvent(?int $eventId = null): Collection
     {
         $eventId = $eventId ?? Event::getCurrentEventId();
-        $tickets = $this->purchasedTickets()->noActiveTransfer()->whereRelation('ticketType', fn ($query) => $query->admittance($eventId))->with('ticketType')->get();
+        $tickets = $this->purchasedTickets()->noActiveTransfer()->whereRelation('ticketType', fn($query) => $query->admittance($eventId))->with('ticketType')->get();
 
         return $tickets;
     }
@@ -281,8 +282,8 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     protected function birthday(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => $attributes['birthday'],
-            set: fn (string $value) => Carbon::parse($value)->format('Y-m-d'),
+            get: fn(mixed $value, array $attributes) => $attributes['birthday'],
+            set: fn(string $value) => Carbon::parse($value)->format('Y-m-d'),
         );
     }
 
@@ -292,7 +293,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => $attributes['display_name'],
+            get: fn(mixed $value, array $attributes) => $attributes['display_name'],
         );
     }
 
@@ -304,7 +305,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     protected function nameAndEmail(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => $attributes['display_name'] . ' <' . $attributes['email'] . '>',
+            get: fn(mixed $value, array $attributes) => $attributes['display_name'] . ' <' . $attributes['email'] . '>',
         );
     }
 }

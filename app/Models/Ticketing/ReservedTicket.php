@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\Auth;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 
+/**
+ * @property positive-int $id
+ */
 #[ObservedBy(ReservedTicketObserver::class)]
 class ReservedTicket extends Model implements ContractsAuditable, TicketInterface
 {
@@ -69,7 +72,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
         $query->whereDoesntHave('purchasedTicket');
         $query->where(function (Builder $query) {
             $query->where(function (Builder $query) {
-                $query->whereRelation('ticketType', fn ($query) => $query->onSale());
+                $query->whereRelation('ticketType', fn($query) => $query->onSale());
                 $query->where('expiration_date', null);
             });
             $query->orWhere(function (Builder $query) {
@@ -141,7 +144,7 @@ class ReservedTicket extends Model implements ContractsAuditable, TicketInterfac
     protected function count(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => $this->count ?? 1,
+            get: fn(mixed $value, array $attributes) => $this->count ?? 1,
             set: function (mixed $value, array $attributes) {
                 $this->count = (int) $value;
 

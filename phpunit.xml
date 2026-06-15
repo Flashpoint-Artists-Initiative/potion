@@ -32,13 +32,13 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="JWT_REQUIRE_REFRESH" value="true"/>
-        <env name="DB_HOST" value="127.0.0.1"/>
+        <env name="DB_HOST" value="db"/>
         
         <ini name="memory_limit" value="-1"/>
     </php>
     <coverage includeUncoveredFiles="false">
         <report>
-            <clover outputFile="coverage.xml"/>
+            <!-- <clover outputFile="coverage.xml"/> -->
         </report>
     </coverage>
     <logging>

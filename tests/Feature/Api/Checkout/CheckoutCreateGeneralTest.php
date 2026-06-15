@@ -264,7 +264,7 @@ class CheckoutCreateGeneralTest extends ApiRouteTestCase
         $response->assertStatus(422);
 
         // Sold out ticket type
-        $soldOutTicketType->quantity = $soldOutTicketType->purchased_tickets_count - 1;
+        $soldOutTicketType->quantity = max(0, $soldOutTicketType->purchased_tickets_count - 1);
         $soldOutTicketType->save();
         $soldOutTicketType->refresh();
         $response = $this->actingAs($user)->postJson($this->endpoint, [

@@ -87,16 +87,18 @@ class ShiftImporter extends Importer
         $data = $this->getData();
         $teamId = $this->options['teamId'];
 
-        $shiftType = ShiftType::firstOrCreate([
-            'title' => $data['shift_type'],
-            'team_id' => $teamId,
-        ],
+        $shiftType = ShiftType::firstOrCreate(
+            [
+                'title' => $data['shift_type'],
+                'team_id' => $teamId,
+            ],
             [
                 'description' => $data['description'],
                 'location' => $data['location'] ?? 'TBD',
                 'length' => $this->calculateDuration($data),
                 'num_spots' => $data['num_spots'],
-            ]);
+            ]
+        );
 
         /** @var Shift $record */
         $record = $this->record;
@@ -116,6 +118,8 @@ class ShiftImporter extends Importer
 
     /**
      * @param  array<mixed>  $data
+     * 
+     * @return positive-int
      */
     protected function calculateDuration(array $data): int
     {
@@ -127,7 +131,7 @@ class ShiftImporter extends Importer
             $end->addDay();
         }
 
-        return (int) $start->diffInMinutes($end);
+        return max(1, (int) $start->diffInMinutes($end));
     }
 
     /**

@@ -24,7 +24,8 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 use Spatie\Color\Rgb;
 
 /**
- * @property int $total_num_spots
+ * @property positive-int $id
+ * @property non-negative-int $total_num_spots
  * @property float $percent_filled
  * @property-read Team $team
  * @property-read Event $event
@@ -111,7 +112,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
     }
 
     /**
-     * @return Attribute<int,never>
+     * @return Attribute<non-negative-int,never>
      */
     protected function totalNumSpots(): Attribute
     {
@@ -140,7 +141,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
     {
         $colors = array_values(array_slice(Color::all(), 5));
         $shiftTypes = $this->team->shiftTypes;
-        $index = $shiftTypes->search(fn ($item) => $item->id === $this->id);
+        $index = $shiftTypes->search(fn($item) => $item->id === $this->id);
         // $offset = (360 / $shiftTypes->count()) * $index;
         $offset = ((int) (count($colors) / $shiftTypes->count())) * $index % count($colors);
 
@@ -166,7 +167,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
      */
     protected function shadeProvided(): Attribute
     {
-        return Attribute::get(fn () => $this->getSetting('shade_provided.state'));
+        return Attribute::get(fn() => $this->getSetting('shade_provided.state'));
     }
 
     /**
@@ -174,7 +175,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
      */
     protected function shadeProvidedNote(): Attribute
     {
-        return Attribute::get(fn () => (string) $this->getSetting('shade_provided.note', ''));
+        return Attribute::get(fn() => (string) $this->getSetting('shade_provided.note', ''));
     }
 
     /**
@@ -182,7 +183,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
      */
     protected function longStanding(): Attribute
     {
-        return Attribute::get(fn () => $this->getSetting('long_standing.state'));
+        return Attribute::get(fn() => $this->getSetting('long_standing.state'));
     }
 
     /**
@@ -190,7 +191,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
      */
     protected function longStandingNote(): Attribute
     {
-        return Attribute::get(fn () => (string) $this->getSetting('long_standing.note', ''));
+        return Attribute::get(fn() => (string) $this->getSetting('long_standing.note', ''));
     }
 
     /**
@@ -198,6 +199,6 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
      */
     protected function physicalRequirementsNote(): Attribute
     {
-        return Attribute::get(fn () => (string) $this->getSetting('physical_requirements.note', ''));
+        return Attribute::get(fn() => (string) $this->getSetting('physical_requirements.note', ''));
     }
 }

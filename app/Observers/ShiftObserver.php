@@ -56,7 +56,7 @@ class ShiftObserver
                 return;
             }
 
-            $shift->length = (int) ($shift->length_in_hours * 60);
+            $shift->length = max(0, (int) ($shift->length_in_hours * 60));
         }
     }
 

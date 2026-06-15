@@ -29,6 +29,8 @@ parameters:
             enabled: false
         noNamedArgument:
             enabled: false
+        noPhpstanIgnore:
+            enabled: false
     ignoreErrors:
         -
             identifier: missingType.generics
