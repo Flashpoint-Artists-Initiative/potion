@@ -21,11 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Knuckles\Scribe\Attributes\Group;
-use Knuckles\Scribe\Attributes\Response;
-use Knuckles\Scribe\Attributes\Unauthenticated;
 
-#[Group('Authentication Management')]
 class AuthController extends Controller
 {
     /**
@@ -58,7 +54,7 @@ class AuthController extends Controller
 
         $collection = $user->getAllPermissions();
 
-        $permissions = $collection->map(fn ($p) => $p->name);
+        $permissions = $collection->map(fn($p) => $p->name);
 
         // Returns a new JWT
         return response()->json([
@@ -88,7 +84,6 @@ class AuthController extends Controller
      *
      * @unauthenticated
      */
-    #[Unauthenticated]
     public function registerAction(RegisterRequest $request): JsonResponse
     {
         if (config('auth.lowercase_usernames')) {
@@ -116,7 +111,6 @@ class AuthController extends Controller
      *
      * @unauthenticated
      */
-    #[Unauthenticated]
     public function forgotPasswordAction(Request $request): JsonResponse
     {
         $request->validate(['email' => 'required|email']);
@@ -144,7 +138,6 @@ class AuthController extends Controller
      *
      * @unauthenticated
      */
-    #[Unauthenticated]
     public function resetPasswordAction(ResetPasswordRequest $request): JsonResponse
     {
         $status = Password::reset($request->validated(), function (User $user, string $password) {
