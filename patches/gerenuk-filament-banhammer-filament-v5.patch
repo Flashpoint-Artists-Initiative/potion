@@ -1,0 +1,56 @@
+diff -ruN a/src/Resources/Actions/BanAction.php b/src/Resources/Actions/BanAction.php
+--- a/src/Resources/Actions/BanAction.php	2026-06-15 17:56:39
++++ b/src/Resources/Actions/BanAction.php	2026-06-15 17:42:15
+@@ -4,9 +4,9 @@
+ 
+ use Filament\Actions\Concerns\CanCustomizeProcess;
+ use Filament\Forms\Components\DateTimePicker;
+-use Filament\Forms\Components\Section;
++use Filament\Schemas\Components\Section;
+ use Filament\Forms\Components\Textarea;
+-use Filament\Tables\Actions\Action;
++use Filament\Actions\Action;
+ use Illuminate\Database\Eloquent\Model;
+ 
+ class BanAction extends Action
+diff -ruN a/src/Resources/Actions/UnbanAction.php b/src/Resources/Actions/UnbanAction.php
+--- a/src/Resources/Actions/UnbanAction.php	2026-06-15 17:56:39
++++ b/src/Resources/Actions/UnbanAction.php	2026-06-15 17:42:15
+@@ -3,7 +3,7 @@
+ namespace Gerenuk\FilamentBanhammer\Resources\Actions;
+ 
+ use Filament\Actions\Concerns\CanCustomizeProcess;
+-use Filament\Tables\Actions\Action;
++use Filament\Actions\Action;
+ use Illuminate\Database\Eloquent\Model;
+ 
+ class UnbanAction extends Action
+diff -ruN a/src/Resources/BanhammerResource.php b/src/Resources/BanhammerResource.php
+--- a/src/Resources/BanhammerResource.php	2026-06-15 17:56:39
++++ b/src/Resources/BanhammerResource.php	2026-06-15 17:35:17
+@@ -3,7 +3,7 @@
+ namespace Gerenuk\FilamentBanhammer\Resources;
+ 
+ use Filament\Forms\Components\DatePicker;
+-use Filament\Forms\Form;
++use Filament\Schemas\Schema;
+ use Filament\Resources\Resource;
+ use Filament\Tables\Actions\ActionGroup;
+ use Filament\Tables\Actions\BulkActionGroup;
+@@ -29,12 +29,12 @@
+         return config('filament-banhammer.navigation_group');
+     }
+ 
+-    protected static ?string $navigationIcon = 'heroicon-o-no-symbol';
++    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-no-symbol';
+ 
+-    public static function form(Form $form): Form
++    public static function form(Schema $schema): Schema
+     {
+-        return $form
+-            ->schema([]);
++        return $schema
++            ->components([]);
+     }
+ 
+     public static function table(Table $table): Table
