@@ -9,8 +9,6 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Guava\Calendar\CalendarServiceProvider as OriginalServiceProvider;
-use Guava\Calendar\Filament\CalendarWidget;
-use Livewire\Livewire;
 
 /**
  * Override the guava/calendar CalendarServiceProvider to load assets from local resources
@@ -26,17 +24,19 @@ class CalendarServiceProvider extends OriginalServiceProvider
 
     public function packageBooted(): void
     {
-        Livewire::component('calendar-widget', CalendarWidget::class);
-
         FilamentAsset::register(
             assets: [
                 AlpineComponent::make(
-                    'calendar-widget',
-                    __DIR__ . '/../../../vendor/guava/calendar/dist/js/calendar-widget.js',
+                    'calendar',
+                    __DIR__ . '/../../../vendor/guava/calendar/dist/js/calendar.js',
                 ),
                 AlpineComponent::make(
                     'calendar-context-menu',
                     __DIR__ . '/../../../vendor/guava/calendar/dist/js/calendar-context-menu.js',
+                ),
+                AlpineComponent::make(
+                    'calendar-event',
+                    __DIR__ . '/../../../vendor/guava/calendar/dist/js/calendar-event.js',
                 ),
                 Css::make('calendar-styles', resource_path('vendor/guava/calendar/event-calendar.min.css')),
                 Js::make('calendar-script', resource_path('vendor/guava/calendar/event-calendar.min.js')),
