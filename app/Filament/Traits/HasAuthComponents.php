@@ -6,9 +6,9 @@ namespace App\Filament\Traits;
 
 use App\Models\User;
 use App\Rules\ValidEmail;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Url;
@@ -66,21 +66,21 @@ trait HasAuthComponents
     protected function getPasswordFormComponent(bool $required = true): Component
     {
         return TextInput::make('password')
-            ->label(__('filament-panels::pages/auth/register.form.password.label'))
+            ->label(__('filament-panels::auth/pages/register.form.password.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required($required)
             ->rule(Password::default())
             ->dehydrateStateUsing(fn (?string $state) => $state ? Hash::make($state) : null)
             ->same('passwordConfirmation')
-            ->validationAttribute(__('filament-panels::pages/auth/register.form.password.validation_attribute'))
+            ->validationAttribute(__('filament-panels::auth/pages/register.form.password.validation_attribute'))
             ->helperText('Your password must be at least 8 characters long and contain at least one letter and one number.');
     }
 
     protected function getPasswordConfirmationFormComponent(bool $required = true): Component
     {
         return TextInput::make('passwordConfirmation')
-            ->label(__('filament-panels::pages/auth/register.form.password_confirmation.label'))
+            ->label(__('filament-panels::auth/pages/register.form.password_confirmation.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required($required)

@@ -5,27 +5,23 @@ declare(strict_types=1);
 namespace App\Filament\Pages\Auth;
 
 use App\Filament\Traits\HasAuthComponents;
-use Filament\Pages\Auth\EditProfile as BaseEditProfile;
+use Filament\Auth\Pages\EditProfile as BaseEditProfile;
+use Filament\Schemas\Schema;
 
 class EditProfile extends BaseEditProfile
 {
     use HasAuthComponents;
 
-    protected function getForms(): array
+    public function form(Schema $schema): Schema
     {
-        return [
-            'form' => $this->form(
-                $this->makeForm()
-                    ->schema([
-                        $this->getLegalNameFormComponent(),
-                        $this->getPreferredNameFormComponent(),
-                        $this->getEmailFormComponent(),
-                        $this->getBirthdayFormComponent(),
-                        $this->getPasswordFormComponent(),
-                        $this->getPasswordConfirmationFormComponent(),
-                    ])
-                    ->statePath('data'),
-            ),
-        ];
+        return $schema
+            ->components([
+                $this->getLegalNameFormComponent(),
+                $this->getPreferredNameFormComponent(),
+                $this->getEmailFormComponent(),
+                $this->getBirthdayFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getPasswordConfirmationFormComponent(),
+            ]);
     }
 }
