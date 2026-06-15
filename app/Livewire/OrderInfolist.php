@@ -7,13 +7,13 @@ namespace App\Livewire;
 use App\Models\Ticketing\Order;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Components\Fieldset;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\Livewire;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Schema;
 use Livewire\Component;
 
 class OrderInfolist extends Component implements HasForms, HasInfolists
@@ -22,9 +22,9 @@ class OrderInfolist extends Component implements HasForms, HasInfolists
 
     public int $orderId;
 
-    public function orderInfolist(Infolist $infolist): Infolist
+    public function orderInfolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record(Order::find($this->orderId))
             ->schema([
                 Grid::make(4)

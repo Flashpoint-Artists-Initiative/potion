@@ -53,8 +53,12 @@ trait HasConditionalUserDisplay
         return (bool) $this->evaluate($this->isUserModel);
     }
 
-    public static function make(string $name): static
+    public static function make(?string $name = null): static
     {
+        if ($name === null) {
+            throw new \InvalidArgumentException('Name is required.');
+        }
+
         return parent::make($name . '.display_name')->userRelation($name);
     }
 

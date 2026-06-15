@@ -6,10 +6,10 @@ namespace App\Actions;
 
 use App\Models\User;
 use App\Notifications\UserEmailNotification;
-use Filament\Forms\Components\Component;
+use Filament\Actions\BulkAction;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\BulkAction;
+use Filament\Schemas\Components\Component;
 use Illuminate\Database\Eloquent\Collection;
 
 class SendEmailBulkAction extends BulkAction

@@ -99,6 +99,11 @@ class TicketTransfer extends Model implements ContractsAuditable
 
     public function scopeSpecificEvent(Builder $query, ?int $eventId = null): void
     {
+        self::applySpecificEventToQuery($query, $eventId);
+    }
+
+    public static function applySpecificEventToQuery(Builder $query, ?int $eventId = null): Builder
+    {
         $eventId = $eventId ?? Event::getCurrentEventId();
 
         if ($eventId) {
@@ -110,6 +115,8 @@ class TicketTransfer extends Model implements ContractsAuditable
                 });
             });
         }
+
+        return $query;
     }
 
     public function scopePending(Builder $query): void
