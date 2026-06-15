@@ -14,15 +14,13 @@
         "bref/laravel-bridge": "^3.0",
         "bugsnag/bugsnag-laravel": "^2.0",
         "chillerlan/php-qrcode": "^5.0",
-        "eightcedars/filament-inactivity-guard": "^0.3.1",
+        "eightcedars/filament-inactivity-guard": "^1.0",
         "fakerphp/faker": "^1.23",
-        "filament/filament": "^3.2",
-        "filament/spatie-laravel-media-library-plugin": "^3.2",
-        "filament/spatie-laravel-settings-plugin": "^3.2",
+        "filament/filament": "^5.0",
+        "filament/spatie-laravel-media-library-plugin": "^5.0",
         "flowframe/laravel-trend": "^0.4.0",
-        "gerenuk/filament-banhammer": "^1.1",
-        "guava/calendar": "^1.13",
-        "guava/filament-nested-resources": "^1.3",
+        "gerenuk/filament-banhammer": "dev-dependabot/composer/filament/filament-tw-5.4",
+        "guava/calendar": "^3.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^12",
         "laravel/tinker": "^2.8",
@@ -34,16 +32,16 @@
         "spatie/laravel-permission": "^6.1",
         "stripe/stripe-php": "^17",
         "tailflow/laravel-orion": "^2",
-        "tapp/filament-auditing": "^3.0"
+        "tapp/filament-auditing": "^4.0"
     },
     "require-dev": {
-        "agencetwogether/hookshelper": "^0.0.1",
+        "agencetwogether/hookshelper": "^0.1.0",
         "barryvdh/laravel-debugbar": "^3.15",
         "barryvdh/laravel-ide-helper": "^3.5",
         "brianium/paratest": "^7.3",
-        "codewithdennis/filament-theme-inspector": "^0.0.7",
-        "dutchcodingcompany/filament-developer-logins": "^1.7",
+        "dutchcodingcompany/filament-developer-logins": "^2.1",
         "ergebnis/phpstan-rules": "^2.6",
+        "filament/upgrade": "^5.0",
         "larastan/larastan": "^3.0",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.18",
@@ -51,12 +49,12 @@
         "nunomaduro/collision": "^8",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^2",
-        "phpunit/phpunit": "^12",
-        "wire-elements/wire-spy": "^0.0.12"
+        "phpunit/phpunit": "^12"
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "Guava\\FilamentNestedResources\\": "stubs/Guava/FilamentNestedResources/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
