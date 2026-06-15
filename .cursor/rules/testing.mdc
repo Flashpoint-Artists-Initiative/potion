@@ -1,0 +1,52 @@
+---
+description: PHPUnit testing conventions for Potion
+globs: tests/**
+alwaysApply: false
+---
+
+# Testing
+
+## Structure
+
+```
+tests/
+├── Unit/              # Services, models, commands, scopes
+└── Feature/Api/       # One test class per endpoint action
+    ├── Auth/, Events/, Checkout/, Volunteering/, Grants/, Admin/, Me/
+```
+
+## API Tests
+
+Extend `ApiRouteTestCase` (not `TestCase` directly):
+
+```php
+class EventIndexTest extends ApiRouteTestCase
+{
+    public bool $seed = true;
+    public string $routeName = 'api.events.index';
+
+    #[Test]
+    public function event_index_call_as_admin_returns_all_events(): void
+    {
+        $user = User::role(RolesEnum::Admin)->firstOrFail();
+        $response = $this->actingAs($user)->get($this->endpoint);
+        $response->assertStatus(200);
+    }
+}
+```
+
+- `ApiRouteTestCase` provides `LazilyRefreshDatabase`, `$routeName`/`$routeParams` → `$endpoint`, and JWT `actingAs()`
+- Use PHPUnit `#[Test]` attributes (not `test_` prefix methods)
+- Name tests descriptively: `{resource}_{action}_{scenario}`
+- Seed permissions/roles via `$seed = true` + `givePermissionTo()` or `RolesEnum`
+- Use named routes (`api.events.index`) — never hardcode URLs
+
+## Configuration
+
+- `DB_CONNECTION=testing` uses a dedicated `testing` MySQL database
+- API test suite is commented out in `phpunit.xml` — enable the `Api` testsuite to run them in CI
+- JWT keys required for API tests (see `.github/workflows/testing.yml` for CI setup)
+
+## Factories
+
+Use domain-namespaced factories with states: `EventFactory::active()`, `TicketTypeFactory::notTransferable()`.

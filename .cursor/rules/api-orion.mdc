@@ -1,0 +1,40 @@
+---
+description: REST API patterns with Laravel Orion and JWT
+globs: "{app/Http/Controllers/Api/**,app/Http/Requests/**,routes/api/**,app/Http/Resources/**}"
+alwaysApply: false
+---
+
+# REST API (Orion + JWT)
+
+## Route Organization
+
+API routes split by domain in `routes/api/v1/`:
+`auth`, `users`, `events`, `ticket-types`, `checkout`, `me`, `admin`, `volunteer`, `grants`.
+
+> **Note:** API route registration is currently commented out in `RouteServiceProvider`. Uncomment to enable:
+> ```php
+> Route::middleware('api')->prefix('api/v1')->group(base_path('routes/api/v1.php'));
+> ```
+
+## Controllers
+
+- Extend `OrionController` (top-level) or `OrionRelationsController` (nested)
+- Declare `$model`, `$resource`, `$policy`, `$request` on the controller
+- Override `buildIndexFetchQuery` / `buildShowFetchQuery` for custom eager loading
+- Non-CRUD flows get dedicated controllers: `CheckoutController`, `AuthController`, `StripeWebhookController`, etc.
+
+Orion route helpers: `Orion::resource()`, `Orion::hasManyResource()`, `Orion::belongsToManyResource()`.
+
+## Form Requests
+
+Extend `Orion\Http\Requests\Request` with `commonRules()`, `storeRules()`, `updateRules()`.
+
+## Middleware
+
+- `token.refresh` — `ConditionalJwtRefresh` (controlled by `JWT_REQUIRE_REFRESH`)
+- `lockdown:ticket` etc. — blocks mutations during event lockdown
+- `StripeWebhookMiddleware` — IP validation for Stripe webhooks
+
+## JSON Responses
+
+Shape output with `app/Http/Resources/` classes. Auth guard for API is `api` (JWT per `config/orion.php`).

@@ -1,0 +1,34 @@
+---
+description: Filament panel structure, resources, and UI patterns
+globs: app/Filament/**/*.php
+alwaysApply: false
+---
+
+# Filament Panels
+
+Three panels, all extending `CommonPanelProvider`:
+
+| Panel | Provider | Path | Purpose |
+|-------|----------|------|---------|
+| App | `AppPanelProvider` | `/` | Member site: tickets, volunteer, grants, account |
+| Admin | `AdminPanelProvider` | `/admin` | Staff CRUD, sales charts, event management |
+| Gate | `GatePanelProvider` | `/gate` | Offline gate check-in, QR scanning |
+
+Auto-discovery paths: `app/Filament/{Admin|App|Gate}/{Resources|Pages|Widgets|Clusters}`.
+
+## Conventions
+
+- Auth guard is `web` (session), not JWT
+- Gate visibility and field access use `Auth::user()->can('permission.name')`
+- Admin resources are event-scoped via `Event::getCurrentEvent()` — hide nav with `shouldRegisterNavigation()`
+- Add `AuditsRelationManager` on resources for auditable models
+- Volunteering uses **Guava nested resources**: `TeamResource` → `ShiftTypeResource` → `ShiftResource`
+- Custom `FarAncestor` in `app/Filament/NestedResources/` for `HasManyThrough` nesting
+- Imports/exports in `app/Filament/Imports/` and `Exports/`
+- Custom form components in `app/Forms/Components/`
+- App panel uses **clusters** for user account pages (`UserPages` cluster)
+- Shared auth pages in `app/Filament/Pages/Auth/`
+
+## Adding Admin Resources
+
+Match existing resources: permission-gated fields, event scoping where relevant, relation managers for audits, nested pages for child resources (see `TeamResource` for the volunteering pattern).

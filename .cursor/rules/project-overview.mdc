@@ -1,0 +1,53 @@
+---
+description: Potion project overview, stack, and local development
+alwaysApply: true
+---
+
+# Potion — Project Overview
+
+**Potion** is an event-management platform for arts festivals: ticketing/checkout (Stripe), volunteer shift scheduling, art grant voting, gate check-in, and admin operations.
+
+## Stack
+
+| Layer | Technology |
+|-------|------------|
+| Backend | PHP 8.4, Laravel 12 |
+| Admin UI | Filament 3 (three panels) |
+| REST API | Tailflow Laravel Orion v2 + JWT (`php-open-source-saver/jwt-auth`) |
+| AuthZ | Spatie Laravel Permission |
+| Payments | Stripe |
+| Auditing | `owen-it/laravel-auditing` + `tapp/filament-auditing` |
+| Frontend assets | Vite 8, Tailwind CSS 3 |
+| Production | AWS Lambda via Bref + Serverless Framework (S3, SQS, CDN) |
+| Local dev | DDEV (MariaDB 10.11, nginx-fpm) |
+
+## Domain Areas
+
+Models live under namespaced folders in `app/Models/`:
+
+- **Ticketing** — carts, orders, ticket types, purchased/reserved tickets, transfers, waivers, gate scans
+- **Volunteering** — teams → shift types → shifts, requirements, signups
+- **Grants** — art projects and voting
+- **Core** — `Event` (settings hub), `User`, `PageContent`
+
+`Event::getCurrentEvent()` scopes admin UI to the active event (session-based).
+
+## Local Development
+
+```bash
+ddev start
+ddev artisan key:generate && ddev artisan migrate
+ddev npm install && ddev npm run build
+```
+
+Run tests: `ddev exec vendor/bin/phpunit` (uses `testing` MySQL database).
+
+## Quality & CI
+
+- **Pint** — Laravel preset (`pint.json`)
+- **PHPStan** — level 8 (`phpstan.neon.dist`, paths: `app/`, `tests/`)
+- **PHPUnit** — Feature + Unit suites; API tests exist but are excluded from default suite in `phpunit.xml`
+
+## Deployment
+
+Production deploys via `serverless deploy` (see `serverless.yml`). Post-deploy: `php artisan deploy` runs migrations + `permission:populate`.

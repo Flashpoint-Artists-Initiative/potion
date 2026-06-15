@@ -1,0 +1,53 @@
+---
+description: Laravel architecture, models, services, auth, and conventions
+globs: app/**/*.php
+alwaysApply: false
+---
+
+# Laravel Architecture
+
+## Code Style
+
+- Always use `declare(strict_types=1);`
+- Business logic belongs in **Services** (`app/Services/`), not controllers or Filament resources
+- `app/Actions/` is minimal — only use for discrete single-purpose actions
+- Prefer extending existing abstractions over new patterns
+
+## Models
+
+- Group by domain: `App\Models\Ticketing\`, `Volunteering\`, `Grants\`
+- Shared traits in `App\Models\Concerns\` (`HasVirtualColumns`, `HasSettingsAttributes`, `HasTicketType`)
+- Factories mirror model namespaces under `database/factories/`
+- Register observers via `#[ObservedBy(...)]` on the model, not `EventServiceProvider`
+- Most domain models: soft deletes, `Auditable`, rich PHPDoc `@property` annotations
+
+## Authorization
+
+Permissions follow `{resource}.{action}` (e.g. `events.viewAny`, `ticketTransfers.create`). Wildcards supported (`users.*`).
+
+- Policies extend `AbstractModelPolicy` with a `$prefix` matching permission names
+- Set `$lockdownKey` on policies that respect event lockdown (`LockdownEnum`)
+- Roles defined in `RolesEnum`; permissions in `config/permission.php`
+- Sync permissions: `php artisan permission:populate`
+- `User::getDefaultGuardName()` returns `'web'` — roles are shared across web + API guards
+- Filament panel access: `panelAccess.{panelId}` permission checked in `User::canAccessPanel()`
+
+## Cross-Cutting Patterns
+
+```php
+// Observer on model (preferred)
+#[ObservedBy(ShiftObserver::class)]
+class Shift extends Model { ... }
+
+// Policy with lockdown
+class TeamPolicy extends AbstractModelPolicy
+{
+    protected string $prefix = 'teams';
+    protected ?LockdownEnum $lockdownKey = LockdownEnum::Volunteers;
+}
+```
+
+- **Lockdown**: `LockdownEnum` blocks writes during events; enforced in policies + `LockdownMiddleware`
+- **Event settings**: JSON column on `Event`, accessed via `HasSettingsAttributes`
+- **Notifications**: `app/Notifications/` for order, shift, and grant emails
+- **Validation rules**: reusable rules in `app/Rules/`
