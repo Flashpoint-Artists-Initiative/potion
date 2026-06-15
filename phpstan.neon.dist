@@ -27,6 +27,8 @@ parameters:
             enabled: false
         noConstructorParameterWithDefaultValue:
             enabled: false
+        noNamedArgument:
+            enabled: false
     ignoreErrors:
         -
             identifier: missingType.generics
