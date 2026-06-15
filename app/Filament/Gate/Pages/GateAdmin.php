@@ -11,21 +11,21 @@ use App\Models\Ticketing\TicketType;
 use App\Models\User;
 use App\Rules\ValidEmail;
 use Filament\Actions\Action;
+use Filament\Actions\Action as NotificationsAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Notifications\Actions\Action as NotificationsAction;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Schema;
 use Illuminate\Validation\Rules\Exists;
 use Illuminate\Validation\Rules\Password;
 
 class GateAdmin extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.gate.pages.gate-admin';
+    protected string $view = 'filament.gate.pages.gate-admin';
 
     protected static ?string $title = 'Gate Admin';
 
@@ -90,7 +90,7 @@ class GateAdmin extends Page
             ->label('Create New User')
             ->icon('heroicon-o-user-plus')
             ->color('primary')
-            ->form(fn (Form $form) => $this->createNewUserForm($form))
+            ->form(fn (Schema $schema) => $this->createNewUserForm($schema))
             ->action(function (array $data) {
                 if ($user = User::where('email', $data['email'])->first()) {
 
@@ -123,12 +123,12 @@ class GateAdmin extends Page
             });
     }
 
-    protected function createNewUserForm(Form $form): Form
+    protected function createNewUserForm(Schema $schema): Schema
     {
         $password = config('app.gate_admin_password');
 
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('legal_name')
                     ->label('Legal Name')
                     ->required()

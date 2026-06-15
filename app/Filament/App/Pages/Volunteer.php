@@ -12,23 +12,22 @@ use App\Models\Volunteering\Team;
 use App\Services\VolunteerService;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Filament\Actions\Action;
+use Filament\Actions\Action as InfolistAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ToggleButtons;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Infolists\Components\Actions\Action as InfolistAction;
-use Filament\Infolists\Components\Grid as InfolistGrid;
 use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\Action;
+use Filament\Schemas\Components\Grid as InfolistGrid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,7 +35,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 
 /**
- * @property Form $form
+ * @property Schema $form
  */
 class Volunteer extends Page implements HasTable
 {
@@ -44,9 +43,9 @@ class Volunteer extends Page implements HasTable
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
-    protected static string $view = 'filament.app.pages.volunteer';
+    protected string $view = 'filament.app.pages.volunteer';
 
     protected static ?string $slug = 'volunteer/{id?}';
 
@@ -94,7 +93,7 @@ class Volunteer extends Page implements HasTable
     //     ];
     // }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $teams = Team::query()->currentEvent()->active()->orderBy('name')->pluck('name', 'id');
         $earliestDate = Shift::query()->orderBy('start_offset')->first()->startCarbon ?? now();
@@ -106,8 +105,8 @@ class Volunteer extends Page implements HasTable
             $dateRange[$date->toDateString()] = $date->format('D, m/d');
         }
 
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Select::make('start_date')
                     ->options($dateRange)
                     ->required()
@@ -152,11 +151,11 @@ class Volunteer extends Page implements HasTable
             ->statePath('data');
     }
 
-    public function teamsInfolist(Infolist $infolist): Infolist
+    public function teamsInfolist(Schema $schema): Schema
     {
         $teams = Team::query()->currentEvent()->active()->orderBy('name')->get();
 
-        return $infolist
+        return $schema
             ->state(['teams' => $teams])
             ->schema([
                 RepeatableEntry::make('teams')
@@ -177,7 +176,7 @@ class Volunteer extends Page implements HasTable
             ]);
     }
 
-    public function shiftTypesInfolist(Infolist $infolist): Infolist
+    public function shiftTypesInfolist(Schema $schema): Schema
     {
         $shiftTypes = ShiftType::query()
             ->whereHas('team', function (Builder $query) {
@@ -202,7 +201,7 @@ class Volunteer extends Page implements HasTable
             $state['signupNote'] = $signupNote;
         }
 
-        return $infolist
+        return $schema
             ->state($state)
             ->schema([
                 Section::make()
@@ -399,6 +398,6 @@ class Volunteer extends Page implements HasTable
 
                         return false;
                     }),
-            ], position: ActionsPosition::BeforeColumns);
+            ], position: RecordActionsPosition::BeforeColumns);
     }
 }

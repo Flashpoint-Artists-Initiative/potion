@@ -10,23 +10,22 @@ use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @property Form $form
+ * @property Schema $form
  */
 class Search extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-magnifying-glass';
 
-    protected static string $view = 'filament.gate.pages.search';
+    protected string $view = 'filament.gate.pages.search';
 
     protected static ?int $navigationSort = 2;
 
@@ -77,10 +76,10 @@ class Search extends Page
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Select::make('user_id')
                     ->label('Select Attendee')
                     ->searchable()
@@ -125,9 +124,9 @@ class Search extends Page
             ]);
     }
 
-    public function searchHistoryInfolist(Infolist $infolist): Infolist
+    public function searchHistoryInfolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->state(['searchHistory' => $this->searchHistory])
             ->schema([
                 RepeatableEntry::make('searchHistory')

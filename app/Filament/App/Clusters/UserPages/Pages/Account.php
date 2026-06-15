@@ -13,10 +13,10 @@ use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
@@ -25,21 +25,21 @@ class Account extends Page
 {
     use HasAuthComponents;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user';
 
     protected static ?string $navigationLabel = 'Account Details';
 
     protected static ?string $title = 'Account Details';
 
-    protected static string $view = 'filament.app.clusters.user-pages.pages.account';
+    protected string $view = 'filament.app.clusters.user-pages.pages.account';
 
     protected static ?int $navigationSort = 10;
 
     protected static ?string $cluster = UserPages::class;
 
-    public function accountInfolist(Infolist $infolist): Infolist
+    public function accountInfolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record(filament()->auth()->user())
             ->schema([
                 Section::make('Click to view legal name')

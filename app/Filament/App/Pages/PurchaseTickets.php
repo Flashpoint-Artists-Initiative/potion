@@ -19,13 +19,13 @@ use Carbon\Carbon;
 use Filament\Actions\Action as ActionsAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\ViewField;
-use Filament\Forms\Components\Wizard;
-use Filament\Forms\Components\Wizard\Step;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Wizard;
+use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -38,15 +38,15 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 
 /**
- * @property Form $form
+ * @property Schema $form
  */
 class PurchaseTickets extends Page
 {
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-ticket';
 
-    protected static string $view = 'filament.app.pages.purchase-tickets';
+    protected string $view = 'filament.app.pages.purchase-tickets';
 
     protected static ?string $slug = 'purchase';
 
@@ -92,10 +92,10 @@ class PurchaseTickets extends Page
         $this->eventIsFuture = Event::getCurrentEvent()?->endDateCarbon->isFuture() ?? false;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         if (LockdownEnum::Tickets->isLocked() || $this->eventIsFuture == false) {
-            return $form->schema([
+            return $schema->components([
                 Placeholder::make('locked')
                     ->label('')
                     ->content(new HtmlString('<h1 class="text-2xl text-center">Ticket sales are closed.</h1>'))
@@ -120,8 +120,8 @@ class PurchaseTickets extends Page
             $submitString = '';
         }
 
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Wizard::make([
                     $this->buildWaiverStep(),
                     $ticketStep,

@@ -6,10 +6,10 @@ namespace App\Filament\App\Widgets;
 
 use App\Enums\LockdownEnum;
 use App\Models\Volunteering\Shift;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
@@ -78,7 +78,7 @@ class UserShifts extends BaseWidget
                     })
                     ->hidden(LockdownEnum::Volunteers->isLocked())
                     ->label('Cancel'),
-            ], position: ActionsPosition::BeforeColumns);
+            ], position: RecordActionsPosition::BeforeColumns);
     }
 
     public static function canView(): bool

@@ -8,9 +8,9 @@ use Filament\Pages\Page;
 
 class Stats extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-presentation-chart-line';
 
-    protected static string $view = 'filament.gate.pages.stats';
+    protected string $view = 'filament.gate.pages.stats';
 
     protected static ?int $navigationSort = 4;
 }

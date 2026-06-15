@@ -11,7 +11,7 @@ class ViewWaiver extends Page
 {
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static string $view = 'filament.app.clusters.user-pages.pages.view-waiver';
+    protected string $view = 'filament.app.clusters.user-pages.pages.view-waiver';
 
     protected static ?string $cluster = UserPages::class;
 }

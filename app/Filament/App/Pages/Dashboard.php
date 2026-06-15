@@ -13,7 +13,7 @@ use Livewire\Attributes\On;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
-    protected static string $view = 'filament.app.pages.dashboard';
+    protected string $view = 'filament.app.pages.dashboard';
 
     public ?Event $event = null;
 

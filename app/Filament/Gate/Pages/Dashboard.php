@@ -9,9 +9,9 @@ use Filament\Actions\Action;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
-    protected static ?string $navigationIcon = 'heroicon-o-qr-code';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-qr-code';
 
-    protected static string $view = 'filament.gate.pages.dashboard';
+    protected string $view = 'filament.gate.pages.dashboard';
 
     protected static ?string $navigationLabel = 'Scan';
 

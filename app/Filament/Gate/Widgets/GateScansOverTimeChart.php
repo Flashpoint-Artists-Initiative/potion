@@ -12,9 +12,9 @@ use Flowframe\Trend\TrendValue;
 
 class GateScansOverTimeChart extends ChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected ?string $heading = 'Chart';
 
-    protected static ?string $maxHeight = '300px';
+    protected ?string $maxHeight = '300px';
 
     protected function getData(): array
     {

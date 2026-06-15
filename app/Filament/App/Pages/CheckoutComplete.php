@@ -16,7 +16,7 @@ class CheckoutComplete extends Page
 {
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static string $view = 'filament.app.pages.checkout-complete';
+    protected string $view = 'filament.app.pages.checkout-complete';
 
     #[Url]
     public ?string $sessionId = null;

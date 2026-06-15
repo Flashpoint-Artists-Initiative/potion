@@ -11,10 +11,11 @@ use App\Models\Event;
 use App\Models\Grants\ArtProject;
 use App\Models\User;
 use App\Rules\ArtProjectVotingRule;
+use BackedEnum;
 use Filament\Actions\Action;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
@@ -23,15 +24,15 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
 
 /**
- * @property Form $form
+ * @property Schema $form
  */
 class ArtGrants extends Page
 {
     protected static ?int $navigationSort = 4;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-paint-brush';
 
-    protected static string $view = 'filament.app.pages.art-grants';
+    protected string $view = 'filament.app.pages.art-grants';
 
     // protected static ?string $navigationLabel = 'Art Grant Voting';s
 
@@ -75,7 +76,7 @@ class ArtGrants extends Page
         return $eventName . $suffix;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $projects = once(fn () => ArtProject::query()->currentEvent()->approved()->orderBy('name', 'asc')->get());
 
@@ -95,8 +96,8 @@ class ArtGrants extends Page
                 ->disableVoting(fn () => $this->hasVoted || ! $this->votingIsOpen);
         });
 
-        return $form
-            ->schema($projectsSchema->toArray());
+        return $schema
+            ->components($projectsSchema->toArray());
     }
 
     #[On('active-event-updated')]

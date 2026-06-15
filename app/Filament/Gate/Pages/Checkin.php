@@ -12,19 +12,18 @@ use App\Models\Ticketing\TicketTransfer;
 use App\Models\User;
 use App\Rules\ValidEmail;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Actions\Action as FormAction;
+use Filament\Actions\Action as FormAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Forms\Set;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\IconPosition;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Password;
@@ -32,9 +31,9 @@ use Livewire\Attributes\Url;
 
 class Checkin extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.gate.pages.checkin';
+    protected string $view = 'filament.gate.pages.checkin';
 
     protected static bool $shouldRegisterNavigation = false;
 
@@ -80,9 +79,9 @@ class Checkin extends Page
         $this->validateCheckin();
     }
 
-    public function userInfolist(Infolist $infolist): Infolist
+    public function userInfolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record(User::findOrFail($this->userId))
             ->schema([
                 TextEntry::make('legal_name')
@@ -219,7 +218,7 @@ class Checkin extends Page
             ->label('Transfer Tickets')
             ->icon('heroicon-o-ticket')
             ->color('info')
-            ->form(fn (Form $form) => $this->transferForm($form))
+            ->form(fn (Schema $schema) => $this->transferForm($schema))
             ->modalCancelAction(false)
             ->modalSubmitActionLabel('Select')
             ->action(function (array $data) use ($nextTicket) {
@@ -297,20 +296,20 @@ class Checkin extends Page
             });
     }
 
-    protected function transferForm(Form $form): Form
+    protected function transferForm(Schema $schema): Schema
     {
         $nextTicket = $this->getNextTransferableTicket();
         $ticketCount = $this->user->getValidTicketsForEvent($this->eventId)->count();
 
         if ($nextTicket === null) {
-            return $form->schema([
+            return $schema->components([
                 Placeholder::make('input')
                     ->state('No transferable tickets available.'),
             ]);
         }
 
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Placeholder::make('warning')
                     ->hiddenLabel()
                     ->visible($ticketCount <= 1)
@@ -339,7 +338,7 @@ class Checkin extends Page
             ->label('Create New User')
             ->icon('heroicon-o-user-plus')
             ->color('primary')
-            ->form(fn (Form $form) => $this->createNewUserForm($form))
+            ->form(fn (Schema $schema) => $this->createNewUserForm($schema))
             ->action(function (array $data, Set $set) {
                 if ($user = User::where('email', $data['email'])->first()) {
 
@@ -386,10 +385,10 @@ class Checkin extends Page
             });
     }
 
-    protected function createNewUserForm(Form $form): Form
+    protected function createNewUserForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('legal_name')
                     ->label('Legal Name')
                     ->required()
@@ -424,7 +423,7 @@ class Checkin extends Page
             ->visible($requiresWaiver && ! $hasSignedWaiver)
             ->action(fn (array $data) => $this->createCompletedWaiver($data))
             ->modalHeading('Sign Waiver')
-            ->modalWidth(MaxWidth::FiveExtraLarge)
+            ->modalWidth(Width::FiveExtraLarge)
             ->form([
                 Placeholder::make('title')
                     ->content(new HtmlString('<h1 class="text-2xl">' . ($waiver->title ?? '') . '</h1>'))

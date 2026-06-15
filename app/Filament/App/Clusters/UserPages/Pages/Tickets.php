@@ -14,10 +14,10 @@ use App\Models\User;
 use App\Services\QRCodeService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
-use Filament\Infolists\Components\Livewire;
-use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
@@ -25,13 +25,13 @@ use Livewire\Attributes\On;
 
 class Tickets extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-ticket';
 
     protected static ?string $navigationLabel = 'My Tickets';
 
     protected static ?int $navigationSort = 1;
 
-    protected static string $view = 'filament.app.clusters.user-pages.pages.tickets';
+    protected string $view = 'filament.app.clusters.user-pages.pages.tickets';
 
     protected static ?string $cluster = UserPages::class;
 
@@ -45,13 +45,13 @@ class Tickets extends Page
 
     public bool $showCellServiceWarning;
 
-    public function ticketsInfolist(Infolist $infolist): Infolist
+    public function ticketsInfolist(Schema $schema): Schema
     {
         /** @var User */
         $user = Auth::user();
 
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 Livewire::make(PurchasedTicketsTable::class)->key('purchased-tickets-table'),
                 Livewire::make(ReservedTicketsTable::class)->key('reserved-tickets-table')
                     ->visible(fn () => $user->availableReservedTickets()->currentEvent()->exists() &&
@@ -145,7 +145,7 @@ class Tickets extends Page
             ->size('')
             ->action(fn (array $data) => $this->createCompletedWaiver($data))
             ->modalHeading('Sign Waiver')
-            ->modalWidth(MaxWidth::FiveExtraLarge)
+            ->modalWidth(Width::FiveExtraLarge)
             ->form([
                 Placeholder::make('title')
                     ->content(new HtmlString('<h1 class="text-2xl">' . ($waiver->title ?? '') . '</h1>'))

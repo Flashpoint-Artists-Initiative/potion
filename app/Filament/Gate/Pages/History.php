@@ -16,9 +16,9 @@ class History extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
-    protected static string $view = 'filament.gate.pages.history';
+    protected string $view = 'filament.gate.pages.history';
 
     protected static ?int $navigationSort = 3;
 

@@ -6,8 +6,8 @@ namespace App\Filament\App\Clusters\UserPages\Pages;
 
 use App\Filament\App\Clusters\UserPages;
 use App\Models\Ticketing\Order;
+use Filament\Actions\Action;
 use Filament\Pages\Page;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -17,13 +17,13 @@ class Orders extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shopping-bag';
 
     protected static ?string $navigationLabel = 'Orders';
 
     protected static ?int $navigationSort = 25;
 
-    protected static string $view = 'filament.app.clusters.user-pages.pages.orders';
+    protected string $view = 'filament.app.clusters.user-pages.pages.orders';
 
     protected static ?string $cluster = UserPages::class;
 

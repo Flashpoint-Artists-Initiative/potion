@@ -17,7 +17,7 @@ class Checkout extends Page
 {
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static string $view = 'filament.app.pages.checkout';
+    protected string $view = 'filament.app.pages.checkout';
 
     public ?string $checkoutSecret;
 

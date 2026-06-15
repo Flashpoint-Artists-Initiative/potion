@@ -15,22 +15,22 @@ use App\Models\User;
 use App\Rules\ValidEmail;
 use Closure;
 use Filament\Actions\Action;
+use Filament\Actions\Action as TableAction;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action as TableAction;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -39,15 +39,15 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 
 /**
- * @property Form $form
+ * @property Schema $form
  */
 class TicketTransfers extends Page implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrows-right-left';
 
-    protected static string $view = 'filament.app.clusters.user-pages.pages.ticket-transfers';
+    protected string $view = 'filament.app.clusters.user-pages.pages.ticket-transfers';
 
     protected static ?int $navigationSort = 15;
 
@@ -247,7 +247,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
                     ->color(fn () => $this->showWaiverWarning ? 'gray' : null)
                     ->disabled(fn () => $this->showWaiverWarning),
             ])
-            ->actionsPosition(ActionsPosition::BeforeCells);
+            ->actionsPosition(RecordActionsPosition::BeforeCells);
     }
 
     public function signWaiverAction(): Action
@@ -260,7 +260,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
             ->size('')
             ->action(fn (array $data) => $this->createCompletedWaiver($data))
             ->modalHeading('Sign Waiver')
-            ->modalWidth(MaxWidth::FiveExtraLarge)
+            ->modalWidth(Width::FiveExtraLarge)
             ->form([
                 Placeholder::make('title')
                     ->content(new HtmlString('<h1 class="text-2xl">' . ($waiver->title ?? '') . '</h1>'))
