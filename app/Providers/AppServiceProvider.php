@@ -51,12 +51,6 @@ class AppServiceProvider extends ServiceProvider
             return $rule;
         });
 
-        Scramble::extendOpenApi(function (OpenApi $openApi) {
-            $openApi->secure(
-                SecurityScheme::http('bearer', 'JWT')
-            );
-        });
-
         // Add localhost to the whitelisted stripe webhook ips when testing or local
         if ($this->app->isLocal() || $this->app->runningUnitTests()) {
             // @phpstan-ignore-next-line
