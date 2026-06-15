@@ -2,11 +2,12 @@
 
 namespace Database\Factories\Ticketing;
 
+use App\Models\Ticketing\TicketTransfer;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Ticketing\TicketTransfer>
+ * @extends Factory<TicketTransfer>
  */
 class TicketTransferFactory extends Factory
 {

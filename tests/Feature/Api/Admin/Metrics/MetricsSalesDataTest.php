@@ -9,6 +9,7 @@ use App\Models\Ticketing\Order;
 use App\Models\User;
 use App\Services\StripeService;
 use Database\Seeders\AccurateOrderSeeder;
+use Mockery\Expectation;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Stripe\TaxRate;
@@ -35,7 +36,7 @@ class MetricsSalesDataTest extends ApiRouteTestCase
             $taxRateTwo->description = 'Stripe Fee';
             $taxRateTwo->percentage = 2.9;
 
-            /** @var \Mockery\Expectation $receive */
+            /** @var Expectation $receive */
             $receive = $mock->shouldReceive('getTaxRate');
             $receive->andReturn($taxRate, $taxRateTwo);
         });

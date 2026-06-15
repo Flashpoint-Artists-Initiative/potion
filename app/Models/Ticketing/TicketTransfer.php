@@ -173,8 +173,8 @@ class TicketTransfer extends Model implements ContractsAuditable
     }
 
     /**
-     * @param  int  $userId The user initiating the transfer
-     * @param  string  $email The email of the recipient
+     * @param  int  $userId  The user initiating the transfer
+     * @param  string  $email  The email of the recipient
      * @param  int[]  $purchasedTicketIds
      * @param  int[]  $reservedTicketIds
      */

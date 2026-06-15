@@ -253,6 +253,7 @@ class User extends Authenticatable implements ContractsAuditable, FilamentUser, 
     public function hasSignedWaiverForEvent(int $eventId): bool
     {
         $eventWaiver = Event::getCurrentEvent()?->waiver;
+
         return $this->waivers()->whereHas('waiver', function ($query) use ($eventWaiver) {
             return $query->where('waiver_id', $eventWaiver->id ?? 0);
         })->count() > 0;

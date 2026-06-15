@@ -44,7 +44,6 @@ class VolunteerStats extends BaseWidget
             }
         }
 
-        
         return [
             Stat::make('Total Volunteers', $totalVolunteers)
                 ->icon('heroicon-o-user-group')

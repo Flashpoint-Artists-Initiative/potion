@@ -6,7 +6,6 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 
 use App\Filament\Admin\Resources\OrderResource\Pages\ViewOrder;
 use App\Filament\Admin\Resources\UserResource;
-use App\Models\Ticketing\CompletedWaiver;
 use App\Models\Ticketing\Order;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;

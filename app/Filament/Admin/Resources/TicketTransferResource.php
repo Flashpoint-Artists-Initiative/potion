@@ -7,7 +7,6 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\TicketTransferResource\Pages;
 use App\Filament\Infolists\Components\UserEntry;
 use App\Filament\Tables\Columns\UserColumn;
-use App\Models\Event;
 use App\Models\Ticketing\TicketTransfer;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;

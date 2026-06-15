@@ -6,10 +6,11 @@ namespace Database\Factories\Ticketing;
 
 use App\Models\Event;
 use App\Models\Ticketing\ReservedTicket;
+use App\Models\Ticketing\TicketType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Ticketing\TicketType>
+ * @extends Factory<TicketType>
  */
 class TicketTypeFactory extends Factory
 {

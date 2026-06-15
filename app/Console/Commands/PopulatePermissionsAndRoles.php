@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class PopulatePermissionsAndRoles extends Command
 {
@@ -29,7 +30,7 @@ class PopulatePermissionsAndRoles extends Command
      */
     public function handle(): void
     {
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $data = config('permission.implement');
         foreach ($data['permissions'] as $permission) {

@@ -2,12 +2,13 @@
 
 namespace Database\Factories\Ticketing;
 
+use App\Models\CompletedWaiver;
 use App\Models\Ticketing\Waiver;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CompletedWaiver>
+ * @extends Factory<CompletedWaiver>
  */
 class CompletedWaiverFactory extends Factory
 {

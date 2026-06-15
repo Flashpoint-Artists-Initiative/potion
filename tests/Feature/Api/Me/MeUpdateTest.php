@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Api\Me;
 
 use App\Models\User;
+use Illuminate\Mail\Transport\ArrayTransport;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Testing\Fluent\AssertableJson;
 use PHPUnit\Framework\Attributes\Test;
@@ -110,7 +111,7 @@ class MeUpdateTest extends ApiRouteTestCase
 
         $this->assertTrue($user->hasVerifiedEmail());
 
-        /** @var \Illuminate\Mail\Transport\ArrayTransport */
+        /** @var ArrayTransport */
         $emailTransport = app('mailer')->getSymfonyTransport();
 
         $this->assertCount(0, $emailTransport->messages(), 'Start with 0 messages sent');

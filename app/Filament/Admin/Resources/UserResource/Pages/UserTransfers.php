@@ -8,11 +8,11 @@ use App\Filament\Admin\Resources\TicketTransferResource;
 use App\Filament\Admin\Resources\UserResource;
 use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Ticketing\TicketTransfer;
+use App\Models\User;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\User;
 
 class UserTransfers extends ManageRelatedRecords
 {

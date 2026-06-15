@@ -12,29 +12,23 @@ use App\Models\Ticketing\TicketTransfer;
 use App\Models\User;
 use App\Rules\ValidEmail;
 use Filament\Actions\Action;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Actions\Action as FormAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Forms\Set;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Livewire\Attributes\Url;
-use Filament\Infolists\Components\Actions\Action as InfolistAction;
-use Filament\Infolists\Components\Actions;
-use Illuminate\Support\Facades\DB;
-use Filament\Forms\Components\Actions\Action as FormAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Set;
+use Filament\Support\Enums\IconPosition;
 use Filament\Support\Enums\MaxWidth;
-use Illuminate\Auth\Access\Gate;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Password;
-use Filament\Notifications\Actions\Action as NotificationAction;
-use Filament\Support\Enums\IconPosition;
+use Livewire\Attributes\Url;
 
 class Checkin extends Page
 {
@@ -66,7 +60,7 @@ class Checkin extends Page
     // since the original code does not have a type
     // @phpstan-ignore missingType.property
     protected $listeners = [
-        'waiver-signed' => '$refresh'
+        'waiver-signed' => '$refresh',
     ];
 
     public function boot(): void
@@ -115,7 +109,7 @@ class Checkin extends Page
         $correctEvent = $this->eventId === $currentEventId;
         // Check if the ticket is valid (not expired, not already used, etc.)
         $userTickets = $this->user->getValidTicketsForEvent($this->eventId);
-        $transferableTickets = $userTickets->filter(fn(PurchasedTicket $ticket) => $ticket->ticketType->transferable);
+        $transferableTickets = $userTickets->filter(fn (PurchasedTicket $ticket) => $ticket->ticketType->transferable);
         $hasValidTicket = $userTickets->isNotEmpty();
         $hasMultipleTickets = $userTickets->count() > 1;
         $hasTransferableTickets = $transferableTickets->isNotEmpty();
@@ -127,13 +121,13 @@ class Checkin extends Page
         // Check if the user has signed the waiver
         $requiresWaiver = $this->event->waiver()->exists();
         $hasSignedWaiver = $this->user->hasSignedWaiverForEvent($this->eventId);
-        
+
         // Check ban list
         $isBanned = $this->user->isBanned();
         $banList = User::banned()->pluck('legal_name', 'id')->toArray();
         $highestBanMatch = 0;
         $highestBanId = null;
-        
+
         foreach ($banList as $id => $name) {
             similar_text(strtolower($this->user->legal_name), strtolower($name), $percent);
             if ($percent > $highestBanMatch) {
@@ -145,7 +139,7 @@ class Checkin extends Page
         if ($isBanned) {
             $this->checklist['ban'] = [
                 'color' => 'danger',
-                'message' => "Participant is banned from this event. Contact an event lead for assistance.",
+                'message' => 'Participant is banned from this event. Contact an event lead for assistance.',
             ];
         } elseif ($highestBanMatch >= 90) {
             $bannedUser = User::findOrFail($highestBanId);
@@ -200,9 +194,9 @@ class Checkin extends Page
         if ($hasMultipleTickets) {
             $this->checklist['multiple_tickets'] = [
                 'color' => $hasTransferableTickets ? 'info' : 'warning',
-                'message' => sprintf('Participant has %d valid tickets. %d %s transferable.', 
-                    $userTickets->count(), 
-                    $transferableTickets->count(), 
+                'message' => sprintf('Participant has %d valid tickets. %d %s transferable.',
+                    $userTickets->count(),
+                    $transferableTickets->count(),
                     $transferableTickets->count() === 1 ? 'is' : 'are'
                 ),
             ];
@@ -225,7 +219,7 @@ class Checkin extends Page
             ->label('Transfer Tickets')
             ->icon('heroicon-o-ticket')
             ->color('info')
-            ->form(fn(Form $form) => $this->transferForm($form))
+            ->form(fn (Form $form) => $this->transferForm($form))
             ->modalCancelAction(false)
             ->modalSubmitActionLabel('Select')
             ->action(function (array $data) use ($nextTicket) {
@@ -247,7 +241,7 @@ class Checkin extends Page
 
     public function checkInAction(): Action
     {
-        $canCheckIn = collect($this->checklist)->contains(fn($item) => $item['color'] === 'danger') === false;
+        $canCheckIn = collect($this->checklist)->contains(fn ($item) => $item['color'] === 'danger') === false;
 
         return Action::make('checkIn')
             ->label('Check In')
@@ -272,8 +266,8 @@ class Checkin extends Page
                     ->body('Participant has been checked in successfully.')
                     ->send();
             })
-            ->color(fn() => $canCheckIn ? 'success' : 'danger')
-            ->hidden(!$canCheckIn);
+            ->color(fn () => $canCheckIn ? 'success' : 'danger')
+            ->hidden(! $canCheckIn);
     }
 
     public function updateWristbandAction(): Action
@@ -328,11 +322,11 @@ class Checkin extends Page
                     ->required()
                     ->getSearchResultsUsing(function (string $search) {
                         return User::where('legal_name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
-                        ->select(DB::raw("id, CONCAT(legal_name, ' (', email, ')') AS legal_name"))
-                        ->limit(50)
-                        ->pluck('legal_name', 'id')
-                        ->toArray();
+                            ->orWhere('email', 'like', "%{$search}%")
+                            ->select(DB::raw("id, CONCAT(legal_name, ' (', email, ')') AS legal_name"))
+                            ->limit(50)
+                            ->pluck('legal_name', 'id')
+                            ->toArray();
                     })
                     ->autofocus()
                     ->hintAction($this->createNewUserAction()),
@@ -345,7 +339,7 @@ class Checkin extends Page
             ->label('Create New User')
             ->icon('heroicon-o-user-plus')
             ->color('primary')
-            ->form(fn(Form $form) => $this->createNewUserForm($form))
+            ->form(fn (Form $form) => $this->createNewUserForm($form))
             ->action(function (array $data, Set $set) {
                 if ($user = User::where('email', $data['email'])->first()) {
 
@@ -373,7 +367,8 @@ class Checkin extends Page
                         ->warning()
                         ->body("User {$this->user->legal_name} does not have any transferable tickets.")
                         ->send();
-                    return; 
+
+                    return;
                 }
 
                 TicketTransfer::createTransfer($this->user->id, $user->email, [$nextTicket->id], quietly: true)->complete($note);
@@ -412,7 +407,7 @@ class Checkin extends Page
                     ->password()
                     ->required()
                     ->rule(new Password(config('auth.password_min_length')))
-                    ->default(fn() => str()->random(12))
+                    ->default(fn () => str()->random(12))
                     ->helperText('A random 12 character password has been generated. You may change it if you wish.'),
             ]);
     }
@@ -458,13 +453,13 @@ class Checkin extends Page
         }
 
         // TODO: replace this hack with a proper way to update the component
-        $this->js('window.location.reload()'); 
+        $this->js('window.location.reload()');
     }
 
     protected function getNextTransferableTicket(): ?PurchasedTicket
     {
         $tickets = $this->user->getValidTicketsForEvent($this->eventId);
-        $transferableTickets = $tickets->filter(fn(PurchasedTicket $ticket) => $ticket->ticketType->transferable);
+        $transferableTickets = $tickets->filter(fn (PurchasedTicket $ticket) => $ticket->ticketType->transferable);
         $checkedIn = $this->user->gateScans()->currentEvent()->exists();
 
         $canTransfer = true;

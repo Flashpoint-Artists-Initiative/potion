@@ -4,9 +4,23 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use Dedoc\Scramble\Scramble;
-use Dedoc\Scramble\Support\Generator\OpenApi;
-use Dedoc\Scramble\Support\Generator\SecurityScheme;
+use App\Models\Event;
+use App\Models\Grants\ArtProject;
+use App\Models\Ticketing\Cart;
+use App\Models\Ticketing\CartItem;
+use App\Models\Ticketing\CompletedWaiver;
+use App\Models\Ticketing\GateScan;
+use App\Models\Ticketing\Order;
+use App\Models\Ticketing\PurchasedTicket;
+use App\Models\Ticketing\ReservedTicket;
+use App\Models\Ticketing\TicketTransfer;
+use App\Models\Ticketing\TicketType;
+use App\Models\Ticketing\Waiver;
+use App\Models\User;
+use App\Models\Volunteering\Requirement;
+use App\Models\Volunteering\Shift;
+use App\Models\Volunteering\ShiftType;
+use App\Models\Volunteering\Team;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
@@ -58,26 +72,26 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Relation::enforceMorphMap([
-            'cart' => \App\Models\Ticketing\Cart::class,
-            'cartItem' => \App\Models\Ticketing\CartItem::class,
-            'completedWaiver' => \App\Models\Ticketing\CompletedWaiver::class,
-            'order' => \App\Models\Ticketing\Order::class,
-            'purchasedTicket' => \App\Models\Ticketing\PurchasedTicket::class,
-            'reservedTicket' => \App\Models\Ticketing\ReservedTicket::class,
-            'ticketTransfer' => \App\Models\Ticketing\TicketTransfer::class,
-            'ticketType' => \App\Models\Ticketing\TicketType::class,
-            'waiver' => \App\Models\Ticketing\Waiver::class,
-            'gateScan' => \App\Models\Ticketing\GateScan::class,
+            'cart' => Cart::class,
+            'cartItem' => CartItem::class,
+            'completedWaiver' => CompletedWaiver::class,
+            'order' => Order::class,
+            'purchasedTicket' => PurchasedTicket::class,
+            'reservedTicket' => ReservedTicket::class,
+            'ticketTransfer' => TicketTransfer::class,
+            'ticketType' => TicketType::class,
+            'waiver' => Waiver::class,
+            'gateScan' => GateScan::class,
 
-            'requirement' => \App\Models\Volunteering\Requirement::class,
-            'shift' => \App\Models\Volunteering\Shift::class,
-            'shiftType' => \App\Models\Volunteering\ShiftType::class,
-            'team' => \App\Models\Volunteering\Team::class,
+            'requirement' => Requirement::class,
+            'shift' => Shift::class,
+            'shiftType' => ShiftType::class,
+            'team' => Team::class,
 
-            'artProject' => \App\Models\Grants\ArtProject::class,
+            'artProject' => ArtProject::class,
 
-            'event' => \App\Models\Event::class,
-            'user' => \App\Models\User::class,
+            'event' => Event::class,
+            'user' => User::class,
         ]);
     }
 

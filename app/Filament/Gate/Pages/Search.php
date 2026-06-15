@@ -86,16 +86,16 @@ class Search extends Page
                     ->searchable()
                     ->live()
                     ->required()
-                    ->helperText(fn($state) => $state)
+                    ->helperText(fn ($state) => $state)
                     ->getSearchResultsUsing(function (string $search) {
                         return User::where('legal_name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
-                        ->select(DB::raw("id, CONCAT(legal_name, ' (', email, ')') AS legal_name"))
-                        ->limit(50)
-                        ->pluck('legal_name', 'id')
-                        ->toArray();
+                            ->orWhere('email', 'like', "%{$search}%")
+                            ->select(DB::raw("id, CONCAT(legal_name, ' (', email, ')') AS legal_name"))
+                            ->limit(50)
+                            ->pluck('legal_name', 'id')
+                            ->toArray();
                     })
-                    ->afterStateUpdated(function(int $state) {
+                    ->afterStateUpdated(function (int $state) {
                         $user = User::findOrFail($state);
 
                         $data = [
@@ -105,7 +105,7 @@ class Search extends Page
                         ];
 
                         // Remove any matching entries so we don't have duplicates
-                        $this->searchHistory = array_filter($this->searchHistory, function($entry) use ($user) {
+                        $this->searchHistory = array_filter($this->searchHistory, function ($entry) use ($user) {
                             return $entry['id'] !== $user->id;
                         });
 
@@ -143,7 +143,7 @@ class Search extends Page
                                     ->getContainer()
                                     ->getParentComponent()
                                     ->getState()[$index];
-                                
+
                                 return Checkin::getUrl([
                                     'userId' => $data['id'],
                                     'eventId' => Event::getCurrentEventId(),
@@ -154,8 +154,8 @@ class Search extends Page
                             ->label('')
                             ->icon('heroicon-o-clock')
                             ->color('secondary')
-                            ->dateTime('D, n/j g:i A T', 'America/New_York'),   
-                    ])
+                            ->dateTime('D, n/j g:i A T', 'America/New_York'),
+                    ]),
             ]);
     }
 }

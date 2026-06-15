@@ -8,10 +8,10 @@ use App\Actions\SendEmailBulkAction;
 use App\Enums\RolesEnum;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Models\Event;
+use App\Models\Ticketing\TicketType;
 use App\Models\User;
 use App\Rules\ValidEmail;
 use Filament\Forms;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
@@ -129,7 +129,7 @@ class UserResource extends Resource
                     ->placeholder('All Ticket Types'),
                 Tables\Filters\SelectFilter::make('negTicketType')
                     ->label('Does not have Ticket Type')
-                    ->options(fn () => \App\Models\Ticketing\TicketType::where('event_id', Event::getCurrentEventId())->pluck('name', 'id')->toArray())
+                    ->options(fn () => TicketType::where('event_id', Event::getCurrentEventId())->pluck('name', 'id')->toArray())
                     ->multiple()
                     ->preload()
                     ->placeholder('All Ticket Types')

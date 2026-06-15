@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console;
 
+use Bugsnag\BugsnagLaravel\OomBootstrapper;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -34,7 +35,7 @@ class Kernel extends ConsoleKernel
     {
         return array_merge(
             [
-                \Bugsnag\BugsnagLaravel\OomBootstrapper::class,
+                OomBootstrapper::class,
             ],
             parent::bootstrappers(),
         );

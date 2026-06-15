@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Models\User;
 use App\Notifications\UserEmailNotification;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\BulkAction;
@@ -54,7 +55,7 @@ class SendEmailBulkAction extends BulkAction
     }
 
     /**
-     * @return array<\Filament\Forms\Components\Component> The form schema for the action.
+     * @return array<Component> The form schema for the action.
      */
     protected function getFormSchema(): array
     {

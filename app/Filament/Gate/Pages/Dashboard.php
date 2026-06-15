@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Gate\Pages;
 
-use App\Models\Event;
-use App\Models\User;
 use App\Services\QRCodeService;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Select;
-use Illuminate\Support\Facades\DB;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
@@ -31,7 +27,7 @@ class Dashboard extends \Filament\Pages\Dashboard
     }
 
     /**
-     * @param non-empty-string $code
+     * @param  non-empty-string  $code
      */
     public function processScan(string $code, QRCodeService $qrCodeService): void
     {

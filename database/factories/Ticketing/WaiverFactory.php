@@ -3,10 +3,11 @@
 namespace Database\Factories\Ticketing;
 
 use App\Models\Event;
+use App\Models\Waiver;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Waiver>
+ * @extends Factory<Waiver>
  */
 class WaiverFactory extends Factory
 {

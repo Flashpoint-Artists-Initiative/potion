@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Api\Auth;
 
 use App\Models\User;
+use Illuminate\Mail\Transport\ArrayTransport;
 use Illuminate\Testing\Fluent\AssertableJson;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\ApiRouteTestCase;
@@ -28,7 +29,7 @@ class ForgotPasswordTest extends ApiRouteTestCase
     {
         $email = 'regular@example.com';
 
-        /** @var \Illuminate\Mail\Transport\ArrayTransport */
+        /** @var ArrayTransport */
         $emailTransport = app('mailer')->getSymfonyTransport();
 
         $this->assertCount(0, $emailTransport->messages(), 'Start with 0 messages sent');

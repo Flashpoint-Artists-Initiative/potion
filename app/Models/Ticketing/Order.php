@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\User;
 use App\Notifications\OrderRefundedNotification;
 use App\Observers\OrderObserver;
+use App\Services\StripeService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
@@ -144,7 +145,7 @@ class Order extends Model implements ContractsAuditable
             return;
         }
 
-        $stripeService = app(\App\Services\StripeService::class);
+        $stripeService = app(StripeService::class);
         $stripeService->refundOrder($this);
 
         $this->purchasedTickets->each(function ($ticket) {

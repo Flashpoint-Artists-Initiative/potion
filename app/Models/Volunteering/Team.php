@@ -115,6 +115,7 @@ class Team extends Model implements ContractsAuditable
             }
         );
     }
+
     /**
      * @return Attribute<int,never>
      */

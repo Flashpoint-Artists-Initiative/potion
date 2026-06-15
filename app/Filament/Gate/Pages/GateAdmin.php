@@ -7,7 +7,6 @@ namespace App\Filament\Gate\Pages;
 use App\Models\Event;
 use App\Models\Ticketing\CompletedWaiver;
 use App\Models\Ticketing\PurchasedTicket;
-use App\Models\Ticketing\TicketTransfer;
 use App\Models\Ticketing\TicketType;
 use App\Models\User;
 use App\Rules\ValidEmail;
@@ -19,7 +18,6 @@ use Filament\Forms\Form;
 use Filament\Notifications\Actions\Action as NotificationsAction;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Exists;
 use Illuminate\Validation\Rules\Password;
 
@@ -52,7 +50,7 @@ class GateAdmin extends Page
                     ->label('Email Address')
                     ->rule(new ValidEmail)
                     ->required()
-                    ->exists(User::class, 'email', fn(Exists $rule) => $rule->whereNull('deleted_at'))
+                    ->exists(User::class, 'email', fn (Exists $rule) => $rule->whereNull('deleted_at'))
                     ->validationMessages(['exists' => 'No user with that email address was found.'])
                     ->autofocus(),
                 Select::make('ticket_type')
@@ -80,7 +78,7 @@ class GateAdmin extends Page
                         NotificationsAction::make('go_to_user')
                             ->label('Go to User')
                             ->button()
-                            ->url(Checkin::getUrl(['userId' => $user->id, 'eventId' => Event::getCurrentEventId()]))
+                            ->url(Checkin::getUrl(['userId' => $user->id, 'eventId' => Event::getCurrentEventId()])),
                     ])
                     ->send();
             });
@@ -92,7 +90,7 @@ class GateAdmin extends Page
             ->label('Create New User')
             ->icon('heroicon-o-user-plus')
             ->color('primary')
-            ->form(fn(Form $form) => $this->createNewUserForm($form))
+            ->form(fn (Form $form) => $this->createNewUserForm($form))
             ->action(function (array $data) {
                 if ($user = User::where('email', $data['email'])->first()) {
 
@@ -104,7 +102,7 @@ class GateAdmin extends Page
                             NotificationsAction::make('go_to_user')
                                 ->label('Go to User')
                                 ->button()
-                                ->url(Checkin::getUrl(['userId' => $user->id, 'eventId' => Event::getCurrentEventId()]))
+                                ->url(Checkin::getUrl(['userId' => $user->id, 'eventId' => Event::getCurrentEventId()])),
                         ])
                         ->send();
                 } else {
@@ -118,7 +116,7 @@ class GateAdmin extends Page
                             NotificationsAction::make('go_to_user')
                                 ->label('Go to User')
                                 ->button()
-                                ->url(Checkin::getUrl(['userId' => $user->id, 'eventId' => Event::getCurrentEventId()]))
+                                ->url(Checkin::getUrl(['userId' => $user->id, 'eventId' => Event::getCurrentEventId()])),
                         ])
                         ->send();
                 }
@@ -148,7 +146,7 @@ class GateAdmin extends Page
                     ->password()
                     ->required()
                     ->rule(new Password(config('auth.password_min_length')))
-                    ->default(fn() => str()->random(12))
+                    ->default(fn () => str()->random(12))
                     ->helperText('A random 12 character password has been generated. You may change it if you wish.'),
             ]);
     }
@@ -165,7 +163,7 @@ class GateAdmin extends Page
                     ->label('Email Address')
                     ->rule(new ValidEmail)
                     ->required()
-                    ->exists(User::class, 'email', fn(Exists $rule) => $rule->whereNull('deleted_at'))
+                    ->exists(User::class, 'email', fn (Exists $rule) => $rule->whereNull('deleted_at'))
                     ->validationMessages(['exists' => 'No user with that email address was found.'])
                     ->autofocus(),
             ])
@@ -179,17 +177,19 @@ class GateAdmin extends Page
                         ->danger()
                         ->body('There is no current event set. Please set a current event before signing waivers.')
                         ->send();
+
                     return;
                 }
 
                 $waiver = $event->waiver;
 
-                if (!$waiver) {
+                if (! $waiver) {
                     Notification::make()
                         ->title('No Waiver Found')
                         ->warning()
                         ->body('This event does not require a waiver.')
                         ->send();
+
                     return;
                 }
 
@@ -207,9 +207,10 @@ class GateAdmin extends Page
                             NotificationsAction::make('go_to_user')
                                 ->label('Go to User')
                                 ->button()
-                                ->url(Checkin::getUrl(['userId' => $user->id, 'eventId' => Event::getCurrentEventId()]))
+                                ->url(Checkin::getUrl(['userId' => $user->id, 'eventId' => Event::getCurrentEventId()])),
                         ])
                         ->send();
+
                     return;
                 }
 
@@ -227,7 +228,7 @@ class GateAdmin extends Page
                         NotificationsAction::make('go_to_user')
                             ->label('Go to User')
                             ->button()
-                            ->url(Checkin::getUrl(['userId' => $user->id, 'eventId' => Event::getCurrentEventId()]))
+                            ->url(Checkin::getUrl(['userId' => $user->id, 'eventId' => Event::getCurrentEventId()])),
                     ])
                     ->send();
             });

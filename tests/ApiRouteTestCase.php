@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPOpenSourceSaver\JWTAuth\JWTGuard;
 
 abstract class ApiRouteTestCase extends TestCase
 {
@@ -58,11 +60,11 @@ abstract class ApiRouteTestCase extends TestCase
     }
 
     /**
-     * @param  \App\Models\User  $user
+     * @param  User  $user
      */
     public function actingAs(Authenticatable $user, $guard = null)
     {
-        /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard */
+        /** @var JWTGuard */
         $auth = auth('api');
         $token = $auth->login($user);
 

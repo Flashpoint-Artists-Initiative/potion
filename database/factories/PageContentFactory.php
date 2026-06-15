@@ -4,10 +4,11 @@ namespace Database\Factories;
 
 use App\Enums\PageContentEnum;
 use App\Models\Event;
+use App\Models\PageContent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PageContent>
+ * @extends Factory<PageContent>
  */
 class PageContentFactory extends Factory
 {

@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Filament\NestedResources;
 
 use Filament\Facades\Filament;
+use Guava\FilamentNestedResources\Ancestor;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * A child of \Guava\FilamentNestedResources\Ancestor that retrieves
  * the far ancestor of a record for a HasManyThrough relationship.
  */
-class FarAncestor extends \Guava\FilamentNestedResources\Ancestor
+class FarAncestor extends Ancestor
 {
     public function getResource(Model $record): string
     {

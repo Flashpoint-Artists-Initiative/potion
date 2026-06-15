@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Gate\Widgets;
 
+use App\Models\Event;
 use App\Models\Ticketing\GateScan;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -29,11 +30,11 @@ class GateStats extends BaseWidget
                 return User::query()
                     ->whereHas('purchasedTickets', function ($query) {
                         $query->whereHas('ticketType', function ($q) {
-                            $q->where('event_id', \App\Models\Event::getCurrentEventId());
+                            $q->where('event_id', Event::getCurrentEventId());
                         });
                     })
                     ->whereDoesntHave('gateScans', function ($query) {
-                        $query->where('event_id', \App\Models\Event::getCurrentEventId());
+                        $query->where('event_id', Event::getCurrentEventId());
                     })
                     ->count();
             }),

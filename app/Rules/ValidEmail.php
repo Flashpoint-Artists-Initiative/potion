@@ -12,6 +12,7 @@ use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Translation\PotentiallyTranslatedString;
 use Illuminate\Validation\Concerns\FilterEmailValidation;
 
 /**
@@ -23,13 +24,13 @@ use Illuminate\Validation\Concerns\FilterEmailValidation;
  */
 class ValidEmail implements ValidationRule
 {
-    /** @var string[] $validations */
+    /** @var string[] */
     protected array $validations = ['rfc', 'dns'];
-    
+
     /**
      * Run the validation rule.
      *
-     * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param  Closure(string, ?string=): PotentiallyTranslatedString  $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -43,22 +44,22 @@ class ValidEmail implements ValidationRule
             ->unique()
             ->map(function ($validation) {
                 if ($validation === 'rfc') {
-                    return new RFCValidation();
+                    return new RFCValidation;
                 } elseif ($validation === 'strict') {
-                    return new NoRFCWarningsValidation();
+                    return new NoRFCWarningsValidation;
                 } elseif ($validation === 'dns' && app()->isProduction()) {
-                    return new DNSCheckValidation();
+                    return new DNSCheckValidation;
                 } elseif ($validation === 'spoof') {
-                    return new SpoofCheckValidation();
+                    return new SpoofCheckValidation;
                 } elseif ($validation === 'filter') {
-                    return new FilterEmailValidation();
+                    return new FilterEmailValidation;
                 }
 
                 return null;
             })
             ->values()
             ->filter()
-            ->all() ?: [new RFCValidation()];
+            ->all() ?: [new RFCValidation];
 
         if (! (new EmailValidator)->isValid((string) $value, new MultipleValidationWithAnd($validations))) {
             $fail('The :attribute must be a valid email address.');

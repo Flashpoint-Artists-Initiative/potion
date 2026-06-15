@@ -2,11 +2,12 @@
 
 namespace Database\Factories\Ticketing;
 
+use App\Models\Ticketing\Cart;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Ticketing\Cart>
+ * @extends Factory<Cart>
  */
 class CartFactory extends Factory
 {

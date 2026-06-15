@@ -1,5 +1,14 @@
 <?php
 
+use App\Overrides\Calendar\CalendarServiceProvider;
+use App\Providers\AppServiceProvider;
+use App\Providers\AuthServiceProvider;
+use App\Providers\EventServiceProvider;
+use App\Providers\Filament\AdminPanelProvider;
+use App\Providers\Filament\AppPanelProvider;
+use App\Providers\Filament\GatePanelProvider;
+use App\Providers\RouteServiceProvider;
+use Bugsnag\BugsnagLaravel\BugsnagServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
@@ -164,16 +173,16 @@ return [
         /*
          * Application Service Providers...
          */
-        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
+        BugsnagServiceProvider::class,
+        AppServiceProvider::class,
+        AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\Filament\AppPanelProvider::class,
-        App\Providers\Filament\AdminPanelProvider::class,
-        App\Providers\Filament\GatePanelProvider::class,
-        App\Providers\RouteServiceProvider::class,
-        App\Overrides\Calendar\CalendarServiceProvider::class,
+        EventServiceProvider::class,
+        AppPanelProvider::class,
+        AdminPanelProvider::class,
+        GatePanelProvider::class,
+        RouteServiceProvider::class,
+        CalendarServiceProvider::class,
     ])->toArray(),
 
     /*

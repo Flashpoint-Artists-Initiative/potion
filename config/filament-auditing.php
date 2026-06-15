@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+
 return [
 
     'audits_sort' => [
@@ -34,7 +36,7 @@ return [
 
     'mapping' => [
         'user_id' => [
-            'model' => \App\Models\User::class,
+            'model' => User::class,
             'field' => 'display_name',
             'label' => 'User',
         ],

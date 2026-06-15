@@ -11,6 +11,7 @@ use App\Models\Ticketing\Order;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Stripe\Checkout\Session;
+use Stripe\Dispute;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\InvalidRequestException;
 use Stripe\PaymentIntent;
@@ -276,7 +277,7 @@ class StripeService
     }
 
     /**
-     * @return array<int, \Stripe\PaymentIntent>
+     * @return array<int, PaymentIntent>
      */
     public function getUserPaymentIntents(User $user): array
     {
@@ -304,7 +305,7 @@ class StripeService
     }
 
     /**
-     * @return array<int, \Stripe\Dispute>
+     * @return array<int, Dispute>
      */
     public function getDisputesFromPaymentIntent(PaymentIntent $paymentIntent): array
     {
@@ -316,7 +317,7 @@ class StripeService
     }
 
     /**
-     * @return array<int, \Stripe\Refund>
+     * @return array<int, Refund>
      */
     public function getRefundsFromPaymentIntent(PaymentIntent $paymentIntent): array
     {

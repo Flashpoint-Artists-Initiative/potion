@@ -7,6 +7,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Http\Middleware\RefreshToken;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class ConditionalJwtRefresh extends RefreshToken
@@ -14,7 +15,7 @@ class ConditionalJwtRefresh extends RefreshToken
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle($request, Closure $next): mixed
     {

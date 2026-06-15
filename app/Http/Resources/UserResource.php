@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\MissingValue;
 use Illuminate\Support\Collection;
+use Spatie\Permission\Models\Permission;
 
 /**
  * @mixin User
@@ -44,7 +45,7 @@ class UserResource extends JsonResource
     }
 
     /**
-     * @return MissingValue|Collection<int, \Spatie\Permission\Models\Permission>
+     * @return MissingValue|Collection<int, Permission>
      */
     protected function formatPermissions(): Collection|MissingValue
     {

@@ -21,13 +21,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use PHPOpenSourceSaver\JWTAuth\JWTGuard;
 
 class AuthController extends Controller
 {
     /**
      * Create a new controller instance.
      *
-     * @param  \PHPOpenSourceSaver\JWTAuth\JWTGuard  $guard
+     * @param  JWTGuard  $guard
      * @return void
      */
     public function __construct(protected Guard $guard) {}
@@ -54,7 +55,7 @@ class AuthController extends Controller
 
         $collection = $user->getAllPermissions();
 
-        $permissions = $collection->map(fn($p) => $p->name);
+        $permissions = $collection->map(fn ($p) => $p->name);
 
         // Returns a new JWT
         return response()->json([
@@ -210,10 +211,10 @@ class AuthController extends Controller
     /**
      * Throw a failed authentication validation exception.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return void
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     protected function throwFailedAuthenticationException($request)
     {

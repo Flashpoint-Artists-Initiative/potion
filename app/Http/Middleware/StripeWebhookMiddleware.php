@@ -15,7 +15,7 @@ class StripeWebhookMiddleware
     /**
      * Verify that the request is coming from the stripe API
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      *
      * @codeCoverageIgnore
      */

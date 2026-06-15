@@ -11,6 +11,7 @@ use App\Models\Ticketing\TicketType;
 use App\Models\User;
 use App\Services\CartService;
 use App\Services\StripeService;
+use Mockery\Expectation;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Stripe\Checkout\Session;
@@ -65,11 +66,11 @@ class CheckoutCompleteTest extends ApiRouteTestCase
         $cart->setStripeCheckoutIdAndSave($this->session->id);
 
         $this->partialMock(StripeService::class, function (MockInterface $mock) {
-            /** @var \Mockery\Expectation $getSession */
+            /** @var Expectation $getSession */
             $getSession = $mock->shouldReceive('getCheckoutSession');
             $getSession->andReturn($this->session);
 
-            /** @var \Mockery\Expectation $updateMetadata */
+            /** @var Expectation $updateMetadata */
             $updateMetadata = $mock->shouldReceive('updateMetadata');
             $updateMetadata->andReturn($this->session);
         });

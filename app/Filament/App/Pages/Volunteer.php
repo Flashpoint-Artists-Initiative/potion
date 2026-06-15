@@ -34,7 +34,6 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
-use Nette\Utils\Html;
 
 /**
  * @property Form $form
@@ -61,7 +60,7 @@ class Volunteer extends Page implements HasTable
 
     public int $teamId;
 
-    /** @var array<mixed> $data */
+    /** @var array<mixed> */
     public array $data = [];
 
     public function getTitle(): string|Htmlable
@@ -163,11 +162,11 @@ class Volunteer extends Page implements HasTable
                 RepeatableEntry::make('teams')
                     ->label(new HtmlString('<h1 class="text-2xl">Teams</h1>'))
                     ->schema([
-                        Section::make(fn(Team $state) => $state->name)
+                        Section::make(fn (Team $state) => $state->name)
                             ->headerActions([
                                 InfolistAction::make('shifts')
                                     ->label('View Shifts')
-                                    ->url(fn(Team $record) => self::getUrl(['id' => $record->id])),
+                                    ->url(fn (Team $record) => self::getUrl(['id' => $record->id])),
                             ])
                             ->schema([
                                 TextEntry::make('description')

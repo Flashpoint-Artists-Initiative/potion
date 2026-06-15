@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Ticketing\Cart;
+use App\Models\Ticketing\CartItem;
 use App\Models\Ticketing\Order;
 use App\Models\Ticketing\TicketType;
 use Carbon\Carbon;
@@ -66,7 +67,7 @@ class OrderService
     }
 
     /**
-     * @param  Collection<int, \App\Models\Ticketing\CartItem>  $items
+     * @param  Collection<int, CartItem>  $items
      * @return array<string, string|int>
      */
     protected function jsonFromCartItems(Collection $items): array

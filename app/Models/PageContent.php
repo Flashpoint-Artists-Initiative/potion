@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\PageContentEnum;
 use App\Observers\PageContentObserver;
+use DOM\HTMLDocument;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,7 +47,7 @@ class PageContent extends Model
     {
         return Attribute::make(
             get: function () {
-                $document = \DOM\HTMLDocument::createFromString($this->content, LIBXML_NOERROR | LIBXML_HTML_NOIMPLIED);
+                $document = HTMLDocument::createFromString($this->content, LIBXML_NOERROR | LIBXML_HTML_NOIMPLIED);
                 foreach ($document->getElementsByTagName('a') as $link) {
                     $link->setAttribute('class', 'not-prose');
                     $link->innerHTML = '<span class="font-semibold text-custom-600 dark:text-custom-400 group-hover/link:underline group-focus-visible/link:underline" style="--c-400:var(--primary-400);--c-600:var(--primary-600);">' . $link->innerHTML . '</span>';

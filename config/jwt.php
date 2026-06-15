@@ -1,5 +1,8 @@
 <?php
 
+use PHPOpenSourceSaver\JWTAuth\Providers\Auth\Illuminate;
+use PHPOpenSourceSaver\JWTAuth\Providers\JWT\Lcobucci;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -279,7 +282,7 @@ return [
         |
         */
 
-        'jwt' => PHPOpenSourceSaver\JWTAuth\Providers\JWT\Lcobucci::class,
+        'jwt' => Lcobucci::class,
 
         /*
         |--------------------------------------------------------------------------
@@ -290,7 +293,7 @@ return [
         |
         */
 
-        'auth' => PHPOpenSourceSaver\JWTAuth\Providers\Auth\Illuminate::class,
+        'auth' => Illuminate::class,
 
         /*
         |--------------------------------------------------------------------------

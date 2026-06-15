@@ -3,10 +3,11 @@
 namespace Database\Factories\Volunteering;
 
 use App\Models\Event;
+use App\Models\Volunteering\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Volunteering\Team>
+ * @extends Factory<Team>
  */
 class TeamFactory extends Factory
 {

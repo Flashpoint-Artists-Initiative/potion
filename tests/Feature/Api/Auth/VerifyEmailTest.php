@@ -6,6 +6,7 @@ namespace Tests\Feature\Api\Auth;
 
 use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Mail\Transport\ArrayTransport;
 use Illuminate\Support\Facades\URL;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\ApiRouteTestCase;
@@ -35,7 +36,7 @@ class VerifyEmailTest extends ApiRouteTestCase
 
         $user = User::firstOrFail();
 
-        /** @var \Illuminate\Mail\Transport\ArrayTransport */
+        /** @var ArrayTransport */
         $emailTransport = app('mailer')->getSymfonyTransport();
 
         $this->assertCount(0, $emailTransport->messages(), 'Start with 0 messages sent');

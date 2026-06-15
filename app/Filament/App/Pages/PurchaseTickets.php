@@ -202,7 +202,7 @@ class PurchaseTickets extends Page
 
         $this->ticketCount = $tickets->count() + $reserved->count();
 
-        return Wizard\Step::make('Select Tickets')
+        return Step::make('Select Tickets')
             ->schema($schema);
     }
 
@@ -215,7 +215,7 @@ class PurchaseTickets extends Page
         $user = Auth::user();
         $username = $user->legal_name;
 
-        return Wizard\Step::make('Waivers')
+        return Step::make('Waivers')
             ->schema([
                 Placeholder::make('title')
                     ->content(new HtmlString('<h1 class="text-2xl">' . ($this->waiver->title ?? '') . '</h1>'))

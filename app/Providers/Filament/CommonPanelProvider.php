@@ -137,6 +137,7 @@ class CommonPanelProvider extends PanelProvider
         if (in_array($env, ['gate'], true)) {
             return asset('images/logo-offline.svg');
         }
+
         return asset('images/logo-text.svg');
     }
 }

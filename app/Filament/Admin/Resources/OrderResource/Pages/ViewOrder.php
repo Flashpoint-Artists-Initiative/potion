@@ -6,7 +6,6 @@ namespace App\Filament\Admin\Resources\OrderResource\Pages;
 
 use App\Filament\Admin\Resources\OrderResource;
 use App\Models\Ticketing\Order;
-use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
@@ -48,7 +47,7 @@ class ViewOrder extends ViewRecord
 
     protected function refundAction(): Action
     {
-        return Actions\Action::make('refund')
+        return Action::make('refund')
             ->label('Begin Refund')
             // ->url(fn (Order $record): string => RefundOrder::getUrl(['record' => $record->id]))
             // ->modalContent(fn (Order $record): string => view('filament.admin.modals.refund-order-modal', [

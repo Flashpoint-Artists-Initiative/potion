@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
 use App\Filament\Admin\Resources\TeamResource;
+use App\Filament\Exports\ShiftExporter;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\Team;
 use Filament\Forms;
@@ -95,7 +96,7 @@ class ViewVolunteers extends ManageRelatedRecords
                 ExportAction::make()
                     ->label('Export Volunteers')
                     ->color('primary')
-                    ->exporter(\App\Filament\Exports\ShiftExporter::class)
+                    ->exporter(ShiftExporter::class)
                     ->fileName(fn (): string => str($team->name)->slug() . '-shifts-' . now()->format('Y-m-d')),
             ])
             ->actions([

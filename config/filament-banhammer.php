@@ -1,11 +1,13 @@
 <?php
 
+use App\Filament\Admin\Resources\BanResource;
+
 return [
 
     /*
      * The name of the resource which the plugin should use.
      */
-    'resource' => \App\Filament\Admin\Resources\BanResource::class,
+    'resource' => BanResource::class,
 
     /*
      * Whether an export action should be included on the resource.

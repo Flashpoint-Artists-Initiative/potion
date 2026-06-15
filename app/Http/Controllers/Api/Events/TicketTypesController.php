@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\Events;
 
 use App\Http\Controllers\OrionRelationsController;
 use App\Models\Event;
+use App\Models\Ticketing\TicketType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -42,7 +43,7 @@ class TicketTypesController extends OrionRelationsController
 
     /**
      * @param  string[]  $requestedRelations
-     * @return Relation<\App\Models\Ticketing\TicketType>
+     * @return Relation<TicketType>
      */
     protected function buildIndexFetchQuery(Request $request, Model $event, array $requestedRelations): Relation
     {
@@ -66,7 +67,7 @@ class TicketTypesController extends OrionRelationsController
 
     /**
      * @param  string[]  $requestedRelations
-     * @return Relation<\App\Models\Ticketing\TicketType>
+     * @return Relation<TicketType>
      */
     protected function buildShowFetchQuery(Request $request, Model $event, array $requestedRelations): Relation
     {

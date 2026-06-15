@@ -22,6 +22,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -183,7 +184,7 @@ class UserReservedTickets extends ManageRelatedRecords
                                 ->closeOnDateSelection(),
                         ])
                         ->action(function (array $data, $records) {
-                            /** @var \Illuminate\Database\Eloquent\Collection<int, ReservedTicket> $records */
+                            /** @var Collection<int, ReservedTicket> $records */
                             $updatedCount = 0;
                             foreach ($records as $record) {
                                 $record->expiration_date = $data['new_expiration_date'];
@@ -200,7 +201,7 @@ class UserReservedTickets extends ManageRelatedRecords
                         })
                         ->deselectRecordsAfterCompletion(),
                 ])
-                ->visible(fn () => Auth::user() && Auth::user()->can('reservedTickets.update'))
+                    ->visible(fn () => Auth::user() && Auth::user()->can('reservedTickets.update')),
             ])
             ->checkIfRecordIsSelectableUsing(fn (ReservedTicket $record) => ! $record->is_purchased);
     }

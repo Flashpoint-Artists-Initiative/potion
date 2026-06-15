@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Database\Eloquent\Builder;
 use NumberFormatter;
 
 class RevenueWidget extends BaseWidget
@@ -19,7 +20,7 @@ class RevenueWidget extends BaseWidget
 
     protected static ?string $pollingInterval = null;
 
-    protected \Illuminate\Database\Eloquent\Builder $query;
+    protected Builder $query;
 
     protected function getStats(): array
     {

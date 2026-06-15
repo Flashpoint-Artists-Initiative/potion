@@ -106,7 +106,7 @@ class ShiftCalendarWidget extends CalendarWidget
      *  startStr: string,
      *  end: string,
      *  endStr: string,
-     *  allDay: boolean,
+     *  allDay: bool,
      *  view: array<string,string>,
      *  resource?: array<string,string>
      * } $info

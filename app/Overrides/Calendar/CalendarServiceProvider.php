@@ -10,7 +10,6 @@ use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Guava\Calendar\CalendarServiceProvider as OriginalServiceProvider;
 use Guava\Calendar\Widgets\CalendarWidget;
-use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
 /**

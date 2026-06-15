@@ -6,12 +6,13 @@ namespace App\Http\Requests\Grants;
 
 use App\Enums\ArtProjectStatusEnum;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Orion\Http\Requests\Request;
 
 class ArtProjectRequest extends Request
 {
     /**
-     * @return array<string, list<\Illuminate\Validation\Rules\Enum|string>>
+     * @return array<string, list<Enum|string>>
      */
     public function storeRules(): array
     {
@@ -29,7 +30,7 @@ class ArtProjectRequest extends Request
     }
 
     /**
-     * @return array<string, list<\Illuminate\Validation\Rules\Enum|string>>
+     * @return array<string, list<Enum|string>>
      */
     public function updateRules(): array
     {

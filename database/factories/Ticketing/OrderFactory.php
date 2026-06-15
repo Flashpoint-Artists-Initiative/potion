@@ -4,11 +4,12 @@ namespace Database\Factories\Ticketing;
 
 use App\Models\Event;
 use App\Models\Ticketing\Cart;
+use App\Models\Ticketing\Order;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Ticketing\Order>
+ * @extends Factory<Order>
  */
 class OrderFactory extends Factory
 {
