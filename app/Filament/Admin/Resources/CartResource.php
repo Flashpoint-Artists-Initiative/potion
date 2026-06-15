@@ -10,11 +10,12 @@ use App\Filament\Infolists\Components\UserEntry;
 use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Ticketing\Cart;
 use Carbon\Carbon;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Infolists;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,15 +26,15 @@ class CartResource extends Resource
 {
     protected static ?string $model = Cart::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shopping-cart';
 
     protected static ?string $navigationParentItem = 'Orders';
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
-                Infolists\Components\Section::make([
+        return $schema
+            ->components([
+                Section::make([
                     UserEntry::make('user')
                         ->userPage('carts'),
                     Infolists\Components\TextEntry::make('created_at')
@@ -71,7 +72,7 @@ class CartResource extends Resource
             ]);
     }
 
-    // public static function form(Form $form): Form
+    // public static function form(Schema $schema): Schema
     // {
     //     return $form
     //         ->schema([
@@ -114,7 +115,7 @@ class CartResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                ViewAction::make(),
             ])
             ->bulkActions([
             ]);

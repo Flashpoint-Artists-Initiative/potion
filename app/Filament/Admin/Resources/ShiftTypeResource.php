@@ -7,12 +7,12 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\ShiftTypeResource\Pages;
 use App\Models\Volunteering\ShiftType;
 use Filament\Forms;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Guava\FilamentNestedResources\Ancestor;
@@ -25,14 +25,14 @@ class ShiftTypeResource extends Resource
 
     protected static ?string $model = ShiftType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
@@ -137,11 +137,11 @@ class ShiftTypeResource extends Resource
     //             //
     //         ])
     //         ->actions([
-    //             Tables\Actions\EditAction::make(),
+    //             \Filament\Actions\EditAction::make(),
     //         ])
     //         ->bulkActions([
-    //             Tables\Actions\BulkActionGroup::make([
-    //                 Tables\Actions\DeleteBulkAction::make(),
+    //             \Filament\Actions\BulkActionGroup::make([
+    //                 \Filament\Actions\DeleteBulkAction::make(),
     //             ]),
     //         ]);
     // }

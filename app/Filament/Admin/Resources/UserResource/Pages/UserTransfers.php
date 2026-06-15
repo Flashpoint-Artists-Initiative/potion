@@ -9,6 +9,8 @@ use App\Filament\Admin\Resources\UserResource;
 use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Ticketing\TicketTransfer;
 use App\Models\User;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -20,7 +22,7 @@ class UserTransfers extends ManageRelatedRecords
 
     protected static string $relationship = 'ticketTransfers';
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrows-right-left';
 
     protected static ?string $title = 'Ticket Transfers';
 
@@ -67,9 +69,9 @@ class UserTransfers extends ManageRelatedRecords
             ->headerActions([
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
+                ViewAction::make()
                     ->url(fn (TicketTransfer $record): string => TicketTransferResource::getUrl('view', ['record' => $record->id])),
-                Tables\Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
             ]);

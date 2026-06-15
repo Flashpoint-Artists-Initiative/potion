@@ -9,11 +9,12 @@ use App\Filament\Infolists\Components\UserEntry;
 use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,18 +25,18 @@ class PurchasedTicketResource extends Resource
 {
     protected static ?string $model = PurchasedTicket::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Event Specific';
+    protected static string|\UnitEnum|null $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationParentItem = 'Ticketing';
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 Section::make([
                     TextEntry::make('ticketType.name'),
                     TextEntry::make('ticketType.created_at')
@@ -99,12 +100,12 @@ class PurchasedTicketResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                // Tables\Actions\EditAction::make(),
+                ViewAction::make(),
+                // \Filament\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
+                // \Filament\Actions\BulkActionGroup::make([
+                //     \Filament\Actions\DeleteBulkAction::make(),
                 // ]),
             ]);
     }

@@ -8,22 +8,22 @@ use App\Enums\RolesEnum;
 use App\Services\WebLockdownService;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * @property Form $form
+ * @property Schema $form
  */
 class Lockdown extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-lock-closed';
 
-    protected static ?string $navigationGroup = 'Admin';
+    protected static string|\UnitEnum|null $navigationGroup = 'Admin';
 
-    protected static string $view = 'filament.admin.pages.lockdown';
+    protected string $view = 'filament.admin.pages.lockdown';
 
     protected static ?int $navigationSort = 20;
 
@@ -36,10 +36,10 @@ class Lockdown extends Page
         return Auth::user()?->hasRole(RolesEnum::Admin) ?? false;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Toggle::make('lockdown')
                     ->label('Global Lockdown'),
                 TextInput::make('lockdownBannerText')

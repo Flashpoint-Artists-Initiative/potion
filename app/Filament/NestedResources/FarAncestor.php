@@ -18,6 +18,10 @@ class FarAncestor extends Ancestor
     {
         $relationship = $this->getRelationship($record);
 
+        if ($relationship === null) {
+            throw new \RuntimeException('Relationship not found');
+        }
+
         // Calls getFarParent() instead of getParent() to skip the middle model
         $resource = Filament::getModelResource($relationship->getFarParent());
 

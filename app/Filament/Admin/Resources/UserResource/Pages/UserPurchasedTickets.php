@@ -7,6 +7,10 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\OrderResource;
 use App\Filament\Admin\Resources\PurchasedTicketResource;
 use App\Filament\Admin\Resources\UserResource;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,7 +23,7 @@ class UserPurchasedTickets extends ManageRelatedRecords
 
     protected static string $relationship = 'purchasedTickets';
 
-    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-ticket';
 
     protected static ?string $title = 'Purchased Tickets';
 
@@ -51,11 +55,11 @@ class UserPurchasedTickets extends ManageRelatedRecords
             ])
             ->headerActions([])
             ->actions([
-                Tables\Actions\ViewAction::make()
+                ViewAction::make()
                     ->url(fn ($record) => PurchasedTicketResource::getUrl('view', ['record' => $record->id])),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                DeleteAction::make(),
+                ForceDeleteAction::make(),
+                RestoreAction::make(),
             ])
             ->bulkActions([])
             ->modifyQueryUsing(fn (Builder $query) => $query->withoutGlobalScopes([

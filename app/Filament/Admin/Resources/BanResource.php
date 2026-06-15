@@ -7,24 +7,24 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\BanResource\Pages;
 use App\Models\User;
 use App\Rules\ValidEmail;
+use Filament\Actions\Action;
 use Filament\Forms;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Form;
-use Filament\Forms\Set;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Gerenuk\FilamentBanhammer\Resources\BanhammerResource;
 
 class BanResource extends BanhammerResource
 {
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Forms\Components\TextInput::make('email')
                     ->rule(new ValidEmail)
                     ->maxLength(255)
                     ->required(fn ($operation) => $operation == 'create')
                     ->hintAction(
-                        Actions\Action::make('findUser')
+                        Action::make('findUser')
                             ->label('Search users by name or email')
                             ->icon('heroicon-o-magnifying-glass')
                             ->form([

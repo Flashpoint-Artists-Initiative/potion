@@ -6,7 +6,7 @@ namespace App\Filament\Admin\Resources\TicketTransferResource\Pages;
 
 use App\Filament\Admin\Resources\TicketTransferResource;
 use App\Models\Ticketing\TicketTransfer;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -17,7 +17,7 @@ class ViewTicketTransfer extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 

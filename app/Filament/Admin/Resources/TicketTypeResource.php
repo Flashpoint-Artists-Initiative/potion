@@ -7,11 +7,15 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\TicketTypeResource\Pages;
 use App\Models\Event;
 use App\Models\Ticketing\TicketType;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -22,11 +26,11 @@ class TicketTypeResource extends Resource
 {
     protected static ?string $model = TicketType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-ticket';
 
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $navigationGroup = 'Event Specific';
+    protected static string|\UnitEnum|null $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationLabel = 'Ticketing';
 
@@ -37,10 +41,10 @@ class TicketTypeResource extends Resource
         return ! is_null(Event::getCurrentEvent());
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -139,12 +143,12 @@ class TicketTypeResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                     BulkAction::make('activate')
                         ->label('Mark as Active')
                         ->deselectRecordsAfterCompletion()

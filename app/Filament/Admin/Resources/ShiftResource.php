@@ -11,9 +11,9 @@ use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\ShiftType;
 use App\Models\Volunteering\Team;
 use Filament\Forms\Components;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
@@ -24,17 +24,17 @@ class ShiftResource extends Resource
 
     protected static ?string $model = Shift::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
         // This form can be accessed from both the ShiftType and Team resources. Depending on which resource
         // it's accessed from, we show different fields.
         // Get the owner record from the page, if it exists.  See TeamResource/Pages/CreateShift
         /** @var ?Team $team */
-        $team = $form->getExtraAttributes()['team'] ?? null;
+        $team = $schema->getExtraAttributes()['team'] ?? null;
         /** @var ?ShiftType $shiftType */
-        $shiftType = $form->getExtraAttributes()['shiftType'] ?? null;
+        $shiftType = $schema->getExtraAttributes()['shiftType'] ?? null;
 
         if ($team) {
             $shiftTypeComponent = Components\Select::make('shift_type_id')
@@ -59,7 +59,7 @@ class ShiftResource extends Resource
             $startDefault = $shiftType?->team->event->volunteerBaseDate->format('Y-m-d H:i:sp') ?? null;
         }
 
-        return $form
+        return $schema
             ->extraAttributes([]) // Reset the extra attributes
             ->schema([
                 $shiftTypeComponent,

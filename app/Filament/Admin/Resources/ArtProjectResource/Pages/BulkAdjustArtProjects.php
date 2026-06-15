@@ -10,9 +10,10 @@ use App\Enums\LockdownEnum;
 use App\Filament\Admin\Resources\ArtProjectResource;
 use App\Models\Event;
 use App\Models\Grants\ArtProject;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Tables;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\Summarizers\Summarizer;
@@ -145,8 +146,8 @@ class BulkAdjustArtProjects extends ListRecords
                     ->label(' Budget'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

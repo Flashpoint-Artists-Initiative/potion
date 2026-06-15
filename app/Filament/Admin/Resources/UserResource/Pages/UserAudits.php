@@ -25,7 +25,7 @@ class UserAudits extends ManageRelatedRecords
 
     protected static string $relationship = 'audits';
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrows-right-left';
 
     protected static ?string $title = 'Audit Log';
 

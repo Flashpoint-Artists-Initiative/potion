@@ -16,13 +16,13 @@ class SalesChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Tickets Sold';
+    protected ?string $heading = 'Tickets Sold';
 
-    protected static ?string $pollingInterval = null;
+    protected ?string $pollingInterval = null;
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?string $maxHeight = '300px';
+    protected ?string $maxHeight = '300px';
 
     protected static ?int $sort = 2;
 
@@ -46,12 +46,12 @@ class SalesChart extends ChartWidget
 
         if ($this->filter === 'day') {
             $dateFormat = 'F j';
-            if ($this->filters && array_key_exists('startDate', $this->filters) && $this->filters['startDate']) {
-                $startDate = new Carbon($this->filters['startDate']);
+            if ($this->pageFilters && array_key_exists('startDate', $this->pageFilters) && $this->pageFilters['startDate']) {
+                $startDate = new Carbon($this->pageFilters['startDate']);
             }
 
-            if ($this->filters && array_key_exists('endDate', $this->filters) && $this->filters['endDate']) {
-                $endDate = new Carbon($this->filters['endDate']);
+            if ($this->pageFilters && array_key_exists('endDate', $this->pageFilters) && $this->pageFilters['endDate']) {
+                $endDate = new Carbon($this->pageFilters['endDate']);
             }
         } elseif ($this->filter === 'hour') {
             $dateFormat = 'ga';
@@ -59,11 +59,11 @@ class SalesChart extends ChartWidget
             $endDate = now();
         }
 
-        if ($this->filters && array_key_exists('event', $this->filters) && $this->filters['event'] === 'current') {
+        if ($this->pageFilters && array_key_exists('event', $this->pageFilters) && $this->pageFilters['event'] === 'current') {
             $query = $query->where('event_id', Event::getCurrentEventId());
         }
 
-        if ($this->filters && array_key_exists('refunds', $this->filters) && $this->filters['refunds'] === 'no') {
+        if ($this->pageFilters && array_key_exists('refunds', $this->pageFilters) && $this->pageFilters['refunds'] === 'no') {
             $query = $query->notRefunded();
         }
 

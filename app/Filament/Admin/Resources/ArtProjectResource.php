@@ -9,13 +9,18 @@ use App\Filament\Admin\Resources\ArtProjectResource\Pages;
 use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Event;
 use App\Models\Grants\ArtProject;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Schema;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,11 +32,11 @@ class ArtProjectResource extends Resource
 {
     protected static ?string $model = ArtProject::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-paint-brush';
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $navigationGroup = 'Event Specific';
+    protected static string|\UnitEnum|null $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationLabel = 'Art Grants';
 
@@ -42,15 +47,15 @@ class ArtProjectResource extends Resource
         return ! is_null(Event::getCurrentEvent());
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Forms\Components\Select::make('project_status')
                     ->options(ArtProjectStatusEnum::toArray())
                     ->default(ArtProjectStatusEnum::PendingReview)
                     ->required(),
-                Forms\Components\Fieldset::make('Basic Info')
+                Fieldset::make('Basic Info')
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->label('Project Name')
@@ -67,7 +72,7 @@ class ArtProjectResource extends Resource
                             ->columnSpanFull()
                             ->helperText('Optional text to show in the list of projects. If left blank, the first 300 characters of the description will be used.'),
                     ]),
-                Forms\Components\Fieldset::make('Funding')
+                Fieldset::make('Funding')
                     ->schema([
                         Forms\Components\TextInput::make('min_funding')
                             ->label('Minimum Funding')
@@ -179,12 +184,12 @@ class ArtProjectResource extends Resource
                     ->color('primary')
                     ->label(' Budget')
                     ->visible(fn ($record) => $record->budget_link),
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                     BulkAction::make('adjustStatus')
                         ->label('Adjust Status')
                         ->form([

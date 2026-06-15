@@ -6,7 +6,6 @@ namespace App\Filament\Admin\Resources\PurchasedTicketResource\Pages;
 
 use App\Filament\Admin\Resources\PurchasedTicketResource;
 use App\Models\Ticketing\PurchasedTicket;
-use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -17,7 +16,7 @@ class ViewPurchasedTicket extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            // Actions\EditAction::make(),
+            // \Filament\Actions\EditAction::make(),
         ];
     }
 

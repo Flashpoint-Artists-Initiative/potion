@@ -8,6 +8,7 @@ use App\Filament\Admin\Resources\OrderResource\Pages\ViewOrder;
 use App\Filament\Admin\Resources\UserResource;
 use App\Models\Ticketing\CompletedWaiver;
 use App\Models\Ticketing\Order;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -18,7 +19,7 @@ class UserWaivers extends ManageRelatedRecords
 
     protected static string $relationship = 'waivers';
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     public static function getNavigationLabel(): string
     {
@@ -45,17 +46,17 @@ class UserWaivers extends ManageRelatedRecords
                 //
             ])
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
+                // \Filament\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->modalHeading(fn (CompletedWaiver $record): string => "Delete Signed Waiver for {$record->waiver->title}"),
-                // Tables\Actions\ViewAction::make()
+                // \Filament\Actions\ViewAction::make()
                 //     ->url(fn (Order $record): string => ViewOrder::getUrl(['record' => $record->id])),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
+                // \Filament\Actions\BulkActionGroup::make([
+                //     \Filament\Actions\DeleteBulkAction::make(),
                 // ]),
             ]);
     }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
 use App\Filament\Admin\Resources\TeamResource;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 use Guava\FilamentNestedResources\Pages\CreateRelatedRecord;
 
@@ -24,9 +24,9 @@ class CreateShift extends CreateRelatedRecord
     /**
      * This is a hacky way to get the owner record to the resource form() method.
      */
-    protected function makeForm(): Form
+    protected function makeForm(): Schema
     {
-        return parent::makeForm()
+        return $this->form
             ->extraAttributes([
                 'team' => $this->getOwnerRecord(),
             ]);

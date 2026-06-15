@@ -11,12 +11,19 @@ use App\Models\Event;
 use App\Models\Ticketing\TicketType;
 use App\Models\User;
 use App\Rules\ValidEmail;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Infolists;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\QueryBuilder;
@@ -33,15 +40,15 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
     protected static ?string $recordTitleAttribute = 'display_name';
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
-                Infolists\Components\Section::make([
+        return $schema
+            ->components([
+                Section::make([
                     Infolists\Components\TextEntry::make('legal_name')
                         ->label('Legal Name')
                         ->visible(fn () => Auth::authenticate()->can('users.viewPrivate')),
@@ -54,10 +61,10 @@ class UserResource extends Resource
             ]);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Forms\Components\TextInput::make('legal_name')
                     ->required()
                     ->maxLength(255),
@@ -164,9 +171,9 @@ class UserResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\ActionGroup::make([
+                ViewAction::make(),
+                EditAction::make(),
+                ActionGroup::make([
                     BanAction::make()
                         ->hidden(fn ($record) => $record->isBanned()),
                     UnbanAction::make()
@@ -175,12 +182,12 @@ class UserResource extends Resource
                     ->visible(fn () => Auth::authenticate()->can('users.ban')),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+                BulkActionGroup::make([
                     SendEmailBulkAction::make()
                         ->hidden(fn () => ! Auth::authenticate()->hasRole(RolesEnum::Admin)),
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

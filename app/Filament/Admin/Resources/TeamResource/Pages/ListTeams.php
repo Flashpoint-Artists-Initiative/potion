@@ -6,7 +6,7 @@ namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
 use App\Filament\Admin\Resources\TeamResource;
 use App\Filament\Admin\Widgets\VolunteerStats;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 
@@ -24,7 +24,7 @@ class ListTeams extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 

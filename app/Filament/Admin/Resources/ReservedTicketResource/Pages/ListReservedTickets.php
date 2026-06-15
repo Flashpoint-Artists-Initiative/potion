@@ -7,7 +7,7 @@ namespace App\Filament\Admin\Resources\ReservedTicketResource\Pages;
 use App\Enums\LockdownEnum;
 use App\Filament\Admin\Resources\ReservedTicketResource;
 use App\Filament\Imports\ReservedTicketImporter;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Actions\ImportAction;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +24,7 @@ class ListReservedTickets extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
             ImportAction::make()
                 ->importer(ReservedTicketImporter::class)
                 ->visible(fn () => Auth::user()?->can('reservedTickets.create') && ! LockdownEnum::Tickets->isLocked()),

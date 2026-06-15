@@ -8,9 +8,13 @@ use App\Filament\Admin\Resources\TicketTransferResource\Pages;
 use App\Filament\Infolists\Components\UserEntry;
 use App\Filament\Tables\Columns\UserColumn;
 use App\Models\Ticketing\TicketTransfer;
+use Filament\Actions\ViewAction;
 use Filament\Infolists;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,21 +25,21 @@ class TicketTransferResource extends Resource
 {
     protected static ?string $model = TicketTransfer::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Event Specific';
+    protected static string|\UnitEnum|null $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationParentItem = 'Ticketing';
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
-                Infolists\Components\Split::make([
-                    Infolists\Components\Grid::make(1)->schema([
-                        Infolists\Components\Section::make([
+        return $schema
+            ->components([
+                Flex::make([
+                    Grid::make(1)->schema([
+                        Section::make([
                             UserEntry::make('user')
                                 ->userPage('transfers')
                                 ->label('Sender'),
@@ -45,7 +49,7 @@ class TicketTransferResource extends Resource
                                 ->userPage('transfers')
                                 ->label('Recipient'),
                         ])->columns(['md' => 2, 'xl' => 3]),
-                        Infolists\Components\Section::make([
+                        Section::make([
                             Infolists\Components\RepeatableEntry::make('purchasedTickets')
                                 ->label('Purchased Tickets')
                                 ->schema([
@@ -86,7 +90,7 @@ class TicketTransferResource extends Resource
                                 ->grid(['md' => 2, 'xl' => 3]),
                         ]),
                     ]),
-                    Infolists\Components\Section::make([
+                    Section::make([
                         Infolists\Components\TextEntry::make('id')
                             ->label('ID'),
                         Infolists\Components\TextEntry::make('created_at')
@@ -135,7 +139,7 @@ class TicketTransferResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                ViewAction::make(),
             ])
             ->bulkActions([
             ]);
@@ -166,10 +170,6 @@ class TicketTransferResource extends Resource
             return parent::getEloquentQuery();
         }
 
-        /** @var Builder<TicketTransfer> $query */
-        $query = parent::getEloquentQuery();
-
-        // scope in TicketTransfer model
-        return $query->specificEvent();
+        return TicketTransfer::applySpecificEventToQuery(parent::getEloquentQuery());
     }
 }

@@ -7,13 +7,13 @@ namespace App\Filament\Admin\Resources\EventResource\Pages;
 use App\Enums\PageContentEnum;
 use App\Filament\Admin\Resources\EventResource;
 use Filament\Forms;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
 class EditPageContent extends EditRecord
@@ -22,17 +22,17 @@ class EditPageContent extends EditRecord
 
     protected static ?string $navigationLabel = 'Page Content';
 
-    protected static ?string $navigationIcon = 'heroicon-o-code-bracket-square';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-code-bracket-square';
 
     public function getBreadcrumb(): string
     {
         return 'Page Content';
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Placeholder::make('header')
                     ->label('')
                     ->content('Add content of various pages for this specific event.  The content will appear at the top of each page.'),

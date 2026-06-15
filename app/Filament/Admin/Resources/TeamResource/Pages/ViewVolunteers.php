@@ -8,11 +8,10 @@ use App\Filament\Admin\Resources\TeamResource;
 use App\Filament\Exports\ShiftExporter;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\Team;
+use Filament\Actions\ExportAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Filament\Tables;
-use Filament\Tables\Actions\ExportAction;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
@@ -29,7 +28,7 @@ class ViewVolunteers extends ManageRelatedRecords
 
     protected static string $relationship = 'volunteers';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     // protected static string $layout = 'layouts.custom'; // Use the simple layout
 
@@ -48,10 +47,10 @@ class ViewVolunteers extends ManageRelatedRecords
         return [];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -92,7 +91,7 @@ class ViewVolunteers extends ManageRelatedRecords
                 //
             ])
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
+                // \Filament\Actions\CreateAction::make(),
                 ExportAction::make()
                     ->label('Export Volunteers')
                     ->color('primary')
@@ -100,12 +99,12 @@ class ViewVolunteers extends ManageRelatedRecords
                     ->fileName(fn (): string => str($team->name)->slug() . '-shifts-' . now()->format('Y-m-d')),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
+                // \Filament\Actions\EditAction::make(),
+                // \Filament\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
+                // \Filament\Actions\BulkActionGroup::make([
+                //     \Filament\Actions\DeleteBulkAction::make(),
                 // ]),
             ]);
     }

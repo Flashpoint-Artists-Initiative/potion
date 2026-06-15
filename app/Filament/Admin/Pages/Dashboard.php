@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Pages;
 
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
@@ -19,10 +19,10 @@ class Dashboard extends \Filament\Pages\Dashboard
         'active-event-updated' => '$refresh',
     ];
 
-    public function filtersForm(Form $form): Form
+    public function filtersForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make()
                     ->columns(4)
                     ->schema([

@@ -6,7 +6,7 @@ namespace App\Filament\Admin\Resources\ShiftResource\Pages;
 
 use App\Filament\Admin\Resources\ShiftResource;
 use App\Models\Volunteering\Shift;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
 
@@ -19,7 +19,7 @@ class EditShift extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 

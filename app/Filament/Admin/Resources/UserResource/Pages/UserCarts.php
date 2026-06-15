@@ -9,6 +9,9 @@ use App\Filament\Admin\Resources\CartResource;
 use App\Filament\Admin\Resources\UserResource;
 use App\Models\Ticketing\Cart;
 use Carbon\Carbon;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,7 +22,7 @@ class UserCarts extends ManageRelatedRecords
 
     protected static string $relationship = 'carts';
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shopping-cart';
 
     public static function getNavigationLabel(): string
     {
@@ -62,12 +65,12 @@ class UserCarts extends ManageRelatedRecords
             ->headerActions([
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
+                ViewAction::make()
                     ->url(fn (Cart $record): string => CartResource::getUrl('view', ['record' => $record->id])),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

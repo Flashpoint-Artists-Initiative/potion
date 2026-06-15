@@ -6,17 +6,24 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\EventResource\Pages;
 use App\Models\Event;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Split;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Schema;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -29,7 +36,7 @@ class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -39,14 +46,14 @@ class EventResource extends Resource
         return $record->name;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Split::make([
+        return $schema
+            ->components([
+                Flex::make([
                     Tabs::make()
                         ->tabs([
-                            Tabs\Tab::make('Event')
+                            Tab::make('Event')
                                 ->schema([
                                     Section::make()
                                         ->schema([
@@ -68,7 +75,7 @@ class EventResource extends Resource
                                         ])
                                         ->columns(2),
                                 ]),
-                            Tabs\Tab::make('Ticketing')
+                            Tab::make('Ticketing')
                                 ->schema([
                                     Section::make()
                                         ->schema([
@@ -81,7 +88,7 @@ class EventResource extends Resource
                                         ]),
                                 ])
                                 ->statePath('settings.ticketing'),
-                            Tabs\Tab::make('Art Grants')
+                            Tab::make('Art Grants')
                                 ->schema([
                                     Section::make()
                                         ->schema([
@@ -112,7 +119,7 @@ class EventResource extends Resource
                                         ->columns(2),
                                 ])
                                 ->statePath('settings.art'),
-                            Tabs\Tab::make('Volunteering')
+                            Tab::make('Volunteering')
                                 ->schema([
                                     Section::make()
                                         ->schema([
@@ -206,8 +213,8 @@ class EventResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
                 Action::make('Select')
                     ->color('success')
                     ->icon('heroicon-m-arrow-right-circle')
@@ -215,10 +222,10 @@ class EventResource extends Resource
                     ->tooltip('Use this event for the event-specific resources'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                     BulkAction::make('make-active')
                         ->label('Mark as Active')
                         ->icon('heroicon-o-check-circle')

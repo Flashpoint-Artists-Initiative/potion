@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\ShiftResource\RelationManagers;
 
 use App\Filament\Tables\Columns\UserColumn;
+use Filament\Actions\AttachAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DetachAction;
+use Filament\Actions\DetachBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
@@ -18,10 +22,10 @@ class VolunteersRelationManager extends RelationManager
 
     protected static bool $shouldSkipAuthorization = true;
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Forms\Components\TextInput::make('email')
                     ->required()
                     ->maxLength(255),
@@ -42,19 +46,19 @@ class VolunteersRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()
+                AttachAction::make()
                     ->color('primary')
                     ->label('Add Volunteer')
                     ->visible(fn () => Auth::authenticate()->can('shifts.attach')),
             ])
             ->actions([
-                Tables\Actions\DetachAction::make()
+                DetachAction::make()
                     ->label('Remove')
                     ->visible(fn () => Auth::authenticate()->can('shifts.detach')),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DetachBulkAction::make(),
+                BulkActionGroup::make([
+                    DetachBulkAction::make(),
                 ]),
             ]);
     }

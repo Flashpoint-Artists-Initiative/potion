@@ -6,12 +6,12 @@ namespace App\Filament\Admin\Resources\EventResource\Pages;
 
 use App\Filament\Admin\Resources\EventResource;
 use App\Models\Event;
-use Filament\Actions;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Forms;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class EditWaiver extends EditRecord
 {
@@ -28,7 +28,7 @@ class EditWaiver extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make('delete')
+            DeleteAction::make('delete')
                 // ->label('Delete Waiver')
                 ->hidden(function () {
                     /** @var Event $event */
@@ -54,10 +54,10 @@ class EditWaiver extends EditRecord
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make([
                     Forms\Components\TextInput::make('title')
                         ->required()

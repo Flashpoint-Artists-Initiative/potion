@@ -11,13 +11,19 @@ use App\Filament\Imports\ShiftImporter;
 use App\Models\Event;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\Team;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\CreateAction as ActionsCreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ImportAction;
+use Filament\Actions\ViewAction;
 use Filament\Facades\Filament;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ManageRelatedRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables;
-use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 use Guava\FilamentNestedResources\Ancestor;
 use Guava\FilamentNestedResources\Concerns\NestedPage;
@@ -35,7 +41,7 @@ class ManageShifts extends ManageRelatedRecords
 
     protected static string $relationship = 'shifts';
 
-    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
 
     protected function getHeaderActions(): array
     {
@@ -114,15 +120,15 @@ class ManageShifts extends ManageRelatedRecords
             ->headerActions([
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\DeleteAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
+                ActionGroup::make([
+                    DeleteAction::make(),
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -141,6 +147,10 @@ class ManageShifts extends ManageRelatedRecords
 
         $relationship = $ancestor->getRelationship($this->getOwnerRecord());
 
+        if ($relationship === null) {
+            throw new \Exception('Relationship not found');
+        }
+
         // This is the only line that's been changed
         /** @var class-string $ancestorResource */
         $ancestorResource = Filament::getModelResource($relationship->getFarParent());
@@ -149,10 +159,10 @@ class ManageShifts extends ManageRelatedRecords
             throw new \Exception("{$ancestorResource} does not have a nested create page. Please make sure to create it and that it is called '{$ancestor->getRelationshipName()}.create'. Check the documentation for more information.");
         }
 
-        parent::configureCreateAction($action->url(
+        $action->url(
             fn () => $ancestorResource::getUrl("{$ancestor->getRelationshipName()}.create", [
                 'record' => $this->getOwnerRecord(),
             ])
-        ));
+        );
     }
 }

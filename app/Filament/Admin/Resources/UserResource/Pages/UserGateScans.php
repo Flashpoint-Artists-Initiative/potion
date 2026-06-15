@@ -17,7 +17,7 @@ class UserGateScans extends ManageRelatedRecords
 
     protected static string $relationship = 'gateScans';
 
-    protected static ?string $navigationIcon = 'heroicon-o-qr-code';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-qr-code';
 
     protected static ?string $navigationLabel = 'Gate Scans';
 
@@ -39,15 +39,15 @@ class UserGateScans extends ManageRelatedRecords
                 //
             ])
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
+                // \Filament\Actions\CreateAction::make(),
             ])
             ->actions([
-                // Tables\Actions\ViewAction::make()
+                // \Filament\Actions\ViewAction::make()
                 //     ->url(fn (Order $record): string => ViewOrder::getUrl(['record' => $record->id])),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
+                // \Filament\Actions\BulkActionGroup::make([
+                //     \Filament\Actions\DeleteBulkAction::make(),
                 // ]),
             ]);
     }

@@ -17,9 +17,10 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use NumberFormatter;
 
@@ -29,9 +30,9 @@ class UserStripeData extends Page implements HasForms, HasInfolists
 
     protected static string $resource = UserResource::class;
 
-    protected static string $view = 'filament.admin.resources.user-resource.pages.user-stripe-data';
+    protected string $view = 'filament.admin.resources.user-resource.pages.user-stripe-data';
 
-    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
 
     protected static ?string $navigationLabel = 'Stripe Data';
 
@@ -70,9 +71,9 @@ class UserStripeData extends Page implements HasForms, HasInfolists
     //     $this->notify('success', 'Checkout sessions fetched successfully.');
     // }
 
-    public function paymentIntentsInfolist(Infolist $infolist): Infolist
+    public function paymentIntentsInfolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->state([
                 'paymentIntents' => $this->paymentIntents,
             ])
@@ -94,7 +95,7 @@ class UserStripeData extends Page implements HasForms, HasInfolists
                             ->label('Amount'),
                         Components\TextEntry::make('metadata.ticket_quantity')
                             ->label('Quantity'),
-                        Components\Grid::make(2)
+                        Grid::make(2)
                             ->schema([
                                 Components\TextEntry::make('status.stripe')
                                     ->icon('heroicon-o-credit-card')
@@ -114,7 +115,7 @@ class UserStripeData extends Page implements HasForms, HasInfolists
                                     ->label('Cart Status'),
                             ])
                             ->columnSpan(2),
-                        Components\Grid::make(3)
+                        Grid::make(3)
                             ->schema([
                                 Components\IconEntry::make('metadata.event_id')
                                     ->label('')

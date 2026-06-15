@@ -6,7 +6,7 @@ namespace App\Filament\Admin\Resources\ReservedTicketResource\Pages;
 
 use App\Filament\Admin\Resources\ReservedTicketResource;
 use App\Models\Ticketing\ReservedTicket;
-use Filament\Actions;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -17,7 +17,7 @@ class ViewReservedTicket extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            EditAction::make(),
         ];
     }
 

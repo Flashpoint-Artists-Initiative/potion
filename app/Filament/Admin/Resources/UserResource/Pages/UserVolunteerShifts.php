@@ -6,8 +6,11 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 
 use App\Filament\Admin\Resources\ShiftResource;
 use App\Filament\Admin\Resources\UserResource;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Filament\Tables\Actions;
 use Filament\Tables\Columns;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +22,7 @@ class UserVolunteerShifts extends ManageRelatedRecords
 
     protected static string $relationship = 'shifts';
 
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
     protected static ?string $title = 'Volunteer Shifts';
 
@@ -47,11 +50,11 @@ class UserVolunteerShifts extends ManageRelatedRecords
                     ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('length', $direction)),
             ])
             ->actions([
-                Actions\ViewAction::make()
+                ViewAction::make()
                     ->url(fn ($record) => ShiftResource::getUrl('view', ['record' => $record->id])),
-                Actions\DeleteAction::make(),
-                Actions\ForceDeleteAction::make(),
-                Actions\RestoreAction::make(),
+                DeleteAction::make(),
+                ForceDeleteAction::make(),
+                RestoreAction::make(),
             ]);
     }
 }

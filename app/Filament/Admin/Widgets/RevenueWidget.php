@@ -18,7 +18,7 @@ class RevenueWidget extends BaseWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $pollingInterval = null;
+    protected ?string $pollingInterval = null;
 
     protected Builder $query;
 
@@ -27,21 +27,21 @@ class RevenueWidget extends BaseWidget
         $startDate = now()->subMonth();
         $endDate = now();
 
-        if ($this->filters && array_key_exists('startDate', $this->filters) && $this->filters['startDate']) {
-            $startDate = new Carbon($this->filters['startDate']);
+        if ($this->pageFilters && array_key_exists('startDate', $this->pageFilters) && $this->pageFilters['startDate']) {
+            $startDate = new Carbon($this->pageFilters['startDate']);
         }
 
-        if ($this->filters && array_key_exists('endDate', $this->filters) && $this->filters['endDate']) {
-            $endDate = new Carbon($this->filters['endDate']);
+        if ($this->pageFilters && array_key_exists('endDate', $this->pageFilters) && $this->pageFilters['endDate']) {
+            $endDate = new Carbon($this->pageFilters['endDate']);
         }
 
         $this->query = Order::query()->whereBetween('created_at', [$startDate, $endDate]);
 
-        if ($this->filters && array_key_exists('event', $this->filters) && $this->filters['event'] === 'current') {
+        if ($this->pageFilters && array_key_exists('event', $this->pageFilters) && $this->pageFilters['event'] === 'current') {
             $this->query = $this->query->where('event_id', Event::getCurrentEventId());
         }
 
-        if ($this->filters && array_key_exists('refunds', $this->filters) && $this->filters['refunds'] === 'no') {
+        if ($this->pageFilters && array_key_exists('refunds', $this->pageFilters) && $this->pageFilters['refunds'] === 'no') {
             $this->query = $this->query->notRefunded();
         }
 

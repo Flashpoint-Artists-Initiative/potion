@@ -6,11 +6,11 @@ namespace App\Filament\Admin\Resources\EventResource\Pages;
 
 use App\Filament\Admin\Resources\EventResource;
 use App\Models\Event;
-use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Forms;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ViewWaiver extends ViewRecord
 {
@@ -18,16 +18,16 @@ class ViewWaiver extends ViewRecord
 
     protected static ?string $navigationLabel = 'Waiver';
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.admin.resources.event-resource.pages.view-waiver';
+    protected string $view = 'filament.admin.resources.event-resource.pages.view-waiver';
 
     public bool $hasWaiver = false;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('edit')
+            Action::make('edit')
                 ->url(EditWaiver::getUrl(['record' => $this->record]))
                 ->label(fn () => $this->hasWaiver ? 'Edit Waiver' : 'Create Waiver')
                 ->hidden(function () {
@@ -44,10 +44,10 @@ class ViewWaiver extends ViewRecord
         return 'Waiver';
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make([
                     Forms\Components\TextInput::make('title')
                         ->required()

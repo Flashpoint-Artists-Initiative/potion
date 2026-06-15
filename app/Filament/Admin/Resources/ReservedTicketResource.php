@@ -12,14 +12,19 @@ use App\Models\Ticketing\TicketType;
 use App\Models\User;
 use App\Rules\ValidEmail;
 use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Split;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -32,25 +37,25 @@ class ReservedTicketResource extends Resource
 {
     protected static ?string $model = ReservedTicket::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Event Specific';
+    protected static string|\UnitEnum|null $navigationGroup = 'Event Specific';
 
     protected static ?string $navigationParentItem = 'Ticketing';
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        if ($form->getOperation() === 'create') {
-            return $form
-                ->schema(self::getFormSections());
+        if ($schema->getOperation() === 'create') {
+            return $schema
+                ->components(self::getFormSections());
         }
 
         // Editing
-        return $form
-            ->schema([
-                Split::make([
+        return $schema
+            ->components([
+                Flex::make([
                     ...self::getFormSections(),
                     self::getInfoSection(),
                 ])
@@ -97,7 +102,7 @@ class ReservedTicketResource extends Resource
                     ->required(fn ($operation) => $operation == 'create')
                     ->disabled(fn (?ReservedTicket $record) => $record?->user_id !== null)
                     ->hintAction(
-                        Actions\Action::make('findEmailByUser')
+                        Action::make('findEmailByUser')
                             ->label('Search users by email')
                             ->icon('heroicon-o-magnifying-glass')
                             ->form([
@@ -223,14 +228,14 @@ class ReservedTicketResource extends Resource
                     ),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ])
             ->checkIfRecordIsSelectableUsing(fn (ReservedTicket $record): bool => ! $record->is_purchased)
