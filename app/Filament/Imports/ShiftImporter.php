@@ -118,7 +118,6 @@ class ShiftImporter extends Importer
 
     /**
      * @param  array<mixed>  $data
-     * 
      * @return positive-int
      */
     protected function calculateDuration(array $data): int
