@@ -15,12 +15,12 @@ class ShiftCalendar extends EditRecord
 
     protected static string $resource = TeamResource::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-date-range';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-date-range';
 
     protected static ?string $navigationLabel = 'Shift Calendar';
 
     // The view is empty, but keeps the form from being loaded at the bottom of the page
-    protected static string $view = 'filament.admin.resources.shift-type-resource.pages.shift-calendar';
+    protected string $view = 'filament.admin.resources.shift-type-resource.pages.shift-calendar';
 
     protected function getHeaderWidgets(): array
     {

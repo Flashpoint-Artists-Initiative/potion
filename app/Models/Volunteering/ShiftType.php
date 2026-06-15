@@ -21,7 +21,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
-use Spatie\Color\Rgb;
 
 /**
  * @property positive-int $id
@@ -141,14 +140,30 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
     {
         $colors = array_values(array_slice(Color::all(), 5));
         $shiftTypes = $this->team->shiftTypes;
-        $index = $shiftTypes->search(fn($item) => $item->id === $this->id);
+        $index = $shiftTypes->search(fn ($item) => $item->id === $this->id);
         // $offset = (360 / $shiftTypes->count()) * $index;
         $offset = ((int) (count($colors) / $shiftTypes->count())) * $index % count($colors);
 
         return CalendarResource::make($this)
             ->title($this->title)
-            ->eventBackgroundColor((string) Rgb::fromString('rgb(' . $colors[$offset]['700'] . ')')->toHex());
+            ->eventBackgroundColor(self::rgbToHex($colors[$offset]['700']));
         // ->eventBackgroundColor($this->hsv2rgb($offset, 100, 50));
+    }
+
+    /**
+     * @param  array<int, string>|string  $rgb
+     */
+    protected static function rgbToHex(array|string $rgb): string
+    {
+        $parts = is_array($rgb)
+            ? $rgb
+            : preg_split('/[\s,]+/', trim($rgb));
+
+        if (! is_array($parts) || count($parts) !== 3) {
+            return '#000000';
+        }
+
+        return sprintf('#%02x%02x%02x', (int) $parts[0], (int) $parts[1], (int) $parts[2]);
     }
 
     /**
@@ -167,7 +182,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
      */
     protected function shadeProvided(): Attribute
     {
-        return Attribute::get(fn() => $this->getSetting('shade_provided.state'));
+        return Attribute::get(fn () => $this->getSetting('shade_provided.state'));
     }
 
     /**
@@ -175,7 +190,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
      */
     protected function shadeProvidedNote(): Attribute
     {
-        return Attribute::get(fn() => (string) $this->getSetting('shade_provided.note', ''));
+        return Attribute::get(fn () => (string) $this->getSetting('shade_provided.note', ''));
     }
 
     /**
@@ -183,7 +198,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
      */
     protected function longStanding(): Attribute
     {
-        return Attribute::get(fn() => $this->getSetting('long_standing.state'));
+        return Attribute::get(fn () => $this->getSetting('long_standing.state'));
     }
 
     /**
@@ -191,7 +206,7 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
      */
     protected function longStandingNote(): Attribute
     {
-        return Attribute::get(fn() => (string) $this->getSetting('long_standing.note', ''));
+        return Attribute::get(fn () => (string) $this->getSetting('long_standing.note', ''));
     }
 
     /**
@@ -199,6 +214,6 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
      */
     protected function physicalRequirementsNote(): Attribute
     {
-        return Attribute::get(fn() => (string) $this->getSetting('physical_requirements.note', ''));
+        return Attribute::get(fn () => (string) $this->getSetting('physical_requirements.note', ''));
     }
 }
