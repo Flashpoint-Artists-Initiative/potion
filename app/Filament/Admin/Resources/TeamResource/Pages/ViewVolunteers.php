@@ -14,16 +14,11 @@ use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Guava\FilamentNestedResources\Concerns\NestedPage;
-use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class ViewVolunteers extends ManageRelatedRecords
 {
-    use NestedPage; // Since this is a standalone page, we also need this trait
-    use NestedRelationManager;
-
     protected static string $resource = TeamResource::class;
 
     protected static string $relationship = 'volunteers';

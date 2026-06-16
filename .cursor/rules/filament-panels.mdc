@@ -22,8 +22,7 @@ Auto-discovery paths: `app/Filament/{Admin|App|Gate}/{Resources|Pages|Widgets|Cl
 - Gate visibility and field access use `Auth::user()->can('permission.name')`
 - Admin resources are event-scoped via `Event::getCurrentEvent()` — hide nav with `shouldRegisterNavigation()`
 - Add `AuditsRelationManager` on resources for auditable models
-- Volunteering uses **Guava nested resources**: `TeamResource` → `ShiftTypeResource` → `ShiftResource`
-- Custom `FarAncestor` in `app/Filament/NestedResources/` for `HasManyThrough` nesting
+- Volunteering uses **Filament native nested resources**: `TeamResource` → `ShiftTypeResource` → `ShiftResource` (`$parentResource` on child resources, `$relatedResource` on `ManageRelatedRecords` pages)
 - Imports/exports in `app/Filament/Imports/` and `Exports/`
 - Custom form components in `app/Forms/Components/`
 - App panel uses **clusters** for user account pages (`UserPages` cluster)

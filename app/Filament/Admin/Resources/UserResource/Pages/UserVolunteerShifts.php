@@ -51,7 +51,7 @@ class UserVolunteerShifts extends ManageRelatedRecords
             ])
             ->actions([
                 ViewAction::make()
-                    ->url(fn ($record) => ShiftResource::getUrl('view', ['record' => $record->id])),
+                    ->url(fn ($record) => ShiftResource::getRecordUrl('view', $record)),
                 DeleteAction::make(),
                 ForceDeleteAction::make(),
                 RestoreAction::make(),

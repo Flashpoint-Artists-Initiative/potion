@@ -8,12 +8,9 @@ use App\Filament\Admin\Resources\ShiftResource;
 use App\Models\Volunteering\Shift;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
-use Guava\FilamentNestedResources\Concerns\NestedPage;
 
 class EditShift extends EditRecord
 {
-    use NestedPage;
-
     protected static string $resource = ShiftResource::class;
 
     protected function getHeaderActions(): array

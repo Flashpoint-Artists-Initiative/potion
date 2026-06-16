@@ -55,7 +55,6 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Guava\\FilamentNestedResources\\": "stubs/Guava/FilamentNestedResources/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }

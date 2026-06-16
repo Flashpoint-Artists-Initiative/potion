@@ -7,12 +7,9 @@ namespace App\Filament\Admin\Resources\TeamResource\Pages;
 use App\Filament\Admin\Resources\TeamResource;
 use App\Filament\Admin\Resources\TeamResource\Widgets\ShiftCalendarWidget;
 use Filament\Resources\Pages\EditRecord;
-use Guava\FilamentNestedResources\Concerns\NestedPage;
 
 class ShiftCalendar extends EditRecord
 {
-    use NestedPage;
-
     protected static string $resource = TeamResource::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-date-range';

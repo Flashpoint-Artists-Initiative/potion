@@ -15,15 +15,18 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Guava\FilamentNestedResources\Ancestor;
-use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class ShiftTypeResource extends Resource
 {
-    use NestedResource;
-
     protected static ?string $model = ShiftType::class;
+
+    protected static ?string $parentResource = TeamResource::class;
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -156,17 +159,12 @@ class ShiftTypeResource extends Resource
     public static function getPages(): array
     {
         return [
+            'create' => Pages\CreateShiftType::route('/create'),
             'edit' => Pages\EditShiftType::route('/{record}/edit'),
             'view' => Pages\ViewShiftType::route('/{record}'),
 
             'shifts' => Pages\ManageShifts::route('/{record}/shifts'),
-            'shifts.create' => Pages\CreateShift::route('/{record}/shifts/create'),
         ];
-    }
-
-    public static function getAncestor(): ?Ancestor
-    {
-        return Ancestor::make('shiftTypes', 'team');
     }
 
     public static function getBreadcrumbRecordLabel(ShiftType $record): string

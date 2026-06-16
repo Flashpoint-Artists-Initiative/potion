@@ -20,16 +20,12 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Guava\FilamentNestedResources\Ancestor;
-use Guava\FilamentNestedResources\Concerns\NestedResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class TeamResource extends Resource
 {
-    use NestedResource;
-
     protected static ?string $model = Team::class;
 
     protected static ?int $navigationSort = 3;
@@ -128,7 +124,6 @@ class TeamResource extends Resource
             'edit' => Pages\EditTeam::route('/{record}/edit'),
 
             'shiftTypes' => Pages\ManageShiftTypes::route('/{record}/shift-types'),
-            'shiftTypes.create' => Pages\CreateShiftType::route('/{record}/shift-types/create'),
 
             'calendar' => Pages\ShiftCalendar::route('/{record}/calendar'),
             'shifts' => Pages\ManageShifts::route('/{record}/shifts'),
@@ -149,12 +144,6 @@ class TeamResource extends Resource
 
         return parent::getEloquentQuery()
             ->where('event_id', Event::getCurrentEventId());
-    }
-
-    // This is the root resource
-    public static function getAncestor(): ?Ancestor
-    {
-        return null;
     }
 
     public static function getBreadcrumbRecordLabel(Team $record): string

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Admin\Resources\TeamResource\Pages;
 
+use App\Filament\Admin\Resources\ShiftTypeResource;
 use App\Filament\Admin\Resources\TeamResource;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -15,15 +16,12 @@ use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Guava\FilamentNestedResources\Concerns\NestedPage;
-use Guava\FilamentNestedResources\Concerns\NestedRelationManager;
 
 class ManageShiftTypes extends ManageRelatedRecords
 {
-    use NestedPage; // Since this is a standalone page, we also need this trait
-    use NestedRelationManager;
-
     protected static string $resource = TeamResource::class;
+
+    protected static ?string $relatedResource = ShiftTypeResource::class;
 
     protected static string $relationship = 'shiftTypes';
 

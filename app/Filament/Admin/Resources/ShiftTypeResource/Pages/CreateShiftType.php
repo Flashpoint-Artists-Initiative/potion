@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\ShiftTypeResource\Pages;
 
 use App\Filament\Admin\Resources\ShiftTypeResource;
-use Filament\Resources\Pages\ViewRecord;
+use Filament\Resources\Pages\CreateRecord;
 
-class ViewShiftType extends ViewRecord
+class CreateShiftType extends CreateRecord
 {
     protected static string $resource = ShiftTypeResource::class;
 }

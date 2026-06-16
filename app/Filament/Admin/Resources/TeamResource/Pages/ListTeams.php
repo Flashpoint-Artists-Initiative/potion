@@ -8,12 +8,9 @@ use App\Filament\Admin\Resources\TeamResource;
 use App\Filament\Admin\Widgets\VolunteerStats;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Guava\FilamentNestedResources\Concerns\NestedPage;
 
 class ListTeams extends ListRecords
 {
-    use NestedPage;
-
     protected static string $resource = TeamResource::class;
 
     // @phpstan-ignore-next-line Required by parent class

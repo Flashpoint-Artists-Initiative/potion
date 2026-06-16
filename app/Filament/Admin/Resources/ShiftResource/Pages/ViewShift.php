@@ -8,12 +8,9 @@ use App\Filament\Admin\Resources\ShiftResource;
 use App\Models\Volunteering\Shift;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
-use Guava\FilamentNestedResources\Concerns\NestedPage;
 
 class ViewShift extends ViewRecord
 {
-    use NestedPage;
-
     protected static string $resource = ShiftResource::class;
 
     protected function getHeaderActions(): array

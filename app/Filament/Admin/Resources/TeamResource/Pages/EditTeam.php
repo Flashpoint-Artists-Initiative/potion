@@ -10,12 +10,9 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
-use Guava\FilamentNestedResources\Concerns\NestedPage;
 
 class EditTeam extends EditRecord
 {
-    use NestedPage;
-
     protected static string $resource = TeamResource::class;
 
     protected function getHeaderActions(): array
