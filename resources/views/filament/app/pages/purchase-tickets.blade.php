@@ -30,9 +30,9 @@
         @endif
 
         <div>
-            <x-filament-panels::form wire:submit="checkout" onkeydown="return event.key != 'Enter';" class="purchase-tickets-form">
+            <form class="fi-sc-form purchase-tickets-form" wire:submit="checkout" onkeydown="return event.key != 'Enter';">
                 {{ $this->form }}
-            </x-filament-panels::form>
+            </form>
         </div>
     </div>
 

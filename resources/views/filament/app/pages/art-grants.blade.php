@@ -31,7 +31,7 @@
         @else
             <p class="pb-4">Voting has ended, the projects below have all been funded!</p>
         @endif
-        <x-filament-panels::form wire:submit="submitVotes">
+        <form class="fi-sc-form" wire:submit="submitVotes">
             @if (!$hasVoted && $votingIsOpen)
             <span class="dark:bg-gray-950 sticky grid z-10" style="top: 4rem" >
                 <x-filament::badge class="my-2" x-show="remaining > 0">
@@ -49,7 +49,7 @@
                     <span x-show="remaining > 0">Allocate your <span x-text="remaining"></span> remaining votes before submitting</span>
                 </x-filament::button>
             @endif
-        </x-filament-panels::form>
+        </form>
     </div>
 <x-filament-actions::modals />
 </x-filament-panels::page>

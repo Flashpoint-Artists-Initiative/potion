@@ -98,7 +98,8 @@ class ArtProjectResource extends Resource
                     ->reorderable()
                     ->panelLayout('grid')
                     ->appendFiles()
-                    ->columnSpan(2),
+                    ->columnSpan(2)
+                    ->visibility('public'),
             ]);
     }
 

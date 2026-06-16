@@ -35,7 +35,6 @@
                 <p><span class="font-bold">Minimum Funding Requested:</span> ${{ $getRecord()->min_funding }}</p>
                 <p><span class="font-bold">Maximum Funding Requested:</span> ${{ $getRecord()->max_funding }}</p>
                 </div>
-                {{ $this->openModal }}
             </div>
             @if (!$getDisableVoting() && $getRecord()->checkVotingStatus(throwException: false))
             <div>

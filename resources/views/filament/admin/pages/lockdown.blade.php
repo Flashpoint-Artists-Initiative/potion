@@ -8,10 +8,10 @@
         Once the event is over, you should disable lockdown to allow users to make changes to their accounts again.
         Data collected during the event can be imported back into the system with [TBD].
     </p>
-    <x-filament-panels::form wire:submit="submit">
+    <form class="fi-sc-form" wire:submit="submit">
         {{ $this->form }}
         <x-filament::button type="submit" class="max-w-fit">
             Save
         </x-filament::button>
-    </x-filament-panels::form>
+    </form>
 </x-filament-panels::page>

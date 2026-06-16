@@ -15,9 +15,9 @@
         @if ($teamId)
             {{ $this->shiftTypesInfolist }}
 
-            <x-filament-panels::form>
+            <form class="fi-sc-form">
                 {{ $this->form }}
-            </x-filament-panels::form>
+            </form>
 
             {{ $this->table }}
         @else

@@ -154,9 +154,11 @@ class ArtGrants extends Page
     {
         return Action::make('projectDetailsModal')
             ->label('Project Details')
-            ->record(fn (array $arguments) => ArtProject::with('media')->findOrFail((int) $arguments['id']))
-            ->modalHeading(fn (ArtProject $record) => $record->name ?? 'Project Details')
-            ->modalContent(fn (ArtProject $record) => $this->generateModalContent($record))
+            ->record(fn (array $arguments): ?ArtProject => ($arguments['id'] ?? null) !== null
+                ? ArtProject::with('media')->findOrFail((int) $arguments['id'])
+                : null)
+            ->modalHeading(fn (?ArtProject $record) => $record !== null ? $record->name : 'Project Details')
+            ->modalContent(fn (?ArtProject $record) => $record ? $this->generateModalContent($record) : new HtmlString(''))
             ->modalSubmitAction(false)
             ->modalAutofocus(false)
             ->modalCancelActionLabel('Close');
@@ -164,12 +166,9 @@ class ArtGrants extends Page
 
     protected function generateModalContent(ArtProject $project): HtmlString
     {
-        // $project = ArtProject::find($arguments['id']);
-        // $project = $project ?? ArtProject::first();
-
         return new HtmlString(
             Blade::render(
-                '<x-art-project-modal :project=$project>Hello</x-art-project-modal>',
+                '<x-art-project-modal :project=$project></x-art-project-modal>',
                 ['project' => $project]
             )
         );
