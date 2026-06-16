@@ -9,6 +9,8 @@ use App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 use App\Filament\App\Pages\PurchaseTickets;
 use App\Models\Ticketing\ReservedTicket;
 use Filament\Actions\Action as TableAction;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Colors\Color;
@@ -18,9 +20,9 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class ReservedTicketsTable extends Component implements HasForms, HasTable
+class ReservedTicketsTable extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
     // @phpstan-ignore-next-line Required by parent class
     protected $listeners = [

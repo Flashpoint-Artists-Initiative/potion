@@ -9,6 +9,8 @@ use App\Filament\App\Clusters\UserPages\Pages\TicketTransfers;
 use App\Models\Event;
 use App\Models\Ticketing\PurchasedTicket;
 use Filament\Actions\Action as TableAction;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Colors\Color;
@@ -19,9 +21,9 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Component;
 
-class PurchasedTicketsTable extends Component implements HasForms, HasTable
+class PurchasedTicketsTable extends Component implements HasActions, HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
     // @phpstan-ignore-next-line Required by parent class
     protected $listeners = [
