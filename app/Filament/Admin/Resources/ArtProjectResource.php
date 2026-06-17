@@ -193,7 +193,7 @@ class ArtProjectResource extends Resource
                     DeleteBulkAction::make(),
                     BulkAction::make('adjustStatus')
                         ->label('Adjust Status')
-                        ->form([
+                        ->schema([
                             Forms\Components\Select::make('project_status')
                                 ->options(ArtProjectStatusEnum::toArray())
                                 ->default(ArtProjectStatusEnum::PendingReview)

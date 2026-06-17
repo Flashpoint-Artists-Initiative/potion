@@ -105,7 +105,7 @@ class Account extends Page
                     // 'birthday' => $user->birthday,
                 ];
             })
-            ->form([
+            ->schema([
                 Placeholder::make('legal_name')
                     ->label('')
                     ->helperText(new HtmlString('Your legal name and birthday cannot be changed.  If you need to change it, please contact <a class="text-primary-400" href="mailto:' . config('mail.from.address') . '?subject=Legal Name Change">' . config('mail.from.address') . '</a>.')),

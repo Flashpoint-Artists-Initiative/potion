@@ -53,7 +53,7 @@ class UserReservedTickets extends ManageRelatedRecords
         return [
             Action::make('create')
                 ->label('Give Reserved Ticket')
-                ->form([
+                ->schema([
                     Section::make()
                         ->schema([
                             Forms\Components\Placeholder::make('username')
@@ -178,7 +178,7 @@ class UserReservedTickets extends ManageRelatedRecords
                 BulkActionGroup::make([
                     BulkAction::make('modifyExpirationDate')
                         ->label('Modify Expiration Date')
-                        ->form([
+                        ->schema([
                             Forms\Components\DateTimePicker::make('new_expiration_date')
                                 ->label('New Expiration Date')
                                 ->timezone('America/New_York')

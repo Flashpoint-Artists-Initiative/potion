@@ -53,7 +53,7 @@ class ViewOrder extends ViewRecord
             // ->modalContent(fn (Order $record): string => view('filament.admin.modals.refund-order-modal', [
             //     'order' => $record,
             // ]))
-            // ->form($this->getRefundFormSchema())
+            // ->schema($this->getRefundFormSchema())
             ->requiresConfirmation()
             ->modalHeading(fn (Order $record): string => "Refund Order #{$record->id}")
             ->modalDescription(function (Order $record) {

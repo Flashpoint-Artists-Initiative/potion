@@ -27,7 +27,7 @@ class BanResource extends BanhammerResource
                         Action::make('findUser')
                             ->label('Search users by name or email')
                             ->icon('heroicon-o-magnifying-glass')
-                            ->form([
+                            ->schema([
                                 Forms\Components\Select::make('userId')
                                     ->getSearchResultsUsing(
                                         fn (string $query) => User::query()

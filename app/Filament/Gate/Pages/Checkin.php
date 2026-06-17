@@ -218,7 +218,7 @@ class Checkin extends Page
             ->label('Transfer Tickets')
             ->icon('heroicon-o-ticket')
             ->color('info')
-            ->form(fn (Schema $schema) => $this->transferForm($schema))
+            ->schema(fn (Schema $schema) => $this->transferForm($schema))
             ->modalCancelAction(false)
             ->modalSubmitActionLabel('Select')
             ->action(function (array $data) use ($nextTicket) {
@@ -246,7 +246,7 @@ class Checkin extends Page
             ->label('Check In')
             ->icon('heroicon-o-check-circle')
             ->color('success')
-            ->form([
+            ->schema([
                 TextInput::make('wristband_number')
                     ->label('Wristband Number')
                     ->required()
@@ -275,7 +275,7 @@ class Checkin extends Page
             ->label('Update Wristband Number')
             ->icon('heroicon-o-pencil-square')
             ->color('warning')
-            ->form([
+            ->schema([
                 TextInput::make('wristband_number')
                     ->label('Wristband Number')
                     ->required()
@@ -338,7 +338,7 @@ class Checkin extends Page
             ->label('Create New User')
             ->icon('heroicon-o-user-plus')
             ->color('primary')
-            ->form(fn (Schema $schema) => $this->createNewUserForm($schema))
+            ->schema(fn (Schema $schema) => $this->createNewUserForm($schema))
             ->action(function (array $data, Set $set) {
                 if ($user = User::where('email', $data['email'])->first()) {
 
@@ -424,7 +424,7 @@ class Checkin extends Page
             ->action(fn (array $data) => $this->createCompletedWaiver($data))
             ->modalHeading('Sign Waiver')
             ->modalWidth(Width::FiveExtraLarge)
-            ->form([
+            ->schema([
                 Placeholder::make('title')
                     ->content(new HtmlString('<h1 class="text-2xl">' . ($waiver->title ?? '') . '</h1>'))
                     ->label('')

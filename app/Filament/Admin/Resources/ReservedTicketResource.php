@@ -105,7 +105,7 @@ class ReservedTicketResource extends Resource
                         Action::make('findEmailByUser')
                             ->label('Search users by email')
                             ->icon('heroicon-o-magnifying-glass')
-                            ->form([
+                            ->schema([
                                 Forms\Components\Select::make('userId')
                                     ->relationship('user', 'email')
                                     ->searchable(['display_name', 'email'])

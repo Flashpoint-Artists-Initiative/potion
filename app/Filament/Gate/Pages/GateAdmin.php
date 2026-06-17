@@ -39,7 +39,7 @@ class GateAdmin extends Page
             ->label('Create Ticket')
             ->icon('heroicon-o-plus')
             ->color('success')
-            ->form([
+            ->schema([
                 TextInput::make('password')
                     ->label('Admin Password')
                     ->password()
@@ -90,7 +90,7 @@ class GateAdmin extends Page
             ->label('Create New User')
             ->icon('heroicon-o-user-plus')
             ->color('primary')
-            ->form(fn (Schema $schema) => $this->createNewUserForm($schema))
+            ->schema(fn (Schema $schema) => $this->createNewUserForm($schema))
             ->action(function (array $data) {
                 if ($user = User::where('email', $data['email'])->first()) {
 
@@ -158,7 +158,7 @@ class GateAdmin extends Page
             ->icon('heroicon-o-document-text')
             ->color('primary')
             ->button()
-            ->form([
+            ->schema([
                 TextInput::make('email')
                     ->label('Email Address')
                     ->rule(new ValidEmail)

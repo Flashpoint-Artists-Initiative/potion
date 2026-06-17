@@ -46,7 +46,7 @@ class Search extends Page
                 ->label('Search by Wristband')
                 ->icon('heroicon-o-hashtag')
                 ->color('info')
-                ->form([
+                ->schema([
                     TextInput::make('number')
                         ->label('Wristband Number')
                         ->numeric()

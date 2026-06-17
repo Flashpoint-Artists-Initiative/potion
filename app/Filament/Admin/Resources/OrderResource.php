@@ -119,7 +119,7 @@ class OrderResource extends Resource
                 SelectFilter::make('event')
                     ->relationship('event', 'name'),
                 Filter::make('created_after')
-                    ->form([
+                    ->schema([
                         DatePicker::make('created_after'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -137,7 +137,7 @@ class OrderResource extends Resource
                         return 'Created after ' . Carbon::parse($data['created_after'])->toFormattedDateString();
                     }),
                 Filter::make('created_before')
-                    ->form([
+                    ->schema([
                         DatePicker::make('created_before'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {

@@ -146,7 +146,7 @@ class Tickets extends Page
             ->action(fn (array $data) => $this->createCompletedWaiver($data))
             ->modalHeading('Sign Waiver')
             ->modalWidth(Width::FiveExtraLarge)
-            ->form([
+            ->schema([
                 Placeholder::make('title')
                     ->content(new HtmlString('<h1 class="text-2xl">' . ($waiver->title ?? '') . '</h1>'))
                     ->label('')

@@ -132,7 +132,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
         return Action::make('newTransfer')
             ->label('Start a new Ticket Transfer')
             ->modal()
-            ->form([
+            ->schema([
                 Section::make([
                     TextInput::make('recipient_email')
                         ->rule(new ValidEmail)
@@ -261,7 +261,7 @@ class TicketTransfers extends Page implements HasForms, HasTable
             ->action(fn (array $data) => $this->createCompletedWaiver($data))
             ->modalHeading('Sign Waiver')
             ->modalWidth(Width::FiveExtraLarge)
-            ->form([
+            ->schema([
                 Placeholder::make('title')
                     ->content(new HtmlString('<h1 class="text-2xl">' . ($waiver->title ?? '') . '</h1>'))
                     ->label('')

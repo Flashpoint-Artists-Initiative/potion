@@ -37,7 +37,7 @@ class SendEmailBulkAction extends BulkAction
 
         // $this->requiresConfirmation();
 
-        $this->form($this->getFormSchema());
+        $this->schema($this->getFormSchema());
 
         $this->action(function (array $data, Collection $records): void {
             /** @var Collection<int, User> $records */
