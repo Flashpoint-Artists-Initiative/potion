@@ -140,9 +140,9 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
     {
         $colors = array_values(array_slice(Color::all(), 5));
         $shiftTypes = $this->team->shiftTypes;
-        $index = $shiftTypes->search(fn ($item) => $item->id === $this->id);
-        // $offset = (360 / $shiftTypes->count()) * $index;
-        $offset = ((int) (count($colors) / $shiftTypes->count())) * $index % count($colors);
+        $shiftTypeCount = max(1, $shiftTypes->count());
+        $index = max(0, (int) $shiftTypes->search(fn ($item) => $item->id === $this->id));
+        $offset = ((int) (count($colors) / $shiftTypeCount)) * $index % count($colors);
 
         return CalendarResource::make($this)
             ->title($this->title)

@@ -38,6 +38,8 @@ class ShiftCalendarWidget extends CalendarWidget
 {
     private const int SLOT_MINUTES = 15;
 
+    private const string VOLUNTEER_TIMEZONE = 'America/New_York';
+
     public Team $record;
 
     protected CalendarViewType $calendarView = CalendarViewType::TimeGridWeek;
@@ -169,7 +171,7 @@ class ShiftCalendarWidget extends CalendarWidget
                         return;
                     }
 
-                    $clickDate = Carbon::parse($dateStr, 'America/New_York');
+                    $clickDate = Carbon::parse($dateStr, self::VOLUNTEER_TIMEZONE);
                     $startOffset = $this->snapStartOffsetToSlot(
                         (int) round($this->record->event->volunteerBaseDate->diffInMinutes($clickDate))
                     );
@@ -189,6 +191,15 @@ class ShiftCalendarWidget extends CalendarWidget
     protected function snapStartOffsetToSlot(int $minutes): int
     {
         return (int) round($minutes / self::SLOT_MINUTES) * self::SLOT_MINUTES;
+    }
+
+    protected function snapStartDateTimeToSlot(Carbon $dateTime): Carbon
+    {
+        $startOffset = $this->snapStartOffsetToSlot(
+            (int) round($this->record->event->volunteerBaseDate->diffInMinutes($dateTime))
+        );
+
+        return $this->record->event->volunteerBaseDate->copy()->addMinutes($startOffset);
     }
 
     protected function onEventDrop(EventDropInfo $info, Model $event): bool
@@ -280,24 +291,126 @@ class ShiftCalendarWidget extends CalendarWidget
     public function createShiftAction(): CreateAction
     {
         return $this->createAction(Shift::class, 'createShift')
-            ->fillForm(function (DateSelectInfo $info): array {
-                $data = [
-                    'start_datetime' => $info->start->format('Y-m-d H:i:s'),
-                    'length_in_hours' => $info->start->diffInMinutes($info->end) / 60,
-                    'multiplier' => '1',
-                ];
+            ->fillForm(function (DateSelectInfo $info, self $livewire): array {
+                $start = $livewire->calendarSelectionStart();
 
-                if ($info->resource !== null) {
-                    $shiftType = ShiftType::query()->find($info->resource->getId());
-
-                    if ($shiftType !== null) {
-                        $data['shift_type_id'] = $shiftType->id;
-                        $data['num_spots'] = $shiftType->num_spots;
-                    }
+                if ($start === null) {
+                    $start = Carbon::parse($info->start->format('Y-m-d H:i:s'), self::VOLUNTEER_TIMEZONE);
                 }
+
+                $end = $livewire->calendarSelectionEnd();
+
+                if ($end === null) {
+                    $end = Carbon::parse($info->end->format('Y-m-d H:i:s'), self::VOLUNTEER_TIMEZONE);
+                }
+
+                $start = $livewire->snapStartDateTimeToSlot($start);
+                $startOffset = $livewire->startOffsetFromVolunteerDateTime($start);
+
+                return [
+                    'start_datetime' => $livewire->formatVolunteerDateTimeForPickerState($start),
+                    'calendar_start_offset' => $startOffset,
+                    'length_in_hours' => max(0.25, $start->diffInMinutes($end) / 60),
+                    'multiplier' => '1',
+                    ...$livewire->calendarSelectionShiftTypeDefaults($info),
+                ];
+            })
+            ->mutateFormDataUsing(function (array $data, self $livewire): array {
+                if (isset($data['calendar_start_offset'])) {
+                    $data['start_offset'] = (int) $data['calendar_start_offset'];
+                } elseif (isset($data['start_datetime'])) {
+                    $data['start_offset'] = $livewire->startOffsetFromPickerState((string) $data['start_datetime']);
+                }
+
+                unset($data['calendar_start_offset'], $data['start_datetime']);
 
                 return $data;
             });
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function calendarSelectionShiftTypeDefaults(DateSelectInfo $info): array
+    {
+        if ($info->resource === null) {
+            return [];
+        }
+
+        $shiftType = ShiftType::query()->find($info->resource->getId());
+
+        if ($shiftType === null) {
+            return [];
+        }
+
+        return [
+            'shift_type_id' => $shiftType->id,
+            'num_spots' => $shiftType->num_spots,
+        ];
+    }
+
+    protected function calendarSelectionStart(): ?Carbon
+    {
+        $startStr = $this->getCalendarDateString('startStr');
+
+        if ($startStr === null) {
+            return null;
+        }
+
+        return Carbon::parse($startStr, self::VOLUNTEER_TIMEZONE);
+    }
+
+    protected function calendarSelectionEnd(): ?Carbon
+    {
+        $endStr = $this->getCalendarDateString('endStr');
+
+        if ($endStr === null) {
+            return null;
+        }
+
+        return Carbon::parse($endStr, self::VOLUNTEER_TIMEZONE);
+    }
+
+    protected function formatVolunteerDateTimeForPickerState(Carbon $dateTime): string
+    {
+        return $dateTime
+            ->copy()
+            ->timezone(self::VOLUNTEER_TIMEZONE)
+            ->utc()
+            ->format('Y-m-d H:i:s T');
+    }
+
+    protected function getCalendarDateString(string $key): ?string
+    {
+        $value = $this->getRawCalendarContextData($key)
+            ?? data_get($this->getMountedAction()?->getArguments(), "data.{$key}");
+
+        return is_string($value) && $value !== '' ? $value : null;
+    }
+
+    protected function startOffsetFromVolunteerDateTime(Carbon|string $dateTime): int
+    {
+        if (is_string($dateTime)) {
+            $dateTime = preg_replace('/\s+[A-Z]{3,4}$/', '', $dateTime) ?? $dateTime;
+            $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', $dateTime, self::VOLUNTEER_TIMEZONE);
+        }
+
+        return $this->snapStartOffsetToSlot(
+            (int) round($this->record->event->volunteerBaseDate->diffInMinutes($dateTime))
+        );
+    }
+
+    protected function startOffsetFromPickerState(string $state): int
+    {
+        $state = trim($state);
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/', $state)) {
+            return $this->startOffsetFromVolunteerDateTime($state);
+        }
+
+        return $this->startOffsetFromVolunteerDateTime(
+            Carbon::parse($state)->timezone(self::VOLUNTEER_TIMEZONE)
+        );
     }
 
     public function confirmEditAction(): Action
@@ -376,12 +489,10 @@ class ShiftCalendarWidget extends CalendarWidget
                 ->schema([
                     Components\Select::make('shift_type_id')
                         ->label('Shift Type')
-                        ->relationship(
-                            'team.shiftTypes',
-                            'title',
-                            fn ($query) => $query->where('team_id', $this->record->id)
-                                ->orderBy('title')
-                        )
+                        ->options(fn () => ShiftType::query()
+                            ->where('team_id', $this->record->id)
+                            ->orderBy('title')
+                            ->pluck('title', 'id'))
                         ->required()
                         ->searchable()
                         ->preload()
@@ -392,12 +503,23 @@ class ShiftCalendarWidget extends CalendarWidget
                                 $set('num_spots', $shiftType->num_spots);
                             }
                         }),
+                    Components\Hidden::make('calendar_start_offset')
+                        ->visible(fn (string $operation): bool => $operation === 'createShift'),
                     Components\DateTimePicker::make('start_datetime')
                         ->label('Start Time')
-                        ->timezone('America/New_York')
+                        ->timezone(self::VOLUNTEER_TIMEZONE)
                         ->required()
                         ->seconds(false)
-                        ->format('Y-m-d H:i:s T'),
+                        ->step(self::SLOT_MINUTES * 60)
+                        ->format('Y-m-d H:i:s T')
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function ($state, $set, self $livewire, string $operation): void {
+                            if ($operation !== 'createShift' || ! is_string($state) || $state === '') {
+                                return;
+                            }
+
+                            $set('calendar_start_offset', $livewire->startOffsetFromPickerState($state));
+                        }),
                     Components\TextInput::make('length_in_hours')
                         ->label('Length (hours)')
                         ->numeric()
