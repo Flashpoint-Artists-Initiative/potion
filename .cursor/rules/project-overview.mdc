@@ -12,12 +12,12 @@ alwaysApply: true
 | Layer | Technology |
 |-------|------------|
 | Backend | PHP 8.4, Laravel 12 |
-| Admin UI | Filament 3 (three panels) |
+| Admin UI | Filament 5 (three panels) |
 | REST API | Tailflow Laravel Orion v2 + JWT (`php-open-source-saver/jwt-auth`) |
 | AuthZ | Spatie Laravel Permission |
 | Payments | Stripe |
 | Auditing | `owen-it/laravel-auditing` + `tapp/filament-auditing` |
-| Frontend assets | Vite 8, Tailwind CSS 3 |
+| Frontend assets | Vite 8, Tailwind CSS 4 |
 | Production | AWS Lambda via Bref + Serverless Framework (S3, SQS, CDN) |
 | Local dev | DDEV (MariaDB 10.11, nginx-fpm) |
 
