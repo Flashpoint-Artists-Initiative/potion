@@ -143,6 +143,7 @@ class ReservedTicketResource extends Resource
                     ->required(fn ($operation) => $operation !== 'create')
                     ->hidden(fn ($operation) => $operation !== 'create'),
             ])
+                ->columnSpanFull()
                 ->columns(2),
         ];
     }

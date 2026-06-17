@@ -25,6 +25,7 @@ class Dashboard extends \Filament\Pages\Dashboard
             ->components([
                 Section::make()
                     ->columns(4)
+                    ->columnSpanFull()
                     ->schema([
                         DatePicker::make('startDate'),
                         DatePicker::make('endDate'),

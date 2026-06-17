@@ -38,8 +38,8 @@ class CommonPanelProvider extends PanelProvider
             //     '*/admin',
             //     '*/admin/*',
             // ])
-            ->brandLogo(fn() => $this->setBrandLogo())
-            ->favicon(fn() => asset('images/logo.svg'))
+            ->brandLogo(fn () => $this->setBrandLogo())
+            ->favicon(fn () => asset('images/logo.svg'))
             ->brandLogoHeight('2.5em')
             ->defaultAvatarProvider($this->setAvatarProvider())
             ->font('Inter', asset('/css/fonts.css'), LocalFontProvider::class)

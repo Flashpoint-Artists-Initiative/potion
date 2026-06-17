@@ -41,7 +41,7 @@ class ShiftResource extends Resource
         if ($team) {
             $shiftTypeComponent = Components\Select::make('shift_type_id')
                 ->label('Shift Type')
-                ->options(fn() => ShiftType::whereTeamId($team->id)->pluck('title', 'id'))
+                ->options(fn () => ShiftType::whereTeamId($team->id)->pluck('title', 'id'))
                 ->required()
                 ->searchable()
                 ->preload()
@@ -56,7 +56,7 @@ class ShiftResource extends Resource
         } else {
             $shiftTypeComponent = Components\Placeholder::make('shift_type')
                 ->label('Shift Type')
-                ->content(fn(?Shift $record) => $record->shiftType->title ?? $shiftType->title ?? 'Unknown');
+                ->content(fn (?Shift $record) => $record->shiftType->title ?? $shiftType->title ?? 'Unknown');
 
             $startDefault = $shiftType?->team->event->volunteerBaseDate->format('Y-m-d H:i:sp') ?? null;
         }
