@@ -36,10 +36,6 @@ class AppPanelProvider extends CommonPanelProvider
                 'primary' => Color::Violet,
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-            ])
             ->authMiddleware([
                 Authenticate::class,
             ])
