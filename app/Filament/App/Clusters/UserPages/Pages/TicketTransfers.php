@@ -20,8 +20,6 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
@@ -41,9 +39,9 @@ use Livewire\Attributes\Url;
 /**
  * @property Schema $form
  */
-class TicketTransfers extends Page implements HasForms, HasTable
+class TicketTransfers extends Page implements HasTable
 {
-    use InteractsWithForms, InteractsWithTable;
+    use InteractsWithTable;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrows-right-left';
 

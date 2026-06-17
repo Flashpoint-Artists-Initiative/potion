@@ -5,20 +5,18 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Models\Ticketing\Order;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Concerns\InteractsWithInfolists;
-use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Livewire\Component;
 
-class OrderInfolist extends Component implements HasForms, HasInfolists
+class OrderInfolist extends Component implements HasSchemas
 {
-    use InteractsWithForms, InteractsWithInfolists;
+    use InteractsWithSchemas;
 
     public int $orderId;
 

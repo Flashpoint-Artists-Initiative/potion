@@ -12,11 +12,7 @@ use App\Filament\Admin\Resources\UserResource;
 use App\Models\User;
 use App\Services\StripeService;
 use Filament\Actions\Action;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components;
-use Filament\Infolists\Concerns\InteractsWithInfolists;
-use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\Grid;
@@ -24,9 +20,9 @@ use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use NumberFormatter;
 
-class UserStripeData extends Page implements HasForms, HasInfolists
+class UserStripeData extends Page
 {
-    use InteractsWithForms, InteractsWithInfolists, InteractsWithRecord;
+    use InteractsWithRecord;
 
     protected static string $resource = UserResource::class;
 

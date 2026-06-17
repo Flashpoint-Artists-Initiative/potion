@@ -7,8 +7,6 @@ namespace App\Filament\App\Clusters\UserPages\Pages;
 use App\Filament\App\Clusters\UserPages;
 use App\Models\Ticketing\CompletedWaiver;
 use Filament\Actions\Action;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -17,9 +15,9 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 
-class Waivers extends Page implements HasForms, HasTable
+class Waivers extends Page implements HasTable
 {
-    use InteractsWithForms, InteractsWithTable;
+    use InteractsWithTable;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
