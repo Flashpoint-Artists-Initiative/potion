@@ -18,9 +18,11 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use OwenIt\Auditing\Models\Audit;
+use Tapp\FilamentAuditing\Concerns\HasFormattedData;
 
 class UserAudits extends ManageRelatedRecords
 {
+    use HasFormattedData;
     protected static string $resource = UserResource::class;
 
     protected static string $relationship = 'audits';
@@ -77,23 +79,6 @@ class UserAudits extends ManageRelatedRecords
             ])
             ->bulkActions([
             ]);
-    }
-
-    // Copied from Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager
-    protected function mapRelatedColumns(mixed $state, mixed $record): mixed
-    {
-        $relationshipsToUpdate = Arr::wrap(config('filament-auditing.mapping'));
-
-        if (count($relationshipsToUpdate) !== 0) {
-            foreach ($relationshipsToUpdate as $key => $relationship) {
-                if (array_key_exists($key, $state)) {
-                    $state[$relationship['label']] = $relationship['model']::find($state[$key])?->{$relationship['field']};
-                    unset($state[$key]);
-                }
-            }
-        }
-
-        return $state;
     }
 
     /**
