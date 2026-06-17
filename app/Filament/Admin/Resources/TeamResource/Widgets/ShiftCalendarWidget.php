@@ -36,6 +36,8 @@ use Illuminate\Support\HtmlString;
 
 class ShiftCalendarWidget extends CalendarWidget
 {
+    private const int SLOT_MINUTES = 15;
+
     public Team $record;
 
     protected CalendarViewType $calendarView = CalendarViewType::TimeGridWeek;
@@ -90,7 +92,7 @@ class ShiftCalendarWidget extends CalendarWidget
             'date' => $this->record->event->start_date,
             'headerToolbar' => ['start' => 'title', 'center' => 'resourceTimeGridDay,resourceTimelineWeek,timeGridWeek', 'end' => 'prev,next'],
             'firstDay' => $this->record->event->startDateCarbon->dayOfWeek,
-            'slotDuration' => '00:15:00',
+            'slotDuration' => sprintf('00:%02d:00', self::SLOT_MINUTES),
             'pointer' => true,
             'duration' => ['days' => $this->record->event->startDateCarbon->diffInDays($this->record->event->endDateCarbon) + 1],
             'views' => [
@@ -168,7 +170,9 @@ class ShiftCalendarWidget extends CalendarWidget
                     }
 
                     $clickDate = Carbon::parse($dateStr, 'America/New_York');
-                    $startOffset = (int) round($this->record->event->volunteerBaseDate->diffInMinutes($clickDate));
+                    $startOffset = $this->snapStartOffsetToSlot(
+                        (int) round($this->record->event->volunteerBaseDate->diffInMinutes($clickDate))
+                    );
 
                     Shift::create([
                         'start_offset' => $startOffset,
@@ -180,6 +184,11 @@ class ShiftCalendarWidget extends CalendarWidget
                 })
                 ->after(fn (self $livewire) => $livewire->refreshRecords());
         })->all();
+    }
+
+    protected function snapStartOffsetToSlot(int $minutes): int
+    {
+        return (int) round($minutes / self::SLOT_MINUTES) * self::SLOT_MINUTES;
     }
 
     protected function onEventDrop(EventDropInfo $info, Model $event): bool
