@@ -16,12 +16,12 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Guava\Calendar\Attributes\CalendarSchema;
 use Guava\Calendar\Enums\CalendarViewType;
+use Guava\Calendar\Enums\Context;
 use Guava\Calendar\Filament\Actions\CreateAction;
 use Guava\Calendar\Filament\Actions\DeleteAction;
 use Guava\Calendar\Filament\Actions\EditAction;
 use Guava\Calendar\Filament\CalendarWidget;
 use Guava\Calendar\ValueObjects\CalendarEvent;
-use Guava\Calendar\ValueObjects\DateClickInfo;
 use Guava\Calendar\ValueObjects\DateSelectInfo;
 use Guava\Calendar\ValueObjects\EventDropInfo;
 use Guava\Calendar\ValueObjects\EventResizeInfo;
@@ -53,6 +53,32 @@ class ShiftCalendarWidget extends CalendarWidget
     public function mount(): void
     {
         $this->record->load(['event', 'shiftTypes']);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function getContextMenuActionsUsing(Context $context, array $data = []): Collection
+    {
+        $this->setRawCalendarContextData($context, $data);
+
+        $actions = match ($context) {
+            Context::EventClick => $this->getCachedEventClickContextMenuActions(),
+            Context::DateClick => $this->getCachedDateClickContextMenuActions(),
+            Context::DateSelect => $this->getCachedDateSelectContextMenuActions(),
+            Context::NoEventsClick => $this->getCachedNoEventsClickContextMenuActions(),
+            default => [],
+        };
+
+        return collect($actions)
+            ->filter(fn (Action $action) => $action->isVisible())
+            ->map(function (Action $action): string {
+                $raw = $this->getRawCalendarContextData();
+                /** @var array<string, mixed> $contextArguments */
+                $contextArguments = is_array($raw) ? $raw : [];
+
+                return ($action)($contextArguments)->toHtml();
+            });
     }
 
     /**
@@ -133,11 +159,19 @@ class ShiftCalendarWidget extends CalendarWidget
                 ->label('New ' . $shiftType->title . ' Shift')
                 ->model(Shift::class)
                 ->icon('heroicon-o-plus')
-                ->action(function (DateClickInfo $info) use ($shiftType): void {
+                ->action(function (self $livewire) use ($shiftType): void {
+                    $arguments = $livewire->getMountedAction()?->getArguments() ?? [];
+                    $dateStr = data_get($arguments, 'data.dateStr');
+
+                    if (! is_string($dateStr) || $dateStr === '') {
+                        return;
+                    }
+
+                    $clickDate = Carbon::parse($dateStr, 'America/New_York');
+                    $startOffset = (int) round($this->record->event->volunteerBaseDate->diffInMinutes($clickDate));
+
                     Shift::create([
-                        'start_offset' => $this->record->event->volunteerBaseDate->diffInMinutes(
-                            Carbon::parse($info->date->format('Y-m-d H:i:s'), 'America/New_York')
-                        ),
+                        'start_offset' => $startOffset,
                         'length' => $shiftType->length,
                         'num_spots' => $shiftType->num_spots,
                         'shift_type_id' => $shiftType->id,

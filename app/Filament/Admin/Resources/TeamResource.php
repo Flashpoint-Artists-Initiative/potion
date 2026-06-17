@@ -36,6 +36,8 @@ class TeamResource extends Resource
 
     protected static ?string $navigationLabel = 'Volunteering';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function shouldRegisterNavigation(): bool
     {
         return ! is_null(Event::getCurrentEvent());

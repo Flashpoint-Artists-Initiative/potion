@@ -256,8 +256,8 @@ class Shift extends Model implements ContractsAuditable, Eventable
         // otherwise the calendar will display the wrong times
         return CalendarEvent::make($this)
             ->title($this->getCalendarEventTitle())
-            ->start($this->startCarbon->copy()->shiftTimezone('UTC'))
-            ->end($this->endCarbon->copy()->shiftTimezone('UTC'))
+            ->start($this->startCarbon->copy()->setTimezone('UTC'))
+            ->end($this->endCarbon->copy()->setTimezone('UTC'))
             ->resourceId($this->shiftType->id)
             ->action('edit');
     }
