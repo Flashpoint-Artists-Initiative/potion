@@ -1,42 +1,117 @@
 diff -ruN a/src/Resources/Actions/BanAction.php b/src/Resources/Actions/BanAction.php
---- a/src/Resources/Actions/BanAction.php	2026-06-15 17:56:39
-+++ b/src/Resources/Actions/BanAction.php	2026-06-15 17:42:15
-@@ -4,9 +4,9 @@
+--- a/src/Resources/Actions/BanAction.php	2026-06-17 04:04:09
++++ b/src/Resources/Actions/BanAction.php	2026-06-17 04:04:09
+@@ -2,11 +2,11 @@
  
+ namespace Gerenuk\FilamentBanhammer\Resources\Actions;
+ 
++use Filament\Actions\Action;
  use Filament\Actions\Concerns\CanCustomizeProcess;
  use Filament\Forms\Components\DateTimePicker;
 -use Filament\Forms\Components\Section;
-+use Filament\Schemas\Components\Section;
  use Filament\Forms\Components\Textarea;
 -use Filament\Tables\Actions\Action;
-+use Filament\Actions\Action;
++use Filament\Schemas\Components\Section;
  use Illuminate\Database\Eloquent\Model;
  
  class BanAction extends Action
-diff -ruN a/src/Resources/Actions/UnbanAction.php b/src/Resources/Actions/UnbanAction.php
---- a/src/Resources/Actions/UnbanAction.php	2026-06-15 17:56:39
-+++ b/src/Resources/Actions/UnbanAction.php	2026-06-15 17:42:15
-@@ -3,7 +3,7 @@
+diff -ruN a/src/Resources/Actions/BanBulkAction.php b/src/Resources/Actions/BanBulkAction.php
+--- a/src/Resources/Actions/BanBulkAction.php	2026-06-17 04:04:09
++++ b/src/Resources/Actions/BanBulkAction.php	2026-06-17 04:04:09
+@@ -2,11 +2,11 @@
+ 
  namespace Gerenuk\FilamentBanhammer\Resources\Actions;
  
++use Filament\Actions\BulkAction;
+ use Filament\Actions\Concerns\CanCustomizeProcess;
+ use Filament\Forms\Components\DateTimePicker;
+-use Filament\Forms\Components\Section;
+ use Filament\Forms\Components\Textarea;
+-use Filament\Tables\Actions\BulkAction;
++use Filament\Schemas\Components\Section;
+ use Illuminate\Database\Eloquent\Collection;
+ use Illuminate\Database\Eloquent\Model;
+ 
+diff -ruN a/src/Resources/Actions/EditBanAction.php b/src/Resources/Actions/EditBanAction.php
+--- a/src/Resources/Actions/EditBanAction.php	2026-06-17 04:04:09
++++ b/src/Resources/Actions/EditBanAction.php	2026-06-17 04:04:09
+@@ -2,11 +2,11 @@
+ 
+ namespace Gerenuk\FilamentBanhammer\Resources\Actions;
+ 
++use Filament\Actions\Action;
+ use Filament\Actions\Concerns\CanCustomizeProcess;
+ use Filament\Forms\Components\DateTimePicker;
+-use Filament\Forms\Components\Section;
+ use Filament\Forms\Components\Textarea;
+-use Filament\Tables\Actions\Action;
++use Filament\Schemas\Components\Section;
+ use Illuminate\Database\Eloquent\Model;
+ 
+ class EditBanAction extends Action
+diff -ruN a/src/Resources/Actions/EditBanBulkAction.php b/src/Resources/Actions/EditBanBulkAction.php
+--- a/src/Resources/Actions/EditBanBulkAction.php	2026-06-17 04:04:09
++++ b/src/Resources/Actions/EditBanBulkAction.php	2026-06-17 04:04:09
+@@ -2,11 +2,11 @@
+ 
+ namespace Gerenuk\FilamentBanhammer\Resources\Actions;
+ 
++use Filament\Actions\BulkAction;
+ use Filament\Actions\Concerns\CanCustomizeProcess;
+ use Filament\Forms\Components\DateTimePicker;
+-use Filament\Forms\Components\Section;
+ use Filament\Forms\Components\Textarea;
+-use Filament\Tables\Actions\BulkAction;
++use Filament\Schemas\Components\Section;
+ use Illuminate\Database\Eloquent\Collection;
+ use Illuminate\Database\Eloquent\Model;
+ 
+diff -ruN a/src/Resources/Actions/UnbanAction.php b/src/Resources/Actions/UnbanAction.php
+--- a/src/Resources/Actions/UnbanAction.php	2026-06-17 04:04:09
++++ b/src/Resources/Actions/UnbanAction.php	2026-06-17 04:04:09
+@@ -2,8 +2,8 @@
+ 
+ namespace Gerenuk\FilamentBanhammer\Resources\Actions;
+ 
++use Filament\Actions\Action;
  use Filament\Actions\Concerns\CanCustomizeProcess;
 -use Filament\Tables\Actions\Action;
-+use Filament\Actions\Action;
  use Illuminate\Database\Eloquent\Model;
  
  class UnbanAction extends Action
+diff -ruN a/src/Resources/Actions/UnbanBulkAction.php b/src/Resources/Actions/UnbanBulkAction.php
+--- a/src/Resources/Actions/UnbanBulkAction.php	2026-06-17 04:04:09
++++ b/src/Resources/Actions/UnbanBulkAction.php	2026-06-17 04:04:09
+@@ -2,8 +2,8 @@
+ 
+ namespace Gerenuk\FilamentBanhammer\Resources\Actions;
+ 
++use Filament\Actions\BulkAction;
+ use Filament\Actions\Concerns\CanCustomizeProcess;
+-use Filament\Tables\Actions\BulkAction;
+ use Illuminate\Database\Eloquent\Collection;
+ use Illuminate\Database\Eloquent\Model;
+ 
 diff -ruN a/src/Resources/BanhammerResource.php b/src/Resources/BanhammerResource.php
---- a/src/Resources/BanhammerResource.php	2026-06-15 17:56:39
-+++ b/src/Resources/BanhammerResource.php	2026-06-15 17:35:17
-@@ -3,7 +3,7 @@
+--- a/src/Resources/BanhammerResource.php	2026-06-17 04:04:09
++++ b/src/Resources/BanhammerResource.php	2026-06-17 04:04:09
+@@ -2,12 +2,12 @@
+ 
  namespace Gerenuk\FilamentBanhammer\Resources;
  
++use Filament\Actions\ActionGroup;
++use Filament\Actions\BulkActionGroup;
++use Filament\Actions\ExportBulkAction;
  use Filament\Forms\Components\DatePicker;
 -use Filament\Forms\Form;
-+use Filament\Schemas\Schema;
  use Filament\Resources\Resource;
- use Filament\Tables\Actions\ActionGroup;
- use Filament\Tables\Actions\BulkActionGroup;
+-use Filament\Tables\Actions\ActionGroup;
+-use Filament\Tables\Actions\BulkActionGroup;
+-use Filament\Tables\Actions\ExportBulkAction;
++use Filament\Schemas\Schema;
+ use Filament\Tables\Columns\TextColumn;
+ use Filament\Tables\Filters\Filter;
+ use Filament\Tables\Table;
 @@ -29,12 +29,12 @@
          return config('filament-banhammer.navigation_group');
      }
