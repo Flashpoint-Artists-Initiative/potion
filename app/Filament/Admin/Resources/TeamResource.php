@@ -127,7 +127,7 @@ class TeamResource extends Resource
 
             'calendar' => Pages\ShiftCalendar::route('/{record}/calendar'),
             'shifts' => Pages\ManageShifts::route('/{record}/shifts'),
-            'shifts.create' => Pages\CreateShift::route('/{record}/shifts/create'),
+            'shifts.create' => Pages\CreateShift::route('/{team}/shifts/create'),
             'reports' => Pages\ViewVolunteers::route('/{record}/volunteers'),
         ];
     }

@@ -21,13 +21,13 @@ class CreateShift extends CreateRecord
 
     public function mount(): void
     {
-        $record = request()->route('record');
+        $team = request()->route('team');
 
-        if (! is_int($record) && ! is_string($record)) {
+        if (! is_int($team) && ! is_string($team)) {
             abort(404);
         }
 
-        $ownerRecord = TeamResource::resolveRecordRouteBinding($record);
+        $ownerRecord = TeamResource::resolveRecordRouteBinding($team);
 
         if (! $ownerRecord instanceof Team) {
             abort(404);

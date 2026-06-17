@@ -45,7 +45,7 @@ class ManageShifts extends ManageRelatedRecords
             ActionsCreateAction::make()
                 ->label('Add Shift')
                 ->url(fn () => TeamResource::getUrl('shifts.create', [
-                    'record' => $this->getOwnerRecord(),
+                    'team' => $this->getOwnerRecord(),
                 ]))
                 ->icon('heroicon-o-plus')
                 ->color('primary'),
