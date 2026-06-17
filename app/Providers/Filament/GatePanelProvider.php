@@ -24,23 +24,11 @@ class GatePanelProvider extends CommonPanelProvider
             ->colors([
                 'primary' => Color::Green,
             ])
-            ->pages([
-                // Pages\Dashboard::class,
-            ])
-            ->widgets([
-                // Widgets\AccountWidget::class,
-                // Widgets\FilamentInfoWidget::class,
-            ])
             ->authMiddleware([
                 RedirectIfNotFilamentAdmin::class,
                 Authenticate::class,
             ])
             ->navigationItems([
-                // NavigationItem::make('Admin Site')
-                //     ->url(fn () => route('filament.admin.pages.dashboard'))
-                //     ->icon('heroicon-o-wrench-screwdriver')
-                //     ->visible(fn (): bool => filament()->auth()->user()?->can('panelAccess.admin') ?? false)
-                //     ->sort(998),
                 NavigationItem::make('Return to Main Site')
                     ->url(fn () => route('filament.app.pages.dashboard'))
                     ->icon('heroicon-o-arrow-left-start-on-rectangle')
@@ -49,9 +37,6 @@ class GatePanelProvider extends CommonPanelProvider
             ->navigationGroups([
                 'Event Specific',
                 'Admin',
-            ])
-            ->plugins([
-                // FilamentBanhammerPlugin::make(),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->databaseNotifications();

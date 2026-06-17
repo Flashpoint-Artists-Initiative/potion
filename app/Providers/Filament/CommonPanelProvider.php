@@ -60,10 +60,7 @@ class CommonPanelProvider extends PanelProvider
             ->discoverPages(...$this->discoverHelper('Pages'))
             ->discoverWidgets(...$this->discoverHelper('Widgets'))
             ->discoverClusters(...$this->discoverHelper('Clusters'))
-            ->plugins([
-                // FilamentInactivityGuardPlugin::make()
-                //     ->enabled(! app()->isLocal()),
-            ])
+
             ->assets([
                 // TODO: Have this only load on the gate panel, without needing to refresh
                 Js::make('html5-qrcode', resource_path('js/html5-qrcode.min.js')),
@@ -96,10 +93,6 @@ class CommonPanelProvider extends PanelProvider
         $plugins = [];
         if (class_exists("Agencetwogether\HooksHelper\HooksHelperPlugin")) {
             $plugins[] = HooksHelperPlugin::make();
-        }
-
-        if (class_exists("CodeWithDennis\FilamentThemeInspector\FilamentThemeInspectorPlugin")) {
-            // $plugins[] = FilamentThemeInspectorPlugin::make();
         }
 
         if (class_exists("DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin")) {

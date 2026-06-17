@@ -32,14 +32,10 @@ class AppPanelProvider extends CommonPanelProvider
             ->registration(Register::class)
             ->passwordReset()
             ->emailVerification()
-            // ->profile(EditProfile::class, isSimple: false)
             ->colors([
                 'primary' => Color::Violet,
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->pages([
-                // Pages\Dashboard::class,
-            ])
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
