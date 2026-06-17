@@ -36,6 +36,7 @@ class AppPanelProvider extends CommonPanelProvider
             ->colors([
                 'primary' => Color::Violet,
             ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->pages([
                 // Pages\Dashboard::class,
             ])

@@ -1,5 +1,10 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
-@source '../../../../app/Filament/Admin/**/*';
-@source '../../../../resources/views/filament/admin/**/*';
+@source '../../../../app/Filament/**/*';
+@source '../../../../app/Forms/**/*';
+@source '../../../../app/Livewire/**/*';
+@source '../../../../resources/views/filament/**/*';
+@source '../../../../resources/views/forms/**/*';
+@source '../../../../resources/views/livewire/**/*';
+@source '../../../../resources/views/components/**/*';
 @source '../../../../vendor/guava/calendar/resources/**/*.blade.php';
