@@ -145,8 +145,10 @@ class ShiftCalendarWidget extends CalendarWidget
                 ->start($this->event()->start_date)
                 ->end($this->event()->endDateCarbon->addDays(1)->subMinute()->format('Y-m-d H:i:s'))
                 ->allDay()
+                ->editable(false)
                 ->startEditable(false)
                 ->durationEditable(false)
+                ->extendedProp('clickable', false)
                 ->classNames(['cursor-default'])
         );
     }

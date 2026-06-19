@@ -20,6 +20,10 @@ trait PassesCalendarContextToFilamentActions
      */
     public function getContextMenuActionsUsing(Context $context, array $data = []): Collection
     {
+        if ($context === Context::EventClick && ! $this->calendarEventIsInteractive($data)) {
+            return collect();
+        }
+
         $this->setRawCalendarContextData($context, $data);
 
         $actions = match ($context) {
@@ -39,5 +43,18 @@ trait PassesCalendarContextToFilamentActions
 
                 return ($action)($contextArguments)->toHtml();
             });
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    protected function calendarEventIsInteractive(array $data): bool
+    {
+        if (data_get($data, 'event.extendedProps.clickable') === false) {
+            return false;
+        }
+
+        return filled(data_get($data, 'event.extendedProps.model'))
+            && filled(data_get($data, 'event.extendedProps.key'));
     }
 }
