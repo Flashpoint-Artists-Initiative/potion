@@ -179,28 +179,32 @@ class ShiftCalendarWidget extends CalendarWidget
             return false;
         }
 
-        if ((int) $this->getRawCalendarContextData('delta.seconds') === 0) {
+        $deltaMinutes = $this->eventDropDeltaMinutes();
+
+        if ($deltaMinutes === 0) {
             return false;
         }
 
         if ($event->volunteers_count > 0) {
-            $this->mountAction('confirmMoveShift');
+            $this->mountAction('confirmMoveShift', [
+                'shiftId' => $event->id,
+                'deltaMinutes' => $deltaMinutes,
+            ]);
 
             return false;
         }
 
-        return $this->doEventDrop();
+        return $this->applyEventDrop($event, $deltaMinutes);
     }
 
-    protected function doEventDrop(): bool
+    protected function applyEventDrop(Shift $shift, int $deltaMinutes): bool
     {
-        /** @var Shift $shift */
-        $shift = $this->getEventRecord();
+        return $this->scheduling->moveByMinutes($shift, $deltaMinutes);
+    }
 
-        return $this->scheduling->moveByMinutes(
-            $shift,
-            (int) $this->getRawCalendarContextData('delta.seconds') / 60
-        );
+    protected function eventDropDeltaMinutes(): int
+    {
+        return intdiv((int) $this->getRawCalendarContextData('delta.seconds'), 60);
     }
 
     protected function onEventResize(EventResizeInfo $info, Model $event): bool
@@ -210,23 +214,25 @@ class ShiftCalendarWidget extends CalendarWidget
         }
 
         if ($event->volunteers_count > 0) {
-            $this->mountAction('confirmResizeShift');
+            $this->mountAction('confirmResizeShift', [
+                'shiftId' => $event->id,
+                'deltaMinutes' => $this->eventResizeDeltaMinutes(),
+            ]);
 
             return false;
         }
 
-        return $this->doEventResize();
+        return $this->applyEventResize($event, $this->eventResizeDeltaMinutes());
     }
 
-    protected function doEventResize(): bool
+    protected function applyEventResize(Shift $shift, int $deltaMinutes): bool
     {
-        /** @var Shift $shift */
-        $shift = $this->getEventRecord();
+        return $this->scheduling->resizeByMinutes($shift, $deltaMinutes);
+    }
 
-        return $this->scheduling->resizeByMinutes(
-            $shift,
-            max(0, intdiv((int) $this->getRawCalendarContextData('endDelta.seconds'), 60))
-        );
+    protected function eventResizeDeltaMinutes(): int
+    {
+        return max(0, intdiv((int) $this->getRawCalendarContextData('endDelta.seconds'), 60));
     }
 
     /**
@@ -270,7 +276,15 @@ class ShiftCalendarWidget extends CalendarWidget
             ->modalHeading('Confirm Shift Change')
             ->modalSubmitActionLabel('Save and Notify')
             ->modalDescription('This shift has volunteers signed up. Are you sure you want to change the start time? Volunteers will be notified of this change. To save without notifying them, click the event and open the edit modal, make the changes, then click "Save Quietly".')
-            ->action(fn (self $livewire) => $livewire->doEventDrop())
+            ->action(function (self $livewire, array $arguments): void {
+                $shift = Shift::query()->find($arguments['shiftId'] ?? null);
+
+                if (! $shift instanceof Shift) {
+                    return;
+                }
+
+                $livewire->applyEventDrop($shift, (int) ($arguments['deltaMinutes'] ?? 0));
+            })
             ->after(fn (self $livewire) => $livewire->refreshRecords());
     }
 
@@ -281,7 +295,15 @@ class ShiftCalendarWidget extends CalendarWidget
             ->modalHeading('Confirm Shift Change')
             ->modalSubmitActionLabel('Save and Notify')
             ->modalDescription('This shift has volunteers signed up. Are you sure you want to change the shift length? Volunteers will be notified of this change. To save without notifying them, click the event and open the edit modal, make the changes, then click "Save Quietly".')
-            ->action(fn (self $livewire) => $livewire->doEventResize())
+            ->action(function (self $livewire, array $arguments): void {
+                $shift = Shift::query()->find($arguments['shiftId'] ?? null);
+
+                if (! $shift instanceof Shift) {
+                    return;
+                }
+
+                $livewire->applyEventResize($shift, (int) ($arguments['deltaMinutes'] ?? 0));
+            })
             ->after(fn (self $livewire) => $livewire->refreshRecords());
     }
 
