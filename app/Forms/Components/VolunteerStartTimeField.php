@@ -7,7 +7,15 @@ namespace App\Forms\Components;
 use App\Models\Event;
 use Closure;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Schemas\Components\StateCasts\Contracts\StateCast;
+use Filament\Schemas\Components\StateCasts\DateTimeStateCast;
 
+/**
+ * A datetime picker that reads and writes volunteer start offsets (minutes from base date).
+ *
+ * Filament's DateTimeStateCast treats integer state as Unix timestamps, so it is excluded.
+ * Offsets are converted to picker display strings on hydrate and back to offsets on dehydrate.
+ */
 class VolunteerStartTimeField extends DateTimePicker
 {
     protected Event|Closure|null $event = null;
@@ -23,30 +31,29 @@ class VolunteerStartTimeField extends DateTimePicker
             ->step(Event::VOLUNTEER_SLOT_MINUTES * 60)
             ->format('Y-m-d H:i:s T')
             ->timezone(fn (): string => $this->getEvent()->timezone)
-            ->formatStateUsing(function (mixed $state): ?string {
-                if ($state === null || $state === '') {
-                    return null;
+            ->afterStateHydrated(function (VolunteerStartTimeField $component): void {
+                $state = $component->getRawState();
+
+                if (! is_int($state) && ! (is_string($state) && is_numeric($state))) {
+                    return;
                 }
 
-                if (is_string($state) && ! is_numeric($state)) {
-                    return $state;
-                }
-
-                return $this->getEvent()->formatDateTimeForFilamentPicker(
-                    $this->getEvent()->volunteerDateTimeFromOffset((int) $state)
-                );
+                $component->state($component->getEvent()->formatOffsetForFilamentPicker((int) $state));
             })
-            ->dehydrateStateUsing(function (mixed $state): ?int {
-                if ($state === null || $state === '') {
-                    return null;
-                }
+            ->dehydrateStateUsing(fn (mixed $state): ?int => filled($state)
+                ? $this->getEvent()->offsetFromFilamentPickerState($state)
+                : null);
+    }
 
-                if (is_int($state) || (is_string($state) && is_numeric($state))) {
-                    return (int) $state;
-                }
-
-                return $this->getEvent()->roundedMinutesFromVolunteerBase((string) $state);
-            });
+    /**
+     * @return array<StateCast>
+     */
+    public function getDefaultStateCasts(): array
+    {
+        return array_values(array_filter(
+            parent::getDefaultStateCasts(),
+            fn (mixed $cast): bool => ! $cast instanceof DateTimeStateCast,
+        ));
     }
 
     public function event(Event|Closure $event): static

@@ -161,7 +161,7 @@ class Volunteer extends Page implements HasTable
                 RepeatableEntry::make('teams')
                     ->label(new HtmlString('<h1 class="text-2xl">Teams</h1>'))
                     ->schema([
-                        Section::make(fn (Team $state) => $state->name)
+                        Section::make(fn (Team $record) => $record->name)
                             ->headerActions([
                                 InfolistAction::make('shifts')
                                     ->label('View Shifts')

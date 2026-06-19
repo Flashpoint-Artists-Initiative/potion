@@ -298,6 +298,25 @@ class Event extends Model implements ContractsAuditable
             ->format('Y-m-d H:i:s T');
     }
 
+    public function formatOffsetForFilamentPicker(int $offset): string
+    {
+        return $this->formatDateTimeForFilamentPicker(
+            $this->volunteerDateTimeFromOffset($offset)
+        );
+    }
+
+    /**
+     * Convert Filament picker state back to a volunteer start offset in minutes.
+     */
+    public function offsetFromFilamentPickerState(mixed $state): int
+    {
+        if (is_int($state)) {
+            return $state;
+        }
+
+        return $this->roundedMinutesFromVolunteerBase((string) $state);
+    }
+
     /**
      * Returns the current event ID from the session,
      * otherwise the default set in the config, otherwise 0

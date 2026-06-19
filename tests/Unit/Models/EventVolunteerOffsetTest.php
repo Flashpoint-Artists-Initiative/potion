@@ -60,6 +60,18 @@ class EventVolunteerOffsetTest extends TestCase
         $this->assertStringContainsString('UTC', $formatted);
     }
 
+    #[Test]
+    public function filament_picker_offset_round_trip(): void
+    {
+        $event = $this->createEventWithTimezone('America/New_York');
+        $offset = 120;
+
+        $pickerState = $event->formatOffsetForFilamentPicker($offset);
+
+        $this->assertSame($offset, $event->offsetFromFilamentPickerState($pickerState));
+        $this->assertSame($offset, $event->offsetFromFilamentPickerState($offset));
+    }
+
     private function createEventWithTimezone(string $timezone): Event
     {
         return Event::factory()->create([

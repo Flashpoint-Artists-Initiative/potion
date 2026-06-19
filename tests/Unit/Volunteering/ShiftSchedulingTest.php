@@ -45,6 +45,27 @@ class ShiftSchedulingTest extends TestCase
     }
 
     #[Test]
+    public function calendar_selection_to_create_form_defaults(): void
+    {
+        $team = $this->createTeam();
+        $shiftType = ShiftType::factory()->for($team)->create();
+
+        $selection = CalendarSelection::fromRaw([
+            'startStr' => '2026-06-01 10:00:00',
+            'endStr' => '2026-06-01 12:00:00',
+            'resource' => ['id' => $shiftType->id],
+        ], $team->event);
+
+        $this->assertSame([
+            'start_offset' => 120,
+            'length_in_hours' => 2.0,
+            'multiplier' => '1',
+            'shift_type_id' => $shiftType->id,
+            'num_spots' => $shiftType->num_spots,
+        ], $selection->toCreateFormDefaults());
+    }
+
+    #[Test]
     public function create_from_date_click_uses_shift_type_defaults(): void
     {
         $team = $this->createTeam();
@@ -62,18 +83,12 @@ class ShiftSchedulingTest extends TestCase
     }
 
     #[Test]
-    public function create_from_selection_persists_form_attributes(): void
+    public function create_from_form_data_persists_form_attributes(): void
     {
         $team = $this->createTeam();
         $shiftType = ShiftType::factory()->for($team)->create();
 
-        $selection = CalendarSelection::fromRaw([
-            'startStr' => '2026-06-01 10:00:00',
-            'endStr' => '2026-06-01 12:00:00',
-            'resource' => ['id' => $shiftType->id],
-        ], $team->event);
-
-        $shift = $this->service->createFromSelection($team, $selection, [
+        $shift = $this->service->createFromFormData($team, [
             'shift_type_id' => $shiftType->id,
             'start_offset' => 180,
             'length_in_hours' => 3,

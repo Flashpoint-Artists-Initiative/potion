@@ -68,6 +68,24 @@ readonly class CalendarSelection
     }
 
     /**
+     * Default form state for drag-select shift creation.
+     *
+     * @return array<string, mixed>
+     */
+    public function toCreateFormDefaults(): array
+    {
+        return [
+            'start_offset' => $this->startOffset,
+            'length_in_hours' => $this->lengthHours,
+            'multiplier' => '1',
+            ...($this->shiftType !== null ? [
+                'shift_type_id' => $this->shiftType->id,
+                'num_spots' => $this->shiftType->num_spots,
+            ] : []),
+        ];
+    }
+
+    /**
      * @param  array<string, mixed>  $data
      */
     private static function requireString(array $data, string $primaryKey, string $fallbackKey): string

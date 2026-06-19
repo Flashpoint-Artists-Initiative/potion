@@ -74,7 +74,7 @@ class EventResource extends Resource
                                                 ->helperText('The last public day of the event.'),
                                             Forms\Components\Select::make('timezone')
                                                 ->label('Timezone')
-                                                ->options(timezone_identifiers_list())
+                                                ->options(array_combine(timezone_identifiers_list(), timezone_identifiers_list()))
                                                 ->searchable()
                                                 ->statePath('settings.timezone')
                                                 ->default(config('app.defaults.timezone'))

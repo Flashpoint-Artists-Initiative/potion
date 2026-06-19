@@ -254,24 +254,13 @@ class ShiftCalendarWidget extends CalendarWidget
         return $this->createAction(Shift::class, 'createShift')
             ->fillForm(function (DateSelectInfo $info, self $livewire): array {
                 $raw = $livewire->getRawCalendarContextData();
-                $selection = CalendarSelection::fromWidgetContext(is_array($raw) ? $raw : null, $livewire->event());
 
-                return [
-                    'start_offset' => $selection->startOffset,
-                    'length_in_hours' => $selection->lengthHours,
-                    'multiplier' => '1',
-                    ...($selection->shiftType !== null ? [
-                        'shift_type_id' => $selection->shiftType->id,
-                        'num_spots' => $selection->shiftType->num_spots,
-                    ] : []),
-                ];
+                return CalendarSelection::fromWidgetContext(
+                    is_array($raw) ? $raw : null,
+                    $livewire->event(),
+                )->toCreateFormDefaults();
             })
-            ->using(function (array $data, self $livewire): Shift {
-                $raw = $livewire->getRawCalendarContextData();
-                $selection = CalendarSelection::fromWidgetContext(is_array($raw) ? $raw : null, $livewire->event());
-
-                return $livewire->scheduling->createFromSelection($livewire->record, $selection, $data);
-            });
+            ->using(fn (array $data, self $livewire): Shift => $livewire->scheduling->createFromFormData($livewire->record, $data));
     }
 
     public function confirmMoveShiftAction(): Action
