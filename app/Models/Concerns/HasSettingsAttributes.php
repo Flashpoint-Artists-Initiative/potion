@@ -24,6 +24,14 @@ trait HasSettingsAttributes
     }
 
     /**
+     * @return Attribute<string,never>
+     */
+    protected function timezone(): Attribute
+    {
+        return Attribute::get(fn () => (string) $this->getSetting('timezone'));
+    }
+
+    /**
      * @return Attribute<int,never>
      */
     protected function dollarsPerVote(): Attribute
@@ -84,7 +92,9 @@ trait HasSettingsAttributes
      */
     protected function volunteerSignupsStart(): Attribute
     {
-        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.signups_start'))->setTimezone('America/New_York'));
+        $timezone = $this->getSetting('timezone');
+
+        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.signups_start'))->shiftTimezone($timezone));
     }
 
     /**
@@ -92,7 +102,9 @@ trait HasSettingsAttributes
      */
     protected function volunteerSignupsEnd(): Attribute
     {
-        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.signups_end'))->setTimezone('America/New_York'));
+        $timezone = $this->getSetting('timezone');
+
+        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.signups_end'))->shiftTimezone($timezone));
     }
 
     /**
@@ -100,6 +112,8 @@ trait HasSettingsAttributes
      */
     protected function volunteerBaseDate(): Attribute
     {
-        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.base_date'))->setTimezone('America/New_York'));
+        $timezone = $this->getSetting('timezone');
+
+        return Attribute::get(fn () => Carbon::parse($this->getSetting('volunteering.base_date'))->shiftTimezone($timezone));
     }
 }

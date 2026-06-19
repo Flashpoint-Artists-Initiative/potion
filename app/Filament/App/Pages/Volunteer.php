@@ -291,8 +291,8 @@ class Volunteer extends Page implements HasTable
 
         /** @var Event $event */
         $event = Event::getCurrentEvent();
-        $startOffset = $event->volunteerBaseDate->diffInMinutes(Carbon::parse($data['start_date'], 'America/New_York'), false);
-        $endOffset = $event->volunteerBaseDate->diffInMinutes(Carbon::parse($data['end_date'], 'America/New_York')->addDay()->addMinute(), false);
+        $startOffset = $event->volunteerBaseDate->diffInMinutes(Carbon::parse($data['start_date'], $event->timezone ?? config('app.defaults.timezone')), false);
+        $endOffset = $event->volunteerBaseDate->diffInMinutes(Carbon::parse($data['end_date'], $event->timezone ?? config('app.defaults.timezone'))->addDay()->addMinute(), false);
 
         $query = Shift::query()
             ->with(['shiftType', 'team'])
@@ -314,11 +314,11 @@ class Volunteer extends Page implements HasTable
                     ->sortable(),
                 TextColumn::make('startCarbon')
                     ->label('Start Time')
-                    ->dateTime('D, m/j g:ia T', 'America/New_York')
+                    ->dateTime('D, m/j g:ia T', $event->timezone ?? config('app.defaults.timezone'))
                     ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('start_offset', $direction)),
                 TextColumn::make('endCarbon')
                     ->label('End Time')
-                    ->dateTime('D, m/j g:ia T', 'America/New_York'),
+                    ->dateTime('D, m/j g:ia T', $event->timezone ?? config('app.defaults.timezone')),
                 TextColumn::make('lengthInHours')
                     ->label('Duration (Hours)')
                     ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('length', $direction)),

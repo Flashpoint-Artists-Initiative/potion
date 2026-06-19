@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Admin\Resources\TeamResource\Widgets;
 
 use App\Filament\Admin\Resources\ShiftResource;
+use App\Models\Event;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\ShiftType;
 use App\Models\Volunteering\Team;
@@ -38,8 +39,6 @@ class ShiftCalendarWidget extends CalendarWidget
 {
     private const int SLOT_MINUTES = 15;
 
-    private const string VOLUNTEER_TIMEZONE = 'America/New_York';
-
     public Team $record;
 
     protected CalendarViewType $calendarView = CalendarViewType::TimeGridWeek;
@@ -60,6 +59,24 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Get the event model
+     */
+    protected function event(): Event
+    {
+        return $this->record->event;
+    }
+
+    /**
+     * Get the timezone of the event
+     */
+    protected function eventTimezone(): string
+    {
+        return $this->event()->timezone;
+    }
+
+    /**
+     * Override the default context menu actions to pass the context data to the actions.
+     *
      * @param  array<string, mixed>  $data
      */
     public function getContextMenuActionsUsing(Context $context, array $data = []): Collection
@@ -86,17 +103,19 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Static options for the calendar widget.
+     *
      * @return array<string, mixed>
      */
     public function getOptions(): array
     {
         return [
-            'date' => $this->record->event->start_date,
+            'date' => $this->event()->start_date,
             'headerToolbar' => ['start' => 'title', 'center' => 'resourceTimeGridDay,resourceTimelineWeek,timeGridWeek', 'end' => 'prev,next'],
-            'firstDay' => $this->record->event->startDateCarbon->dayOfWeek,
+            'firstDay' => $this->event()->startDateCarbon->dayOfWeek,
             'slotDuration' => sprintf('00:%02d:00', self::SLOT_MINUTES),
             'pointer' => true,
-            'duration' => ['days' => $this->record->event->startDateCarbon->diffInDays($this->record->event->endDateCarbon) + 1],
+            'duration' => ['days' => $this->event()->startDateCarbon->diffInDays($this->event()->endDateCarbon) + 1],
             'views' => [
                 'resourceTimeGridDay' => [
                     'duration' => ['days' => 1],
@@ -112,6 +131,8 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Get the events for the calendar widget.
+     *
      * @return array<int, mixed>|Collection<int, Shift|CalendarEvent>|Builder
      */
     protected function getEvents(FetchInfo $info): Collection|array|Builder
@@ -127,8 +148,8 @@ class ShiftCalendarWidget extends CalendarWidget
         return $events->push(
             CalendarEvent::make()
                 ->title('Event Duration')
-                ->start($this->record->event->start_date)
-                ->end($this->record->event->endDateCarbon->addDays(1)->subMinute()->format('Y-m-d H:i:s'))
+                ->start($this->event()->start_date)
+                ->end($this->event()->endDateCarbon->addDays(1)->subMinute()->format('Y-m-d H:i:s'))
                 ->allDay()
                 ->startEditable(false)
                 ->durationEditable(false)
@@ -137,6 +158,8 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * The resources for the calendar widget (What to group by in resource view)
+     *
      * @return Collection<int, ShiftType>|ShiftType[]
      */
     protected function getResources(): Collection|array|Builder
@@ -144,6 +167,9 @@ class ShiftCalendarWidget extends CalendarWidget
         return $this->record->shiftTypes;
     }
 
+    /**
+     * Handles click & drag events
+     */
     protected function onDateSelect(DateSelectInfo $info): void
     {
         if (! Auth::user()?->can('create', Shift::class)) {
@@ -154,6 +180,8 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Context menu actions for date click events
+     *
      * @return Action[]
      */
     protected function getDateClickContextMenuActions(): array
@@ -171,10 +199,7 @@ class ShiftCalendarWidget extends CalendarWidget
                         return;
                     }
 
-                    $clickDate = Carbon::parse($dateStr, self::VOLUNTEER_TIMEZONE);
-                    $startOffset = $this->snapStartOffsetToSlot(
-                        (int) round($this->record->event->volunteerBaseDate->diffInMinutes($clickDate))
-                    );
+                    $startOffset = $this->event()->roundedMinutesFromVolunteerBase($dateStr, self::SLOT_MINUTES);
 
                     Shift::create([
                         'start_offset' => $startOffset,
@@ -188,20 +213,9 @@ class ShiftCalendarWidget extends CalendarWidget
         })->all();
     }
 
-    protected function snapStartOffsetToSlot(int $minutes): int
-    {
-        return (int) round($minutes / self::SLOT_MINUTES) * self::SLOT_MINUTES;
-    }
-
-    protected function snapStartDateTimeToSlot(Carbon $dateTime): Carbon
-    {
-        $startOffset = $this->snapStartOffsetToSlot(
-            (int) round($this->record->event->volunteerBaseDate->diffInMinutes($dateTime))
-        );
-
-        return $this->record->event->volunteerBaseDate->copy()->addMinutes($startOffset);
-    }
-
+    /**
+     * Handle drag & drop events
+     */
     protected function onEventDrop(EventDropInfo $info, Model $event): bool
     {
         if (! $event instanceof Shift) {
@@ -221,6 +235,9 @@ class ShiftCalendarWidget extends CalendarWidget
         return $this->doEventDrop();
     }
 
+    /**
+     * Process the drag & drop event by updating the shift start offset
+     */
     protected function doEventDrop(): bool
     {
         /** @var Shift $shift */
@@ -237,6 +254,9 @@ class ShiftCalendarWidget extends CalendarWidget
         return true;
     }
 
+    /**
+     * Handle resize events
+     */
     protected function onEventResize(EventResizeInfo $info, Model $event): bool
     {
         if (! $event instanceof Shift) {
@@ -252,6 +272,9 @@ class ShiftCalendarWidget extends CalendarWidget
         return $this->doEventResize();
     }
 
+    /**
+     * Process the resize event by updating the shift length
+     */
     protected function doEventResize(): bool
     {
         /** @var Shift $shift */
@@ -269,6 +292,8 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Context menu actions for event click events
+     *
      * @return Action[]
      */
     protected function getEventClickContextMenuActions(): array
@@ -288,38 +313,39 @@ class ShiftCalendarWidget extends CalendarWidget
         ];
     }
 
+    /**
+     * Mounted action for creating a shift when a date is clicked & dragged
+     *
+     * when determining the start_offset, there are two paths:
+     * 1. The start date is generated from the calendar selection
+     * 2. The start date is generated from the form state
+     *
+     * If the start date is generated from the calendar selection (calendar_start_offset), we can use the start offset directly.
+     * If the start date is generated from the form state (start_datetime), we need to round the start date to the nearest slot
+     */
     public function createShiftAction(): CreateAction
     {
         return $this->createAction(Shift::class, 'createShift')
             ->fillForm(function (DateSelectInfo $info, self $livewire): array {
-                $start = $livewire->calendarSelectionStart();
-
-                if ($start === null) {
-                    $start = Carbon::parse($info->start->format('Y-m-d H:i:s'), self::VOLUNTEER_TIMEZONE);
-                }
-
-                $end = $livewire->calendarSelectionEnd();
-
-                if ($end === null) {
-                    $end = Carbon::parse($info->end->format('Y-m-d H:i:s'), self::VOLUNTEER_TIMEZONE);
-                }
-
-                $start = $livewire->snapStartDateTimeToSlot($start);
-                $startOffset = $livewire->startOffsetFromVolunteerDateTime($start);
+                $start = $livewire->calendarSelectionDate('startStr');
+                $end = $livewire->calendarSelectionDate('endStr')->roundMinutes(self::SLOT_MINUTES);
+                $startOffset = $livewire->event()->roundedMinutesFromVolunteerBase($start, self::SLOT_MINUTES);
+                $snappedStart = $livewire->event()->volunteerDateTimeFromOffset($startOffset);
 
                 return [
-                    'start_datetime' => $livewire->formatVolunteerDateTimeForPickerState($start),
+                    'start_datetime' => $livewire->formatVolunteerDateTimeForPickerState($snappedStart),
                     'calendar_start_offset' => $startOffset,
-                    'length_in_hours' => max(0.25, $start->diffInMinutes($end) / 60),
+                    'length_in_hours' => max(0.25, $snappedStart->diffInMinutes($end) / 60),
                     'multiplier' => '1',
                     ...$livewire->calendarSelectionShiftTypeDefaults($info),
                 ];
             })
-            ->mutateFormDataUsing(function (array $data, self $livewire): array {
-                if (isset($data['calendar_start_offset'])) {
+            // Mutate the data before saving to set the model start_offset based on the calendar selection or form state
+            ->mutateDataUsing(function (array $data, self $livewire): array {
+                if (array_key_exists('calendar_start_offset', $data)) {
                     $data['start_offset'] = (int) $data['calendar_start_offset'];
-                } elseif (isset($data['start_datetime'])) {
-                    $data['start_offset'] = $livewire->startOffsetFromPickerState((string) $data['start_datetime']);
+                } elseif (array_key_exists('start_datetime', $data)) {
+                    $data['start_offset'] = $livewire->event()->roundedMinutesFromVolunteerBase((string) $data['start_datetime'], self::SLOT_MINUTES);
                 }
 
                 unset($data['calendar_start_offset'], $data['start_datetime']);
@@ -329,6 +355,8 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Set the shift defaults in the form based on the selected shift type
+     *
      * @return array<string, mixed>
      */
     protected function calendarSelectionShiftTypeDefaults(DateSelectInfo $info): array
@@ -349,70 +377,37 @@ class ShiftCalendarWidget extends CalendarWidget
         ];
     }
 
-    protected function calendarSelectionStart(): ?Carbon
-    {
-        $startStr = $this->getCalendarDateString('startStr');
-
-        if ($startStr === null) {
-            return null;
-        }
-
-        return Carbon::parse($startStr, self::VOLUNTEER_TIMEZONE);
-    }
-
-    protected function calendarSelectionEnd(): ?Carbon
-    {
-        $endStr = $this->getCalendarDateString('endStr');
-
-        if ($endStr === null) {
-            return null;
-        }
-
-        return Carbon::parse($endStr, self::VOLUNTEER_TIMEZONE);
-    }
-
-    protected function formatVolunteerDateTimeForPickerState(Carbon $dateTime): string
-    {
-        return $dateTime
-            ->copy()
-            ->timezone(self::VOLUNTEER_TIMEZONE)
-            ->utc()
-            ->format('Y-m-d H:i:s T');
-    }
-
-    protected function getCalendarDateString(string $key): ?string
+    /**
+     * Get the date from the calendar selection or event info object
+     */
+    protected function calendarSelectionDate(string $key): Carbon
     {
         $value = $this->getRawCalendarContextData($key)
             ?? data_get($this->getMountedAction()?->getArguments(), "data.{$key}");
 
-        return is_string($value) && $value !== '' ? $value : null;
-    }
-
-    protected function startOffsetFromVolunteerDateTime(Carbon|string $dateTime): int
-    {
-        if (is_string($dateTime)) {
-            $dateTime = preg_replace('/\s+[A-Z]{3,4}$/', '', $dateTime) ?? $dateTime;
-            $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', $dateTime, self::VOLUNTEER_TIMEZONE);
+        // This should never happen, but if it does, throw an exception
+        if (! is_string($value) || $value === '') {
+            throw new \InvalidArgumentException('Error getting date from calendar selection');
         }
 
-        return $this->snapStartOffsetToSlot(
-            (int) round($this->record->event->volunteerBaseDate->diffInMinutes($dateTime))
-        );
+        return Carbon::parse($value, $this->eventTimezone());
     }
 
-    protected function startOffsetFromPickerState(string $state): int
+    /**
+     * Format the form datetime picker state
+     */
+    protected function formatVolunteerDateTimeForPickerState(Carbon $dateTime): string
     {
-        $state = trim($state);
-
-        if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/', $state)) {
-            return $this->startOffsetFromVolunteerDateTime($state);
-        }
-
-        return $this->startOffsetFromVolunteerDateTime(
-            Carbon::parse($state)->timezone(self::VOLUNTEER_TIMEZONE)
-        );
+        return $dateTime
+            ->copy()
+            ->timezone($this->eventTimezone())
+            ->utc()
+            ->format('Y-m-d H:i:s T');
     }
 
+    /**
+     * Confirm edit action for shift modification via drag & drop or resize
+     */
     public function confirmEditAction(): Action
     {
         return Action::make('confirmEdit')
@@ -431,6 +426,9 @@ class ShiftCalendarWidget extends CalendarWidget
             ->after(fn (self $livewire) => $livewire->refreshRecords());
     }
 
+    /**
+     * Edit action for the shift context menu
+     */
     public function editAction(): EditAction
     {
         return parent::editAction()
@@ -455,6 +453,9 @@ class ShiftCalendarWidget extends CalendarWidget
             ] : []);
     }
 
+    /**
+     * Delete action for the shift context menu
+     */
     public function deleteAction(): DeleteAction
     {
         return parent::deleteAction()
@@ -481,6 +482,9 @@ class ShiftCalendarWidget extends CalendarWidget
             ] : []);
     }
 
+    /**
+     * Form schema for the shift modal
+     */
     #[CalendarSchema(model: Shift::class)]
     protected function shiftSchema(Schema $schema): Schema
     {
@@ -507,7 +511,7 @@ class ShiftCalendarWidget extends CalendarWidget
                         ->visible(fn (string $operation): bool => $operation === 'createShift'),
                     Components\DateTimePicker::make('start_datetime')
                         ->label('Start Time')
-                        ->timezone(self::VOLUNTEER_TIMEZONE)
+                        ->timezone(fn (): string => $this->eventTimezone())
                         ->required()
                         ->seconds(false)
                         ->step(self::SLOT_MINUTES * 60)
@@ -518,7 +522,7 @@ class ShiftCalendarWidget extends CalendarWidget
                                 return;
                             }
 
-                            $set('calendar_start_offset', $livewire->startOffsetFromPickerState($state));
+                            $set('calendar_start_offset', $livewire->event()->roundedMinutesFromVolunteerBase($state, self::SLOT_MINUTES));
                         }),
                     Components\TextInput::make('length_in_hours')
                         ->label('Length (hours)')
@@ -561,6 +565,9 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Header actions for the calendar widget
+     * Currently the create shift button and form
+     *
      * @return array<mixed>
      */
     public function getHeaderActions(): array

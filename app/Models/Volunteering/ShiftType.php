@@ -146,24 +146,8 @@ class ShiftType extends Model implements ContractsAuditable, Resourceable
 
         return CalendarResource::make($this)
             ->title($this->title)
-            ->eventBackgroundColor(self::rgbToHex($colors[$offset]['700']));
-        // ->eventBackgroundColor($this->hsv2rgb($offset, 100, 50));
-    }
-
-    /**
-     * @param  array<int, string>|string  $rgb
-     */
-    protected static function rgbToHex(array|string $rgb): string
-    {
-        $parts = is_array($rgb)
-            ? $rgb
-            : preg_split('/[\s,]+/', trim($rgb));
-
-        if (! is_array($parts) || count($parts) !== 3) {
-            return '#000000';
-        }
-
-        return sprintf('#%02x%02x%02x', (int) $parts[0], (int) $parts[1], (int) $parts[2]);
+            ->eventTextColor('oklch(0.92 0.004 286.32)')
+            ->eventBackgroundColor($colors[$offset]['700']);
     }
 
     /**

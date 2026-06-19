@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Exports;
 
+use App\Models\Event;
 use App\Models\Volunteering\Shift;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
@@ -23,7 +24,7 @@ class ShiftExporter extends Exporter
                 ->state(fn (Shift $record) => $record->startCarbon->setTimezone('America/New_York')->format('D, m/j g:ia')),
             ExportColumn::make('endCarbon')
                 ->label('End Time')
-                ->state(fn (Shift $record) => $record->endCarbon->setTimezone('America/New_York')->format('D, m/j g:ia')),
+                ->state(fn (Shift $record) => $record->endCarbon->setTimezone(Event::getCurrentEvent()->timezone ?? config('app.defaults.timezone'))->format('D, m/j g:ia')),
             ExportColumn::make('volunteers_count')
                 ->label('Spots Filled'),
             ExportColumn::make('num_spots')

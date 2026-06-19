@@ -6,6 +6,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ShiftResource\Pages;
 use App\Filament\Admin\Resources\ShiftResource\RelationManagers;
+use App\Models\Event;
 use App\Models\Volunteering\Shift;
 use App\Models\Volunteering\ShiftType;
 use App\Models\Volunteering\Team;
@@ -68,7 +69,7 @@ class ShiftResource extends Resource
                 Components\DateTimePicker::make('start_datetime')
                     ->label('Start Time')
                     ->required()
-                    ->timezone('America/New_York') // Don't set a timezone. Since everything runs off start_offset, this just breaks things
+                    ->timezone(fn (): string => Event::getCurrentEvent()->timezone ?? config('app.defaults.timezone'))
                     ->seconds(false)
                     ->default($startDefault)
                     ->step(15 * 60) // 15 minutes

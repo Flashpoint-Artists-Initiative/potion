@@ -140,9 +140,8 @@ class ShiftImporter extends Importer
     {
         /** @var Event $event */
         $event = Event::where('id', $this->options['eventId'] ?? Event::getCurrentEventId())->firstOrFail();
-        $start = Carbon::parse($data['date'] . ' ' . $data['start_time'], 'America/New_York');
 
-        return $event ? (int) $event->volunteerBaseDate->diffInMinutes($start) : 0;
+        return $event->roundedMinutesFromVolunteerBase($data['date'] . ' ' . $data['start_time'], 1);
     }
 
     public static function getCompletedNotificationBody(Import $import): string

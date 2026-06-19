@@ -29,6 +29,7 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 /**
  * @property ArrayObject $settings
  * @property-read Carbon $volunteerBaseDate
+ * @property string $timezone
  */
 class Event extends Model implements ContractsAuditable
 {
@@ -261,6 +262,20 @@ class Event extends Model implements ContractsAuditable
             get: fn (mixed $value, array $attributes) => now()->greaterThan($this->getSetting('volunteering.signups_start', now()->addMinute()))
                 && now()->lessThan($this->getSetting('volunteering.signups_end', now()->subMinute()))
         );
+    }
+
+    public function roundedMinutesFromVolunteerBase(Carbon|string $datetime, int $rounding = 15): int
+    {
+        $datetime = Carbon::parse($datetime, $this->timezone);
+
+        $offset = (int) round($this->volunteerBaseDate->diffInMinutes($datetime));
+
+        return (int) round($offset / $rounding) * $rounding;
+    }
+
+    public function volunteerDateTimeFromOffset(int $offset): Carbon
+    {
+        return $this->volunteerBaseDate->copy()->addMinutes($offset);
     }
 
     /**

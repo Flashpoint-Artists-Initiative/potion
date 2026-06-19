@@ -212,6 +212,7 @@ return [
 
     // Default values for event settings
     'defaults' => [
+        'timezone' => 'America/New_York',
         'art' => [
             'dollars_per_vote' => 1.0,
             'voting_enabled' => false,

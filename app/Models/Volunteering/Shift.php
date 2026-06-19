@@ -164,7 +164,8 @@ class Shift extends Model implements ContractsAuditable, Eventable
                 return $baseDate->format('Y-m-d H:i:s T');
             },
             set: function (string $value) {
-                $value = Carbon::parse($value, 'America/New_York');
+                $timezone = $this->team->event->timezone;
+                $value = Carbon::parse($value, $timezone);
                 $baseDate = $this->team->event->volunteerBaseDate;
 
                 return ['start_offset' => $baseDate->diffInMinutes($value)];
