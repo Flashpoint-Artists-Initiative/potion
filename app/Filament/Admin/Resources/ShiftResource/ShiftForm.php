@@ -15,6 +15,12 @@ use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
+/**
+ * Shared Filament form schema for creating and editing volunteer shifts.
+ *
+ * Used by ShiftResource pages, team/shift-type relation managers, and the
+ * admin shift calendar widget so field layout stays consistent everywhere.
+ */
 class ShiftForm
 {
     public static function configure(

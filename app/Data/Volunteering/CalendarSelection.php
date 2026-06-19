@@ -9,6 +9,12 @@ use App\Models\Volunteering\ShiftType;
 use Carbon\Carbon;
 use InvalidArgumentException;
 
+/**
+ * Parsed date/time range from a Guava Calendar interaction (drag-select or date click).
+ *
+ * Converts raw JS calendar context into event-timezone instants, volunteer start
+ * offsets, and default form state for shift creation modals.
+ */
 readonly class CalendarSelection
 {
     public function __construct(

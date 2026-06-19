@@ -9,6 +9,12 @@ use App\Models\Volunteering\ShiftType;
 use App\Models\Volunteering\Team;
 use Illuminate\Database\QueryException;
 
+/**
+ * Domain service for creating, moving, and resizing volunteer shifts.
+ *
+ * Centralizes persistence logic used by the admin shift calendar widget and
+ * shared shift form so Filament actions stay thin.
+ */
 class ShiftSchedulingService
 {
     public function createFromDateClick(ShiftType $shiftType, string $dateStr): Shift
@@ -62,11 +68,7 @@ class ShiftSchedulingService
 
     public function resizeByMinutes(Shift $shift, int $deltaMinutes): bool
     {
-        if ($deltaMinutes <= 0) {
-            return false;
-        }
-
-        $shift->length += $deltaMinutes;
+        $shift->length = max(15, $shift->length + $deltaMinutes);
 
         try {
             $shift->save();

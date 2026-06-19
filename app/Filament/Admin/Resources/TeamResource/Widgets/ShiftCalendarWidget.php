@@ -232,7 +232,7 @@ class ShiftCalendarWidget extends CalendarWidget
 
     protected function eventResizeDeltaMinutes(): int
     {
-        return max(0, intdiv((int) $this->getRawCalendarContextData('endDelta.seconds'), 60));
+        return intdiv((int) $this->getRawCalendarContextData('endDelta.seconds'), 60);
     }
 
     /**
