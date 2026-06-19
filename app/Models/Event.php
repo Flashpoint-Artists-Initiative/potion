@@ -14,6 +14,7 @@ use App\Models\Ticketing\Waiver;
 use App\Models\Volunteering\ShiftType;
 use App\Models\Volunteering\Team;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Casts\ArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -34,6 +35,8 @@ use OwenIt\Auditing\Contracts\Auditable as ContractsAuditable;
 class Event extends Model implements ContractsAuditable
 {
     use Auditable, HasFactory, HasSettingsAttributes, SoftDeletes;
+
+    public const int VOLUNTEER_SLOT_MINUTES = 15;
 
     protected $fillable = [
         'name',
@@ -264,11 +267,16 @@ class Event extends Model implements ContractsAuditable
         );
     }
 
-    public function roundedMinutesFromVolunteerBase(Carbon|string $datetime, int $rounding = 15): int
+    public function minutesFromVolunteerBase(CarbonInterface|string $datetime): int
     {
         $datetime = Carbon::parse($datetime, $this->timezone);
 
-        $offset = (int) round($this->volunteerBaseDate->diffInMinutes($datetime));
+        return (int) round($this->volunteerBaseDate->diffInMinutes($datetime));
+    }
+
+    public function roundedMinutesFromVolunteerBase(CarbonInterface|string $datetime, int $rounding = self::VOLUNTEER_SLOT_MINUTES): int
+    {
+        $offset = $this->minutesFromVolunteerBase($datetime);
 
         return (int) round($offset / $rounding) * $rounding;
     }
@@ -276,6 +284,18 @@ class Event extends Model implements ContractsAuditable
     public function volunteerDateTimeFromOffset(int $offset): Carbon
     {
         return $this->volunteerBaseDate->copy()->addMinutes($offset);
+    }
+
+    /**
+     * Format a volunteer datetime for Filament DateTimePicker state (UTC-encoded display hack).
+     */
+    public function formatDateTimeForFilamentPicker(Carbon $dateTime): string
+    {
+        return $dateTime
+            ->copy()
+            ->timezone($this->timezone)
+            ->utc()
+            ->format('Y-m-d H:i:s T');
     }
 
     /**

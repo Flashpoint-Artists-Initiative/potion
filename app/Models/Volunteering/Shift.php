@@ -253,12 +253,10 @@ class Shift extends Model implements ContractsAuditable, Eventable
 
     public function toCalendarEvent(): CalendarEvent
     {
-        // start and end dates must be set to UTC without changing the value
-        // otherwise the calendar will display the wrong times
         return CalendarEvent::make($this)
             ->title($this->getCalendarEventTitle())
-            ->start($this->startCarbon->copy()->setTimezone('UTC'))
-            ->end($this->endCarbon->copy()->setTimezone('UTC'))
+            ->start($this->startCarbon->toIso8601String())
+            ->end($this->endCarbon->toIso8601String())
             ->resourceId($this->shiftType->id)
             ->action('edit');
     }
