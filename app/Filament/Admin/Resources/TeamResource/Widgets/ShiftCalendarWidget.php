@@ -35,6 +35,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 
+/**
+ * FullCalendar-based shift scheduler for a volunteer team.
+ *
+ * Loads shifts as calendar events, supports drag-create/move/resize, and delegates
+ * persistence to {@see ShiftSchedulingService} and {@see ShiftForm}.
+ */
 class ShiftCalendarWidget extends CalendarWidget
 {
     use PassesCalendarContextToFilamentActions;
@@ -55,22 +61,33 @@ class ShiftCalendarWidget extends CalendarWidget
 
     protected bool $eventResizeEnabled = true;
 
+    /**
+     * Resolve the shift scheduling service from the container.
+     */
     public function boot(ShiftSchedulingService $scheduling): void
     {
         $this->scheduling = $scheduling;
     }
 
+    /**
+     * Eager-load the team event and shift types needed by the calendar.
+     */
     public function mount(): void
     {
         $this->record->load(['event', 'shiftTypes']);
     }
 
+    /**
+     * The event whose timezone and volunteer base date drive calendar display.
+     */
     protected function event(): Event
     {
         return $this->record->event;
     }
 
     /**
+     * FullCalendar configuration: timezone, slot size, views, and event span.
+     *
      * @return array<string, mixed>
      */
     public function getOptions(): array
@@ -98,6 +115,8 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Shifts overlapping the visible range, plus a non-editable event-duration marker.
+     *
      * @return Collection<int, Shift|CalendarEvent>|Builder<Shift>|array<int, mixed>
      */
     protected function getEvents(FetchInfo $info): Collection|array|Builder
@@ -133,6 +152,8 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Shift types as calendar resources (columns in resource views).
+     *
      * @return Collection<int, ShiftType>|ShiftType[]
      */
     protected function getResources(): Collection|array|Builder
@@ -140,6 +161,9 @@ class ShiftCalendarWidget extends CalendarWidget
         return $this->record->shiftTypes;
     }
 
+    /**
+     * Open the drag-select create-shift modal when the user has create permission.
+     */
     protected function onDateSelect(DateSelectInfo $info): void
     {
         if (! Auth::user()?->can('create', Shift::class)) {
@@ -150,6 +174,8 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Context menu entries to create a shift of each type at the clicked date/time.
+     *
      * @return Action[]
      */
     protected function getDateClickContextMenuActions(): array
@@ -173,6 +199,9 @@ class ShiftCalendarWidget extends CalendarWidget
         })->all();
     }
 
+    /**
+     * Handle drag-move: apply immediately, or prompt when volunteers are signed up.
+     */
     protected function onEventDrop(EventDropInfo $info, Model $event): bool
     {
         if (! $event instanceof Shift) {
@@ -197,16 +226,25 @@ class ShiftCalendarWidget extends CalendarWidget
         return $this->applyEventDrop($event, $deltaMinutes);
     }
 
+    /**
+     * Persist a drag-move by updating the shift start offset.
+     */
     protected function applyEventDrop(Shift $shift, int $deltaMinutes): bool
     {
         return $this->scheduling->moveByMinutes($shift, $deltaMinutes);
     }
 
+    /**
+     * Minutes moved from the Guava calendar drag context (available only during the drop request).
+     */
     protected function eventDropDeltaMinutes(): int
     {
         return intdiv((int) $this->getRawCalendarContextData('delta.seconds'), 60);
     }
 
+    /**
+     * Handle drag-resize: apply immediately, or prompt when volunteers are signed up.
+     */
     protected function onEventResize(EventResizeInfo $info, Model $event): bool
     {
         if (! $event instanceof Shift) {
@@ -225,17 +263,25 @@ class ShiftCalendarWidget extends CalendarWidget
         return $this->applyEventResize($event, $this->eventResizeDeltaMinutes());
     }
 
+    /**
+     * Persist a drag-resize by extending the shift length.
+     */
     protected function applyEventResize(Shift $shift, int $deltaMinutes): bool
     {
         return $this->scheduling->resizeByMinutes($shift, $deltaMinutes);
     }
 
+    /**
+     * Minutes added from the Guava calendar resize context (available only during the resize request).
+     */
     protected function eventResizeDeltaMinutes(): int
     {
         return intdiv((int) $this->getRawCalendarContextData('endDelta.seconds'), 60);
     }
 
     /**
+     * Context menu for a clicked shift: manage, edit, or delete.
+     *
      * @return Action[]
      */
     protected function getEventClickContextMenuActions(): array
@@ -255,6 +301,9 @@ class ShiftCalendarWidget extends CalendarWidget
         ];
     }
 
+    /**
+     * Drag-select create action: pre-fills form from calendar selection, saves via the scheduling service.
+     */
     public function createShiftAction(): CreateAction
     {
         return $this->createAction(Shift::class, 'createShift')
@@ -269,6 +318,9 @@ class ShiftCalendarWidget extends CalendarWidget
             ->using(fn (array $data, self $livewire): Shift => $livewire->scheduling->createFromFormData($livewire->record, $data));
     }
 
+    /**
+     * Confirmation modal before moving a shift that has volunteer signups (notifies on save).
+     */
     public function confirmMoveShiftAction(): Action
     {
         return Action::make('confirmMoveShift')
@@ -288,6 +340,9 @@ class ShiftCalendarWidget extends CalendarWidget
             ->after(fn (self $livewire) => $livewire->refreshRecords());
     }
 
+    /**
+     * Confirmation modal before resizing a shift that has volunteer signups (notifies on save).
+     */
     public function confirmResizeShiftAction(): Action
     {
         return Action::make('confirmResizeShift')
@@ -307,6 +362,9 @@ class ShiftCalendarWidget extends CalendarWidget
             ->after(fn (self $livewire) => $livewire->refreshRecords());
     }
 
+    /**
+     * Edit modal with signup count in the heading and a quiet-save option when volunteers are signed up.
+     */
     public function editAction(): EditAction
     {
         return parent::editAction()
@@ -331,6 +389,9 @@ class ShiftCalendarWidget extends CalendarWidget
             ] : []);
     }
 
+    /**
+     * Delete modal with signup warning and a quiet-delete option when volunteers are signed up.
+     */
     public function deleteAction(): DeleteAction
     {
         return parent::deleteAction()
@@ -357,6 +418,9 @@ class ShiftCalendarWidget extends CalendarWidget
             ] : []);
     }
 
+    /**
+     * Form schema for create/edit shift modals on the calendar.
+     */
     #[CalendarSchema(model: Shift::class)]
     protected function shiftSchema(Schema $schema): Schema
     {
@@ -364,6 +428,8 @@ class ShiftCalendarWidget extends CalendarWidget
     }
 
     /**
+     * Widget header actions, including inline shift-type creation.
+     *
      * @return array<mixed>
      */
     public function getHeaderActions(): array
