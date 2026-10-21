@@ -309,16 +309,16 @@
         },
         {
             "name": "bref/bref",
-            "version": "2.4.20",
+            "version": "2.4.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brefphp/bref.git",
-                "reference": "199f8ee8d7b3a039bef38683613791f852a63d80"
+                "reference": "1552c6056a2943efbe85fb0e96bc27160d395a1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brefphp/bref/zipball/199f8ee8d7b3a039bef38683613791f852a63d80",
-                "reference": "199f8ee8d7b3a039bef38683613791f852a63d80",
+                "url": "https://api.github.com/repos/brefphp/bref/zipball/1552c6056a2943efbe85fb0e96bc27160d395a1b",
+                "reference": "1552c6056a2943efbe85fb0e96bc27160d395a1b",
                 "shasum": ""
             },
             "require": {
@@ -372,7 +372,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brefphp/bref/issues",
-                "source": "https://github.com/brefphp/bref/tree/2.4.20"
+                "source": "https://github.com/brefphp/bref/tree/2.4.22"
             },
             "funding": [
                 {
@@ -384,7 +384,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-05-12T16:06:39+00:00"
+            "time": "2026-10-21T14:34:56+00:00"
         },
         {
             "name": "bref/extra-php-extensions",
@@ -3430,16 +3430,16 @@
         },
         {
             "name": "hollodotme/fast-cgi-client",
-            "version": "v3.1.7",
+            "version": "v3.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hollodotme/fast-cgi-client.git",
-                "reference": "062182d4eda73c161cc2839783acc83096ec0f37"
+                "reference": "b77318889a7e177a3e65fd9c9272d877e8b002d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hollodotme/fast-cgi-client/zipball/062182d4eda73c161cc2839783acc83096ec0f37",
-                "reference": "062182d4eda73c161cc2839783acc83096ec0f37",
+                "url": "https://api.github.com/repos/hollodotme/fast-cgi-client/zipball/b77318889a7e177a3e65fd9c9272d877e8b002d4",
+                "reference": "b77318889a7e177a3e65fd9c9272d877e8b002d4",
                 "shasum": ""
             },
             "require": {
@@ -3474,9 +3474,15 @@
             ],
             "support": {
                 "issues": "https://github.com/hollodotme/fast-cgi-client/issues",
-                "source": "https://github.com/hollodotme/fast-cgi-client/tree/v3.1.7"
+                "source": "https://github.com/hollodotme/fast-cgi-client/tree/v3.1.8"
             },
-            "time": "2021-12-07T10:10:20+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/hollodotme",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-10-05T11:41:51+00:00"
         },
         {
             "name": "kirschbaum-development/eloquent-power-joins",
@@ -9866,16 +9872,16 @@
         },
         {
             "name": "symfony/polyfill-php80",
-            "version": "v1.37.0",
+            "version": "v1.43.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
-                "reference": "dfb55726c3a76ea3b6459fcfda1ec2d80a682411"
+                "reference": "9c6a5d6b01ca51d486c813e9a9c0ed55f208bb74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/dfb55726c3a76ea3b6459fcfda1ec2d80a682411",
-                "reference": "dfb55726c3a76ea3b6459fcfda1ec2d80a682411",
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/9c6a5d6b01ca51d486c813e9a9c0ed55f208bb74",
+                "reference": "9c6a5d6b01ca51d486c813e9a9c0ed55f208bb74",
                 "shasum": ""
             },
             "require": {
@@ -9926,7 +9932,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php80/tree/v1.37.0"
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.43.0"
             },
             "funding": [
                 {
@@ -9946,7 +9952,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-10T16:19:22+00:00"
+            "time": "2026-09-25T15:50:05+00:00"
         },
         {
             "name": "symfony/polyfill-php83",
@@ -10273,16 +10279,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v7.4.13",
+            "version": "v7.4.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "f5804be144caceb570f6747519999636b664f24c"
+                "reference": "e5247f4a5e0797d232ad8e8e6803aeb341843c83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/f5804be144caceb570f6747519999636b664f24c",
-                "reference": "f5804be144caceb570f6747519999636b664f24c",
+                "url": "https://api.github.com/repos/symfony/process/zipball/e5247f4a5e0797d232ad8e8e6803aeb341843c83",
+                "reference": "e5247f4a5e0797d232ad8e8e6803aeb341843c83",
                 "shasum": ""
             },
             "require": {
@@ -10314,7 +10320,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v7.4.13"
+                "source": "https://github.com/symfony/process/tree/v7.4.21"
             },
             "funding": [
                 {
@@ -10334,7 +10340,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-23T16:05:06+00:00"
+            "time": "2026-10-08T16:56:12+00:00"
         },
         {
             "name": "symfony/psr-http-message-bridge",
