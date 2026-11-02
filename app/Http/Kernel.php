@@ -9,6 +9,7 @@ use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\ForceJsonResponse;
 use App\Http\Middleware\LockdownMiddleware;
 use App\Http\Middleware\LogHttp400Diagnostics;
+use App\Http\Middleware\NormalizeForwardedHost;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetAcceptHeaderJson;
@@ -47,8 +48,9 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         LogHttp400Diagnostics::class,
-        TrustHosts::class,
+        NormalizeForwardedHost::class,
         TrustProxies::class,
+        TrustHosts::class,
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
