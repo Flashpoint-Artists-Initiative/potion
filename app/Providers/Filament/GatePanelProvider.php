@@ -7,11 +7,8 @@ namespace App\Providers\Filament;
 use App\Http\Middleware\RedirectIfNotFilamentAdmin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
-use Gerenuk\FilamentBanhammer\FilamentBanhammerPlugin;
 
 class GatePanelProvider extends CommonPanelProvider
 {

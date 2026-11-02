@@ -11,7 +11,6 @@ use Filament\Tables;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
@@ -23,6 +22,7 @@ use Tapp\FilamentAuditing\Concerns\HasFormattedData;
 class UserAudits extends ManageRelatedRecords
 {
     use HasFormattedData;
+
     protected static string $resource = UserResource::class;
 
     protected static string $relationship = 'audits';
