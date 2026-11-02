@@ -8,6 +8,12 @@ use Monolog\Processor\PsrLogMessageProcessor;
 return [
 
     /*
+    | When true, log detailed context for HTTP 400 responses to stderr (CloudWatch).
+    | Disable with LOG_HTTP_400_DIAGNOSTICS=false after the issue is resolved.
+    */
+    'http_400_diagnostics' => (bool) env('LOG_HTTP_400_DIAGNOSTICS', true),
+
+    /*
     |--------------------------------------------------------------------------
     | Default Log Channel
     |--------------------------------------------------------------------------
