@@ -8,7 +8,6 @@ use App\Http\Middleware\ConditionalJwtRefresh;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\ForceJsonResponse;
 use App\Http\Middleware\LockdownMiddleware;
-use App\Http\Middleware\LogHttp400Diagnostics;
 use App\Http\Middleware\NormalizeForwardedHost;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -47,7 +46,6 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-        LogHttp400Diagnostics::class,
         NormalizeForwardedHost::class,
         TrustProxies::class,
         TrustHosts::class,
